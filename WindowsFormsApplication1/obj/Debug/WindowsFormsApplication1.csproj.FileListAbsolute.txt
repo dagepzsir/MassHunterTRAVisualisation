@@ -10,3 +10,9 @@ C:\Oktatas\Braun_Adam\Programming\WindowsFormsApplication1\WindowsFormsApplicati
 C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
 C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
 C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Form1.resources
+C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csproj.GenerateResource.Cache

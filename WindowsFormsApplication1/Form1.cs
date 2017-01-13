@@ -27,62 +27,48 @@ namespace WindowsFormsApplication1
         {
             if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                if (folderBrowserDialog1.SelectedPath.Contains(".b"))
-                {
-                    List<string> datafiles = Directory.EnumerateDirectories(folderBrowserDialog1.SelectedPath, "*.d").ToList();
-                    foreach (string filename in datafiles)
-                    {
-                        //Construct file path
-                        string datafile = Path.GetFileNameWithoutExtension(filename) + ".csv";
-                        string finalPath = Path.Combine(filename, datafile);
-                        if (File.Exists(finalPath))
-                        {
-                            //Load file
-                            TRAData currentData = TRAData.LoadCSVFile(finalPath);
-                            AddChartArea(Path.GetFileNameWithoutExtension(datafile), 400);
-                            LoadedData.Add(currentData);
+                LoadBatch(folderBrowserDialog1.SelectedPath);
+            }
+        }
 
-                            //Set legend label
-                            foreach (Series series in currentData.DataSeries)
-                            {
-                                series.ChartArea = chart1.ChartAreas.Last().Name;
-                               // series.AxisLabel = series.Name;
-                                chart1.Series.Add(series);
-                            }
+        private void LoadBatch(string folderpath)
+        {
+            if (folderpath.Contains(".b"))
+            {
+                List<string> datafiles = Directory.EnumerateDirectories(folderpath, "*.d").ToList();
+                foreach (string filename in datafiles)
+                {
+                    //Construct file path
+                    string datafile = Path.GetFileNameWithoutExtension(filename) + ".csv";
+                    string finalPath = Path.Combine(filename, datafile);
+                    if (File.Exists(finalPath))
+                    {
+                        //Load file
+                        TRAData currentData = TRAData.LoadCSVFile(finalPath);
+                        AddChartArea(Path.GetFileNameWithoutExtension(datafile), 400);
+                        LoadedData.Add(currentData);
+
+                        foreach (Series series in currentData.DataSeries)
+                        {
+                            series.ChartArea = chart1.ChartAreas.Last().Name;
+                            
+                            chart1.Series.Add(series);
                         }
                     }
-                    //Set legend
-                    foreach (Series series in LoadedData[0].DataSeries)
-                    {
-                        series.IsVisibleInLegend = true;
-                        series.LegendText = series.Name.Split('_')[0];
-                    }
                 }
-                else
+                //Set legend
+                foreach (Series series in LoadedData[0].DataSeries)
                 {
-                    MessageBox.Show("Selected folder is not a valid ICP-MS Batch folder!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    series.IsVisibleInLegend = true;
+                    series.LegendText = series.Name.Split('_')[0];
                 }
             }
-            DataTable table = new DataTable("chartareas");
-            table.Columns.Add("Name");
-            table.Columns.Add("X");
-            table.Columns.Add("Y");
-            table.Columns.Add("Width");
-            DataTable table2 = new DataTable("inner");
-            table2.Columns.Add("Name");
-            table2.Columns.Add("X");
-            table2.Columns.Add("Y");
-            table2.Columns.Add("Width");
-
-            foreach (ChartArea area in chart1.ChartAreas)
+            else
             {
-                table.Rows.Add(area.Name, area.Position.X, area.Position.Y, area.Position.Width);
-                table2.Rows.Add(area.Name, area.InnerPlotPosition.X, area.InnerPlotPosition.Y, area.InnerPlotPosition.Width);
+                MessageBox.Show("Selected folder is not a valid ICP-MS Batch folder!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            //dataGridView1.DataSource = table;
-            //dataGridView2.DataSource = table2;
-            this.Text = chart1.Width.ToString();
         }
+
         private void AddChartArea(string areaname, int areawith)
         {
             ChartArea newArea = new ChartArea(areaname);
@@ -92,8 +78,9 @@ namespace WindowsFormsApplication1
             newArea.AlignmentOrientation = AreaAlignmentOrientations.Horizontal;
             newArea.AxisY.MajorTickMark.Enabled = false;
             newArea.Position.Auto = false;
-
-            if(chart1.ChartAreas.Count == 0)
+            newArea.InnerPlotPosition = new ElementPosition(20, 5, 80, 85);
+            newArea.AxisX.Title = areaname;
+            if (chart1.ChartAreas.Count == 0)
             {
                 newArea.Position = new ElementPosition(0, 0, areaWithPerctangle(areawith), 100);
             }
@@ -117,14 +104,8 @@ namespace WindowsFormsApplication1
                 ChartArea previousArea = chart1.ChartAreas[chart1.ChartAreas.Count - 1];
                 newArea.Position = new ElementPosition(previousArea.Position.Right, 0, areaWithPerctangle(areawith), 100);
             }
-            chart1.Width += 400;
-            newArea.InnerPlotPosition = new ElementPosition(20, 5, 80, 85);
-            if (chart1.ChartAreas.Count > 0)
-            {
-                newArea.AlignWithChartArea = chart1.ChartAreas.Last().Name;
-            }
             chart1.ChartAreas.Add(newArea);
-            
+            //if(chart1.Width <= chart1.ChartAreas.Count * areawith)
         }
         private double maxYAxisValue()
         {
@@ -143,7 +124,8 @@ namespace WindowsFormsApplication1
         }
         private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
-            foreach (ChartArea area in chart1.ChartAreas)
+            //Select on every diagram
+            /*foreach (ChartArea area in chart1.ChartAreas)
             {
                 if(area != e.ChartArea)
                 if (area.CursorX.SelectionStart != e.NewSelectionStart && area.CursorX.SelectionEnd != e.NewSelectionEnd)
@@ -152,7 +134,21 @@ namespace WindowsFormsApplication1
                     area.CursorX.SelectionEnd = e.NewSelectionEnd;
                     area.RecalculateAxesScale();
                 }
+            }*/
+        }
+
+        private void chart1_DragDrop(object sender, DragEventArgs e)
+        {
+            if(e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+                LoadBatch(path);
             }
+        }
+
+        private void chart1_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }
