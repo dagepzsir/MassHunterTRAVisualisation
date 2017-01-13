@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml;
+
 namespace WindowsFormsApplication1
 {
     public partial class Form1 : Form
@@ -17,18 +19,47 @@ namespace WindowsFormsApplication1
         {
             InitializeComponent();
         }
-
+        List<TRAData> LoadedData = new List<TRAData>();
+        DataTable loadedFiles = new DataTable();
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            loadedFiles.Columns.Add("Data file");
+            loadedFiles.Columns.Add("Sample Name");
+            loadedFiles.Columns.Add("Data file");
+            loadedFiles.Columns.Add("Comment");
         }
-        List<TRAData> LoadedData = new List<TRAData>();
         private void button1_Click(object sender, EventArgs e)
         {
             if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 LoadBatch(folderBrowserDialog1.SelectedPath);
             }
+        }
+        private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
+        {
+            //Select on every diagram
+            /*foreach (ChartArea area in chart1.ChartAreas)
+            {
+                if(area != e.ChartArea)
+                if (area.CursorX.SelectionStart != e.NewSelectionStart && area.CursorX.SelectionEnd != e.NewSelectionEnd)
+                {
+                    area.CursorX.SelectionStart = e.NewSelectionStart;
+                    area.CursorX.SelectionEnd = e.NewSelectionEnd;
+                    area.RecalculateAxesScale();
+                }
+            }*/
+        }
+        private void chart1_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+                LoadBatch(path);
+            }
+        }
+        private void chart1_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
 
         private void LoadBatch(string folderpath)
@@ -51,10 +82,19 @@ namespace WindowsFormsApplication1
                         foreach (Series series in currentData.DataSeries)
                         {
                             series.ChartArea = chart1.ChartAreas.Last().Name;
-                            
                             chart1.Series.Add(series);
                         }
                     }
+
+                    string sampleInfoPath = Path.Combine(filename, "AcqData", "sample_info.xml");
+                    XmlDocument sampleInfo = new XmlDocument();
+                    sampleInfo.Load(sampleInfoPath);
+                    XmlNodeList nodes = sampleInfo.SelectNodes("SampleInfo/Field");
+                    foreach (XmlNode node in nodes)
+                    {
+                        
+                    }
+
                 }
                 //Set legend
                 foreach (Series series in LoadedData[0].DataSeries)
@@ -68,12 +108,11 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Selected folder is not a valid ICP-MS Batch folder!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void AddChartArea(string areaname, int areawith)
         {
             ChartArea newArea = new ChartArea(areaname);
             newArea.CursorX.IsUserSelectionEnabled = true;
-            newArea.AxisX.ScaleView.Zoomable = false;
+            //newArea.AxisX.ScaleView.Zoomable = false;
             newArea.AlignmentStyle = AreaAlignmentStyles.PlotPosition;
             newArea.AlignmentOrientation = AreaAlignmentOrientations.Horizontal;
             newArea.AxisY.MajorTickMark.Enabled = false;
@@ -122,33 +161,6 @@ namespace WindowsFormsApplication1
             int percent100 = chart1.Width;
             return targetWidth * 100 / (float)percent100;
         }
-        private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
-        {
-            //Select on every diagram
-            /*foreach (ChartArea area in chart1.ChartAreas)
-            {
-                if(area != e.ChartArea)
-                if (area.CursorX.SelectionStart != e.NewSelectionStart && area.CursorX.SelectionEnd != e.NewSelectionEnd)
-                {
-                    area.CursorX.SelectionStart = e.NewSelectionStart;
-                    area.CursorX.SelectionEnd = e.NewSelectionEnd;
-                    area.RecalculateAxesScale();
-                }
-            }*/
-        }
 
-        private void chart1_DragDrop(object sender, DragEventArgs e)
-        {
-            if(e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string path = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
-                LoadBatch(path);
-            }
-        }
-
-        private void chart1_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Copy;
-        }
     }
 }
