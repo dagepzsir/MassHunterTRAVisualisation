@@ -29,6 +29,9 @@ namespace WindowsFormsApplication1
             loadedFiles.Columns.Add("Sample Name");
             loadedFiles.Columns.Add("Data file");
             loadedFiles.Columns.Add("Comment");
+
+            listView1.Columns.Add("Data File");
+            listView1.Columns.Add("Sample Name");
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -66,6 +69,12 @@ namespace WindowsFormsApplication1
 
         private void LoadBatch(string folderpath)
         {
+            //Reset data
+            LoadedData = new List<TRAData>();
+            traChart.ChartAreas.Clear();
+            traChart.Series.Clear();
+            listView1.Clear();
+
             if (folderpath.Contains(".b"))
             {
                 List<string> datafiles = Directory.EnumerateDirectories(folderpath, "*.d").ToList();
@@ -104,9 +113,14 @@ namespace WindowsFormsApplication1
                         currentData.SampleName = sampleName;
                         AddChartArea(Path.GetFileNameWithoutExtension(datafile), 400);
                         LoadedData.Add(currentData);
-                        
-                        listView1.Items.Add(new ListViewItem(traChart.ChartAreas.Last().Name, sampleName));
+                        if (listView1.Columns.Count == 0)
+                        {
+                            listView1.Columns.Add("Data File");
+                            listView1.Columns.Add("Sample Name");
+                        }
+                        listView1.Items.Add(new ListViewItem(new string[] { traChart.ChartAreas.Last().Name, sampleName }));
                         traChart.ChartAreas.Last().AxisX.Title += " - " + sampleName;
+
                         foreach (Series series in currentData.DataSeries)
                         {
                             series.ChartArea = traChart.ChartAreas.Last().Name;
@@ -187,7 +201,14 @@ namespace WindowsFormsApplication1
         {
             float perctangleX = e.X * 100 / traChart.Width;
             ChartArea clickedChart = traChart.ChartAreas.ToList().Find(item => item.Position.X <= perctangleX && item.Position.Right >= perctangleX);
-            MessageBox.Show(clickedChart.Name);
+            var asd = listView1.FindItemWithText(clickedChart.Name);
+            /*foreach (ListViewItem row in listView1.Items)
+            {
+                row.Selected = false;
+            }*/
+            listView1.Select();
+            asd.Selected = true;
+            //listView1.Refresh();
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
