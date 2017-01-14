@@ -16,3 +16,12 @@ C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsAppli
 C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Form1.resources
 C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
 C:\Users\Administrator\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csproj.GenerateResource.Cache
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csprojResolveAssemblyReference.cache
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csproj.GenerateResource.Cache
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.MainForm.resources

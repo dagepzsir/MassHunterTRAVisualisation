@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace WindowsFormsApplication1
     class TRAData
     {
         public string FilePath { get; set; }
+        public string SampleName { get; set; }
         public Dictionary<string, List<double>> CSVData;
         public List<double> Time = new List<double>();
         public List<Series> DataSeries { get; set; }
@@ -31,7 +33,8 @@ namespace WindowsFormsApplication1
             List<double> times = new List<double>();
             List<string> elements = new List<string>();
             List<Series> serieses = new List<Series>();
-
+            NumberFormatInfo numFormat = new NumberFormatInfo();
+            numFormat.NumberDecimalSeparator = ".";
             Color[] colors = { Color.Red, Color.Blue, Color.Black, Color.Green };
 
             using (StreamReader reader = new StreamReader(filepath))
@@ -64,12 +67,12 @@ namespace WindowsFormsApplication1
                         break;
 
                     //Add time to database
-                    times.Add(Convert.ToDouble(currentLine[0]));
+                    times.Add(Convert.ToDouble(currentLine[0], numFormat));
                     for (int i = 1; i < currentLine.Length; i++)
                     {
                         string elementName = elements[i - 1];
 
-                        csvData[elementName].Add(Convert.ToDouble(currentLine[i]));
+                        csvData[elementName].Add(Convert.ToDouble(currentLine[i], numFormat));
                     }
                 }
 

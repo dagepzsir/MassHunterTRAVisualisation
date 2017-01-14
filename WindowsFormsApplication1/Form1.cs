@@ -13,9 +13,9 @@ using System.Xml;
 
 namespace WindowsFormsApplication1
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -81,8 +81,8 @@ namespace WindowsFormsApplication1
 
                         foreach (Series series in currentData.DataSeries)
                         {
-                            series.ChartArea = chart1.ChartAreas.Last().Name;
-                            chart1.Series.Add(series);
+                            series.ChartArea = traChart.ChartAreas.Last().Name;
+                            traChart.Series.Add(series);
                         }
                     }
 
@@ -119,7 +119,7 @@ namespace WindowsFormsApplication1
             newArea.Position.Auto = false;
             newArea.InnerPlotPosition = new ElementPosition(20, 5, 80, 85);
             newArea.AxisX.Title = areaname;
-            if (chart1.ChartAreas.Count == 0)
+            if (traChart.ChartAreas.Count == 0)
             {
                 newArea.Position = new ElementPosition(0, 0, areaWithPerctangle(areawith), 100);
             }
@@ -127,29 +127,29 @@ namespace WindowsFormsApplication1
             {
 
                 //Resize Chart object
-                if (chart1.Width <= chart1.ChartAreas.Count * areawith)
-                    chart1.Width += areawith;
+                if (traChart.Width <= traChart.ChartAreas.Count * areawith)
+                    traChart.Width += areawith;
 
                 //Recalculate existing ChartAreas
-                chart1.ChartAreas[0].Position.Width = areaWithPerctangle(areawith);
-                chart1.ChartAreas[0].Position.X = 0;
-                for (int i = 1; i < chart1.ChartAreas.Count; i++)
+                traChart.ChartAreas[0].Position.Width = areaWithPerctangle(areawith);
+                traChart.ChartAreas[0].Position.X = 0;
+                for (int i = 1; i < traChart.ChartAreas.Count; i++)
                 {
-                    chart1.ChartAreas[i].Position.Width = areaWithPerctangle(areawith);
-                    chart1.ChartAreas[i].Position.X = chart1.ChartAreas[i - 1].Position.Right;
+                    traChart.ChartAreas[i].Position.Width = areaWithPerctangle(areawith);
+                    traChart.ChartAreas[i].Position.X = traChart.ChartAreas[i - 1].Position.Right;
                 }
 
                 //Calculate the new ChartArea
-                ChartArea previousArea = chart1.ChartAreas[chart1.ChartAreas.Count - 1];
+                ChartArea previousArea = traChart.ChartAreas[traChart.ChartAreas.Count - 1];
                 newArea.Position = new ElementPosition(previousArea.Position.Right, 0, areaWithPerctangle(areawith), 100);
             }
-            chart1.ChartAreas.Add(newArea);
+            traChart.ChartAreas.Add(newArea);
             //if(chart1.Width <= chart1.ChartAreas.Count * areawith)
         }
         private double maxYAxisValue()
         {
             double max = 0;
-            foreach (ChartArea area in chart1.ChartAreas)
+            foreach (ChartArea area in traChart.ChartAreas)
             {
                 if (area.AxisY.Maximum > max)
                     max = area.AxisY.Maximum;
@@ -158,9 +158,15 @@ namespace WindowsFormsApplication1
         }
         private float areaWithPerctangle(int targetWidth)
         {
-            int percent100 = chart1.Width;
+            int percent100 = traChart.Width;
             return targetWidth * 100 / (float)percent100;
         }
 
+        private void chart1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            float perctangleX = e.X * 100 / traChart.Width;
+            ChartArea clickedChart = traChart.ChartAreas.ToList().Find(item => item.Position.X <= perctangleX && item.Position.Right >= perctangleX);
+            MessageBox.Show(clickedChart.Name);
+        }
     }
 }
