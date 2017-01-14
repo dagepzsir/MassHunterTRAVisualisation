@@ -22,7 +22,7 @@ namespace WindowsFormsApplication1
         public TRAData(string filepath, Dictionary<string, List<double>> csvdata, List<double> time, List<Series> series)
         {
             Time = time;
-            filepath = FilePath;
+            FilePath = Path.GetDirectoryName(filepath);
             CSVData = csvdata;
             DataSeries = series;
         }
@@ -43,7 +43,7 @@ namespace WindowsFormsApplication1
             NumberFormatInfo numFormat = new NumberFormatInfo();
             numFormat.NumberDecimalSeparator = ".";
             List<Color> colors = Utils.GetColorsFromSettings();
-
+            
             using (StreamReader reader = new StreamReader(filepath))
             {
                 string fileName = Path.GetFileNameWithoutExtension(filepath);
