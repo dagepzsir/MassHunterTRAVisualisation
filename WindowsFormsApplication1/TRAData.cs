@@ -11,7 +11,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace WindowsFormsApplication1
 {
-    class TRAData
+    public class TRAData
     {
         public string FilePath { get; set; }
         public string SampleName { get; set; }
@@ -26,7 +26,14 @@ namespace WindowsFormsApplication1
             CSVData = csvdata;
             DataSeries = series;
         }
-
+        public void RefreshSeriesColor()
+        {
+            List<Color> colors = Utils.GetColorsFromSettings();
+            for (int i = 0; i < DataSeries.Count; i++)
+            {
+                DataSeries[i].Color = colors[i];
+            }
+        }
         public static TRAData LoadCSVFile(string filepath)
         {
             Dictionary<string, List<double>> csvData = new Dictionary<string, List<double>>();
@@ -35,7 +42,7 @@ namespace WindowsFormsApplication1
             List<Series> serieses = new List<Series>();
             NumberFormatInfo numFormat = new NumberFormatInfo();
             numFormat.NumberDecimalSeparator = ".";
-            Color[] colors = { Color.Red, Color.Blue, Color.Black, Color.Green };
+            List<Color> colors = Utils.GetColorsFromSettings();
 
             using (StreamReader reader = new StreamReader(filepath))
             {
@@ -52,9 +59,10 @@ namespace WindowsFormsApplication1
                 for (int i = 1; i < data.Length; i++)
                 {
                     Series newSeries = new Series(data[i] + "_" + fileName);
-
+                    string asdf = Color.Black.ToString();
                     newSeries.ChartType = SeriesChartType.Spline;
                     newSeries.Color = colors[i - 1];
+                    
                     newSeries.IsVisibleInLegend = false;
                     serieses.Add(newSeries);
                     elements.Add(data[i]);

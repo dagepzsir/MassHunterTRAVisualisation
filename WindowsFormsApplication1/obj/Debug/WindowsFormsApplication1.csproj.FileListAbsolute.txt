@@ -25,3 +25,4 @@ C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\
 C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
 C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csproj.GenerateResource.Cache
 C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.MainForm.resources
+C:\Users\lenti\Source\Repos\MassHunterTRAVisualisation\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.OptionsForm.resources

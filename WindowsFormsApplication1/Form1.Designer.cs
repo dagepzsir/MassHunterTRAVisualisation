@@ -32,16 +32,18 @@
             this.traChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartPanel = new System.Windows.Forms.Panel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.loadedDataChart = new System.Windows.Forms.DataGridView();
             this.selectedChartInfoTable = new System.Windows.Forms.DataGridView();
             this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainSplitContainer = new System.Windows.Forms.SplitContainer();
             this.tableSplitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.sampleDataFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.sampleName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.traChart)).BeginInit();
             this.chartPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.loadedDataChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.selectedChartInfoTable)).BeginInit();
             this.mainMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitContainer)).BeginInit();
@@ -83,20 +85,6 @@
             this.chartPanel.Size = new System.Drawing.Size(1041, 426);
             this.chartPanel.TabIndex = 3;
             // 
-            // loadedDataChart
-            // 
-            this.loadedDataChart.AllowUserToAddRows = false;
-            this.loadedDataChart.AllowUserToDeleteRows = false;
-            this.loadedDataChart.AllowUserToOrderColumns = true;
-            this.loadedDataChart.AllowUserToResizeRows = false;
-            this.loadedDataChart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.loadedDataChart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loadedDataChart.Location = new System.Drawing.Point(0, 0);
-            this.loadedDataChart.Name = "loadedDataChart";
-            this.loadedDataChart.ReadOnly = true;
-            this.loadedDataChart.Size = new System.Drawing.Size(149, 191);
-            this.loadedDataChart.TabIndex = 4;
-            // 
             // selectedChartInfoTable
             // 
             this.selectedChartInfoTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -109,7 +97,8 @@
             // mainMenuStrip
             // 
             this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.optionsToolStripMenuItem});
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Size = new System.Drawing.Size(1041, 24);
@@ -157,7 +146,7 @@
             // 
             // tableSplitContainer1.Panel1
             // 
-            this.tableSplitContainer1.Panel1.Controls.Add(this.loadedDataChart);
+            this.tableSplitContainer1.Panel1.Controls.Add(this.listView1);
             // 
             // tableSplitContainer1.Panel2
             // 
@@ -165,6 +154,37 @@
             this.tableSplitContainer1.Size = new System.Drawing.Size(1041, 191);
             this.tableSplitContainer1.SplitterDistance = 149;
             this.tableSplitContainer1.TabIndex = 6;
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.sampleDataFile,
+            this.sampleName});
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(149, 191);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // sampleDataFile
+            // 
+            this.sampleDataFile.Text = "Data File";
+            // 
+            // sampleName
+            // 
+            this.sampleName.Text = "Sample Name";
+            this.sampleName.Width = 84;
             // 
             // MainForm
             // 
@@ -180,7 +200,6 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.traChart)).EndInit();
             this.chartPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.loadedDataChart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.selectedChartInfoTable)).EndInit();
             this.mainMenuStrip.ResumeLayout(false);
             this.mainMenuStrip.PerformLayout();
@@ -202,13 +221,16 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart traChart;
         private System.Windows.Forms.Panel chartPanel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.DataGridView loadedDataChart;
         private System.Windows.Forms.DataGridView selectedChartInfoTable;
         private System.Windows.Forms.MenuStrip mainMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.SplitContainer mainSplitContainer;
         private System.Windows.Forms.SplitContainer tableSplitContainer1;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader sampleDataFile;
+        private System.Windows.Forms.ColumnHeader sampleName;
     }
 }
 
