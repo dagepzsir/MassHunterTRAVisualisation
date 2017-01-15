@@ -29,5 +29,11 @@ namespace WindowsFormsApplication1
             string[] rgb = colorString.Split(',');
             return Color.FromArgb(int.Parse(rgb[0]), int.Parse(rgb[1]), int.Parse(rgb[2]));
         }
+
+        public enum StatisticsOptions
+        {
+            Average,
+            SD
+        }
     }
 }

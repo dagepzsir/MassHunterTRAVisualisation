@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -7,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
-
+using MathNet.Numerics.Statistics;
+using System.Windows.Forms;
 
 namespace WindowsFormsApplication1
 {
@@ -97,6 +99,45 @@ namespace WindowsFormsApplication1
                 }
             }
             return new TRAData(filepath, csvData, times, serieses);
+        }
+
+        public DataTable Analysis()
+        {
+            DataTable output = new DataTable();
+            output.Columns.Add("Sample Name");
+            output.Columns.Add("Element");
+            output.Columns.Add("Average");
+            output.Columns.Add("SD");
+            Dictionary<string, Tuple<double, double>> average = Average();
+            foreach (string key in average.Keys)
+            {
+                output.Rows.Add(SampleName, key, average[key].Item1, average[key].Item2);
+            }
+            return output;
+        }
+        public Dictionary<string, Tuple<double,double>> Average()
+        {
+            Dictionary<string, Tuple<double, double>> output = new Dictionary<string, Tuple<double, double>>();
+            if (SelectionStart.ToString() == double.NaN.ToString())
+            {
+                MessageBox.Show(SelectionStart.ToString() + " fent");
+                foreach (string key in CSVData.Keys)
+                {
+                    output.Add(key, Statistics.MeanStandardDeviation(CSVData[key]));
+                    double mean = Statistics.Mean(CSVData[key]);
+                }
+                return output;
+                
+            }
+            else
+            {
+                MessageBox.Show(SelectionStart.ToString());
+                return null;
+            }
+        }
+        public double StandardDeviation()
+        {
+            return 0;
         }
     }
 }

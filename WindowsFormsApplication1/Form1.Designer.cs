@@ -90,10 +90,14 @@
             // 
             // selectedChartInfoTable
             // 
+            this.selectedChartInfoTable.AllowUserToAddRows = false;
+            this.selectedChartInfoTable.AllowUserToDeleteRows = false;
+            this.selectedChartInfoTable.AllowUserToOrderColumns = true;
             this.selectedChartInfoTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.selectedChartInfoTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.selectedChartInfoTable.Location = new System.Drawing.Point(0, 0);
             this.selectedChartInfoTable.Name = "selectedChartInfoTable";
+            this.selectedChartInfoTable.ReadOnly = true;
             this.selectedChartInfoTable.Size = new System.Drawing.Size(888, 191);
             this.selectedChartInfoTable.TabIndex = 5;
             this.selectedChartInfoTable.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.traChart_KeyPress);
@@ -189,6 +193,7 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             this.listView1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.traChart_KeyPress);
             // 
             // sampleDataFile

@@ -11,6 +11,8 @@ using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
 using System.Xml.Linq;
+using static System.Windows.Forms.ListView;
+using System.Threading;
 
 namespace WindowsFormsApplication1
 {
@@ -57,21 +59,7 @@ namespace WindowsFormsApplication1
                 LoadBatchData(filepath);
             }
         }
-        private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
-        {
-            //Select on every diagram
-            foreach (ListViewItem item in listView1.SelectedItems)
-            {
-               // ChartArea area = traChart.ChartAreas.FindByName(item.Text);
-                if (traChart.ChartAreas.FindByName(item.Text) != e.ChartArea)
-                    if (traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionStart != e.NewSelectionStart && traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionEnd != e.NewSelectionEnd)
-                    {
-                        traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionStart = e.NewSelectionStart;
-                        traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionEnd = e.NewSelectionEnd;
-                        traChart.ChartAreas.FindByName(item.Text).RecalculateAxesScale();
-                    }
-            }
-        }
+
         private void chart1_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -131,7 +119,6 @@ namespace WindowsFormsApplication1
                     series.IsVisibleInLegend = true;
                     series.LegendText = series.Name.Split('_')[0];
                 }
-
                 refreshButton.Enabled = true;
             }
             else
@@ -157,8 +144,10 @@ namespace WindowsFormsApplication1
                 //Load file
                 TRAData currentData = TRAData.LoadCSVFile(finalPath);
                 currentData.SampleName = sampleName;
-                AddChartArea(Path.GetFileNameWithoutExtension(datafile), 400);
+                double timeStep = currentData.Time[1] - currentData.Time[0];
+                AddChartArea(Path.GetFileNameWithoutExtension(datafile), 400, timeStep);
                 LoadedData.Add(currentData);
+
                 if (listView1.Columns.Count == 0)
                 {
                     listView1.Columns.Add("Data File");
@@ -175,7 +164,7 @@ namespace WindowsFormsApplication1
             }
         }
 
-        private void AddChartArea(string areaname, int areawith)
+        private void AddChartArea(string areaname, int areawith, double timestep)
         {
             ChartArea newArea = new ChartArea(areaname);
 
@@ -190,7 +179,8 @@ namespace WindowsFormsApplication1
             newArea.Position.Auto = false;
             newArea.InnerPlotPosition = new ElementPosition(20, 5, 80, 85);
             newArea.AxisX.Title = areaname;
-
+            newArea.CursorX.Interval = timestep;
+            newArea.CursorX.Interval = 0.15;
             if (traChart.ChartAreas.Count == 0)
             {
                 newArea.Position = new ElementPosition(0, 0, areaWithPerctangle(areawith), 100);
@@ -232,18 +222,19 @@ namespace WindowsFormsApplication1
             return targetWidth * 100 / (float)percent100;
         }
 
+
         private void traChart_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)13)
             {
                 foreach (ChartArea area in traChart.ChartAreas)
                 {
-                    if (area.CursorX.SelectionStart != double.NaN)
+                    if (area.CursorX.SelectionStart.ToString() != double.NaN.ToString())
                     {
-                        //area.AxisX.ScaleView.Zoomable = true;
                         area.AxisX.ScaleView.Zoom(area.CursorX.SelectionStart, area.CursorX.SelectionEnd);
-                        area.CursorX.SelectionStart = double.NaN;
-                        area.CursorX.SelectionEnd = double.NaN;
+                        TRAData changed = LoadedData.Find(item => Path.GetFileNameWithoutExtension(item.FilePath) == area.Name);
+                        changed.SelectionEnd = area.CursorX.SelectionEnd;
+                        changed.SelectionStart = area.CursorX.SelectionStart;
                     }
                 }
             }
@@ -251,7 +242,49 @@ namespace WindowsFormsApplication1
 
         private void traChart_AxisViewChanged(object sender, ViewEventArgs e)
         {
-           
+            TRAData changed = LoadedData.Find(item => Path.GetFileNameWithoutExtension(item.FilePath) == e.ChartArea.Name);
+            changed.SelectionEnd = e.ChartArea.CursorX.SelectionEnd;
+            changed.SelectionStart = e.ChartArea.CursorX.SelectionStart;
         }
+        private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
+        {
+            //Select on every diagram
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                if (traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionStart != e.NewSelectionStart && traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionEnd != e.NewSelectionEnd)
+                {
+                    traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionStart = e.NewSelectionStart;
+                    traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionEnd = e.NewSelectionEnd;
+                }
+            }
+        }
+
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateAnalysisDataTable(listView1.SelectedItems);
+        }
+
+        private void UpdateAnalysisDataTable(SelectedListViewItemCollection items)
+        {
+            if (items.Count > 0)
+            {
+                List<TRAData> selected = new List<TRAData>();
+
+                foreach (ListViewItem item in items)
+                {
+                    selected.Add(LoadedData.Find(item2 => Path.GetFileNameWithoutExtension(item2.FilePath) == item.Text));
+                }
+                DataTable finalTable = new DataTable();
+                finalTable = selected[0].Analysis();
+                for (int i = 1; i < selected.Count; i++)
+                {
+                    finalTable.Merge(selected[i].Analysis());
+                }
+                selectedChartInfoTable.DataSource = finalTable;
+            }
+        }
+
+
     }
 }
