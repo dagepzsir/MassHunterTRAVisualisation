@@ -60,16 +60,17 @@ namespace WindowsFormsApplication1
         private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
             //Select on every diagram
-            /*foreach (ChartArea area in chart1.ChartAreas)
+            foreach (ListViewItem item in listView1.SelectedItems)
             {
-                if(area != e.ChartArea)
-                if (area.CursorX.SelectionStart != e.NewSelectionStart && area.CursorX.SelectionEnd != e.NewSelectionEnd)
-                {
-                    area.CursorX.SelectionStart = e.NewSelectionStart;
-                    area.CursorX.SelectionEnd = e.NewSelectionEnd;
-                    area.RecalculateAxesScale();
-                }
-            }*/
+               // ChartArea area = traChart.ChartAreas.FindByName(item.Text);
+                if (traChart.ChartAreas.FindByName(item.Text) != e.ChartArea)
+                    if (traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionStart != e.NewSelectionStart && traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionEnd != e.NewSelectionEnd)
+                    {
+                        traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionStart = e.NewSelectionStart;
+                        traChart.ChartAreas.FindByName(item.Text).CursorX.SelectionEnd = e.NewSelectionEnd;
+                        traChart.ChartAreas.FindByName(item.Text).RecalculateAxesScale();
+                    }
+            }
         }
         private void chart1_DragDrop(object sender, DragEventArgs e)
         {
@@ -180,7 +181,7 @@ namespace WindowsFormsApplication1
 
             //Turn off automatic shit on ChartAreas
             newArea.CursorX.IsUserSelectionEnabled = true;
-            //newArea.AxisX.ScaleView.Zoomable = false;
+            newArea.AxisX.ScaleView.Zoomable = false;
             newArea.AlignmentStyle = AreaAlignmentStyles.PlotPosition;
             newArea.AlignmentOrientation = AreaAlignmentOrientations.Horizontal;
             newArea.AxisY.MajorTickMark.Enabled = false;
@@ -229,6 +230,28 @@ namespace WindowsFormsApplication1
         {
             int percent100 = traChart.Width;
             return targetWidth * 100 / (float)percent100;
+        }
+
+        private void traChart_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)
+            {
+                foreach (ChartArea area in traChart.ChartAreas)
+                {
+                    if (area.CursorX.SelectionStart != double.NaN)
+                    {
+                        //area.AxisX.ScaleView.Zoomable = true;
+                        area.AxisX.ScaleView.Zoom(area.CursorX.SelectionStart, area.CursorX.SelectionEnd);
+                        area.CursorX.SelectionStart = double.NaN;
+                        area.CursorX.SelectionEnd = double.NaN;
+                    }
+                }
+            }
+        }
+
+        private void traChart_AxisViewChanged(object sender, ViewEventArgs e)
+        {
+           
         }
     }
 }

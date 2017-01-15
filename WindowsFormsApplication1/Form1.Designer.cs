@@ -71,8 +71,10 @@
             this.traChart.TabIndex = 0;
             this.traChart.Text = "chart1";
             this.traChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart1_SelectionRangeChanged);
+            this.traChart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.traChart_AxisViewChanged);
             this.traChart.DragDrop += new System.Windows.Forms.DragEventHandler(this.chart1_DragDrop);
             this.traChart.DragEnter += new System.Windows.Forms.DragEventHandler(this.chart1_DragEnter);
+            this.traChart.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.traChart_KeyPress);
             this.traChart.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseDoubleClick);
             // 
             // chartPanel
@@ -94,6 +96,7 @@
             this.selectedChartInfoTable.Name = "selectedChartInfoTable";
             this.selectedChartInfoTable.Size = new System.Drawing.Size(888, 191);
             this.selectedChartInfoTable.TabIndex = 5;
+            this.selectedChartInfoTable.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.traChart_KeyPress);
             // 
             // mainMenuStrip
             // 
@@ -181,12 +184,12 @@
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(149, 191);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.traChart_KeyPress);
             // 
             // sampleDataFile
             // 
@@ -209,6 +212,7 @@
             this.Name = "MainForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.traChart_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.traChart)).EndInit();
             this.chartPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.selectedChartInfoTable)).EndInit();

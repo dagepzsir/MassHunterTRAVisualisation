@@ -18,13 +18,16 @@ namespace WindowsFormsApplication1
         public Dictionary<string, List<double>> CSVData;
         public List<double> Time = new List<double>();
         public List<Series> DataSeries { get; set; }
-
+        public double SelectionStart { get; set; }
+        public double SelectionEnd { get; set; }
         public TRAData(string filepath, Dictionary<string, List<double>> csvdata, List<double> time, List<Series> series)
         {
             Time = time;
             FilePath = Path.GetDirectoryName(filepath);
             CSVData = csvdata;
             DataSeries = series;
+            SelectionEnd = double.NaN;
+            SelectionStart = double.NaN;
         }
         public void RefreshSeriesColor()
         {
