@@ -120,11 +120,10 @@ namespace WindowsFormsApplication1
             Dictionary<string, Tuple<double, double>> output = new Dictionary<string, Tuple<double, double>>();
             if (SelectionStart.ToString() == double.NaN.ToString())
             {
-                MessageBox.Show(SelectionStart.ToString() + " fent");
+               // MessageBox.Show(SelectionStart.ToString() + " fent" + "NaN = " + double.NaN.ToString());
                 foreach (string key in CSVData.Keys)
                 {
                     output.Add(key, Statistics.MeanStandardDeviation(CSVData[key]));
-                    double mean = Statistics.Mean(CSVData[key]);
                 }
                 return output;
                 
@@ -132,7 +131,7 @@ namespace WindowsFormsApplication1
             else
             {
                 MessageBox.Show(SelectionStart.ToString());
-                return null;
+                return output;
             }
         }
         public double StandardDeviation()
