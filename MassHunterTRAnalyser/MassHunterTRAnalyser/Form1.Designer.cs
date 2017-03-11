@@ -47,12 +47,14 @@
             this.dataFile,
             this.sampleName});
             this.listView1.FullRowSelect = true;
-            this.listView1.Location = new System.Drawing.Point(12, 50);
+            this.listView1.Location = new System.Drawing.Point(12, 27);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(161, 443);
+            this.listView1.Size = new System.Drawing.Size(161, 491);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // dataFile
             // 
@@ -84,7 +86,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openBtn_Click);
             // 
@@ -96,9 +98,12 @@
             // 
             // userControl11
             // 
-            this.userControl11.Location = new System.Drawing.Point(200, 50);
+            this.userControl11.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.userControl11.Location = new System.Drawing.Point(179, 27);
             this.userControl11.Name = "userControl11";
-            this.userControl11.Size = new System.Drawing.Size(571, 412);
+            this.userControl11.Size = new System.Drawing.Size(592, 491);
             this.userControl11.TabIndex = 3;
             // 
             // Form1
