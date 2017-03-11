@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace MassHunterTRAnalyser
 {
-    class SampleData
+    public class SampleData
     {
         public string SampleName { get; private set; }
         public string DataFileName { get; private set; }

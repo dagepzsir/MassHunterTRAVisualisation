@@ -31,6 +31,7 @@ namespace MassHunterTRAnalyser
                     {
                         listView1.Items.Add(new ListViewItem(new string[] {data.DataFileName, data.SampleName }));
                     }
+                    
                 }
             }
         }

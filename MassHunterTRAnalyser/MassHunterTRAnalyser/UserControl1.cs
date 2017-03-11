@@ -17,7 +17,7 @@ namespace MassHunterTRAnalyser
         {
             InitializeComponent();
         }
-        List<SampleData> displayedSamples;
+        public List<SampleData> displayedSamples;
         public void UpdateData()
         {
             if(displayedSamples != null)
@@ -25,21 +25,21 @@ namespace MassHunterTRAnalyser
                 foreach (SampleData sampleData in displayedSamples)
                 {
                     Dictionary<string, Series> series = new Dictionary<string, Series>();
-                    foreach (string element in sampleData.TimeResolvedData[0].Item2.Keys)
-                    {
-                        series.Add(element, new Series(element + "_" + sampleData.DataFileName));
-                    }
                     foreach (var traData in sampleData.TimeResolvedData)
                     {
                         foreach(string element in traData.Item2.Keys)
                         {
-                            if(series.ContainsKey(element) == false)
-                                series.Add(element, new Series(element + "_" + sampleData.DataFileName));
+                            if (series.ContainsKey(element) == false)
+                            {
+                                series.Add(element, new Series(element + " - " + sampleData.SampleName + "(" + sampleData.DataFileName + ")"));
+                                checkedListBox1.Items.Add(element + " - " + sampleData.SampleName + "(" +sampleData.DataFileName + ")");
+                            }
                             series[element].Points.AddXY(traData.Item1, traData.Item2[element]);
                         }
                     }
                 }
             }
         }
+
     }
 }

@@ -36,6 +36,8 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.userControl11 = new MassHunterTRAnalyser.UserControl1();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +49,7 @@
             this.listView1.FullRowSelect = true;
             this.listView1.Location = new System.Drawing.Point(12, 50);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(161, 278);
+            this.listView1.Size = new System.Drawing.Size(161, 443);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -92,11 +94,19 @@
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
+            // userControl11
+            // 
+            this.userControl11.Location = new System.Drawing.Point(200, 50);
+            this.userControl11.Name = "userControl11";
+            this.userControl11.Size = new System.Drawing.Size(571, 412);
+            this.userControl11.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(783, 530);
+            this.Controls.Add(this.userControl11);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -118,6 +128,8 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private UserControl1 userControl11;
     }
 }
 
