@@ -19,7 +19,7 @@ namespace MassHunterTRAnalyser
         }
         Tuple<double, double> currRange = new Tuple<double, double>(0, 0);
         List<SampleData> loadedData;
-        public void UpdateData(ListView loadeddata)
+        public void UpdateData()
         {
             chart1.Enabled = true;
             chart1.Series.Clear();
@@ -27,7 +27,7 @@ namespace MassHunterTRAnalyser
             chart1.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
             checkedListBox1.Items.Clear();
             dataGridView1.Rows.Clear();
-            foreach (ListViewItem selectedItem in loadeddata.SelectedItems)
+            foreach (ListViewItem selectedItem in listView1.SelectedItems)
             {
                 loadedData = ((Form1)this.Parent).selectedBatch.MeasuredData.FindAll(item => item.DataFileName == selectedItem.Text);
                 Dictionary<string, Series> serieses = new Dictionary<string, Series>();
@@ -69,6 +69,7 @@ namespace MassHunterTRAnalyser
 
         private void UserControl1_Load(object sender, EventArgs e)
         {
+            MessageBox.Show(Parent.Parent.Parent.Text);
         }
 
         private void chart1_SelectionRangeChanging(object sender, CursorEventArgs e)
@@ -212,6 +213,11 @@ namespace MassHunterTRAnalyser
                     }
                 }
             }
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

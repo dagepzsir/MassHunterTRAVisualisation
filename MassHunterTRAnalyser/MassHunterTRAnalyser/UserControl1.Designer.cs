@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
@@ -41,6 +41,9 @@
             this.selectedRangeRadio = new System.Windows.Forms.RadioButton();
             this.allRangeRadio = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.dataFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.sampleName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -51,9 +54,9 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(120, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(287, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(613, 95);
+            this.pictureBox1.Size = new System.Drawing.Size(677, 95);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -62,20 +65,20 @@
             this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisX.ScaleView.Zoomable = false;
-            chartArea2.AxisY.MajorGrid.Enabled = false;
-            chartArea2.CursorX.Interval = 0.01D;
-            chartArea2.CursorX.IsUserEnabled = true;
-            chartArea2.CursorX.IsUserSelectionEnabled = true;
-            chartArea2.CursorX.LineWidth = 0;
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.ScaleView.Zoomable = false;
+            chartArea1.AxisY.MajorGrid.Enabled = false;
+            chartArea1.CursorX.Interval = 0.01D;
+            chartArea1.CursorX.IsUserEnabled = true;
+            chartArea1.CursorX.IsUserSelectionEnabled = true;
+            chartArea1.CursorX.LineWidth = 0;
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Enabled = false;
-            this.chart1.Location = new System.Drawing.Point(0, 100);
+            this.chart1.Location = new System.Drawing.Point(167, 100);
             this.chart1.Margin = new System.Windows.Forms.Padding(0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(733, 334);
+            this.chart1.Size = new System.Drawing.Size(797, 334);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
             this.chart1.SelectionRangeChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart1_SelectionRangeChanging);
@@ -84,7 +87,7 @@
             // checkedListBox1
             // 
             this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(0, 3);
+            this.checkedListBox1.Location = new System.Drawing.Point(167, 3);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.Size = new System.Drawing.Size(114, 94);
             this.checkedListBox1.TabIndex = 2;
@@ -102,9 +105,9 @@
             this.SelectionType,
             this.SelectionStart,
             this.SelectionEnd});
-            this.dataGridView1.Location = new System.Drawing.Point(3, 437);
+            this.dataGridView1.Location = new System.Drawing.Point(167, 437);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(444, 115);
+            this.dataGridView1.Size = new System.Drawing.Size(511, 115);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
@@ -137,7 +140,7 @@
             // addSelectionButton
             // 
             this.addSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addSelectionButton.Location = new System.Drawing.Point(453, 437);
+            this.addSelectionButton.Location = new System.Drawing.Point(684, 437);
             this.addSelectionButton.Name = "addSelectionButton";
             this.addSelectionButton.Size = new System.Drawing.Size(118, 23);
             this.addSelectionButton.TabIndex = 4;
@@ -172,17 +175,41 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.allRangeRadio);
             this.groupBox1.Controls.Add(this.selectedRangeRadio);
-            this.groupBox1.Location = new System.Drawing.Point(453, 466);
+            this.groupBox1.Location = new System.Drawing.Point(684, 466);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(135, 69);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Adding options";
             // 
+            // listView1
+            // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.dataFile,
+            this.sampleName});
+            this.listView1.FullRowSelect = true;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(161, 555);
+            this.listView1.TabIndex = 8;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // dataFile
+            // 
+            this.dataFile.Text = "Data File";
+            // 
+            // sampleName
+            // 
+            this.sampleName.Text = "Sample Name";
+            // 
             // UserControl1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.listView1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.addSelectionButton);
             this.Controls.Add(this.dataGridView1);
@@ -190,7 +217,7 @@
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.pictureBox1);
             this.Name = "UserControl1";
-            this.Size = new System.Drawing.Size(733, 555);
+            this.Size = new System.Drawing.Size(964, 555);
             this.Load += new System.EventHandler(this.UserControl1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
@@ -215,5 +242,8 @@
         private System.Windows.Forms.RadioButton selectedRangeRadio;
         private System.Windows.Forms.RadioButton allRangeRadio;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader dataFile;
+        private System.Windows.Forms.ColumnHeader sampleName;
     }
 }

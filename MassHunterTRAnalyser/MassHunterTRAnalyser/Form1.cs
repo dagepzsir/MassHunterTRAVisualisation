@@ -29,7 +29,7 @@ namespace MassHunterTRAnalyser
                     selectedBatch = new Batch(folderBrowserDialog1.SelectedPath);
                     foreach (SampleData data in selectedBatch.MeasuredData)
                     {
-                        listView1.Items.Add(new ListViewItem(new string[] {data.DataFileName, data.SampleName }));
+                        //listView1.Items.Add(new ListViewItem(new string[] {data.DataFileName, data.SampleName }));
                     }
                     
                 }
@@ -38,7 +38,7 @@ namespace MassHunterTRAnalyser
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            userControl11.UpdateData(listView1);
+            userControl11.UpdateData();
         }
     }
 }
