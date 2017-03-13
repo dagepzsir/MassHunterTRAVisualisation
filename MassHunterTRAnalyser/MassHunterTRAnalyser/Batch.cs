@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MassHunterTRAnalyser
 {
-    class Batch
+    public class Batch
     {
         public List<SampleData> MeasuredData { get; set; }
         public Batch(string path)

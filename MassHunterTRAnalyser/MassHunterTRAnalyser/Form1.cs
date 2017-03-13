@@ -18,7 +18,7 @@ namespace MassHunterTRAnalyser
         }
 
         //Local variables
-        static Batch selectedBatch;
+        public  Batch selectedBatch;
 
         private void openBtn_Click(object sender, EventArgs e)
         {
@@ -38,11 +38,7 @@ namespace MassHunterTRAnalyser
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            List<SampleData> selectedSample = new List<SampleData>();
-            if(listView1.SelectedItems.Count > 0)
-                selectedSample.Add(selectedBatch.MeasuredData.Find(item => item.DataFileName == listView1.SelectedItems[0].Text));
-            userControl11.displayedSamples = selectedSample;
-            userControl11.UpdateData();
+            userControl11.UpdateData(listView1);
         }
     }
 }

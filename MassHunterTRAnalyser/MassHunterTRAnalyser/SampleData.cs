@@ -13,11 +13,25 @@ namespace MassHunterTRAnalyser
         public string SampleName { get; private set; }
         public string DataFileName { get; private set; }
         public List<Tuple<double, Dictionary<string, double>>> TimeResolvedData = new List<Tuple<double, Dictionary<string, double>>>();
+        public List<DataSelection> DataSelections = new List<DataSelection>();
         public SampleData(string sampledatapath)
         {
             LoadSampleData(sampledatapath);
         }
-
+        public Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> GetSelectedData()
+        {
+            Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> output = new Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>>();
+            foreach (DataSelection selection in DataSelections)
+            {
+                output.Add(selection, new List<Tuple<double, Dictionary<string, double>>>());
+                foreach (Tuple<double, Dictionary<string, double>> data in TimeResolvedData)
+                {
+                    if (data.Item1 >= selection.Min && data.Item1 <= selection.Max)
+                        output[selection].Add(data);
+                }
+            }
+            return output;
+        }
         private void LoadSampleData(string sampledatapath)
         {
             string datafile = Path.GetFileNameWithoutExtension(sampledatapath) + ".csv";

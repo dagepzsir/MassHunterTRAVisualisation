@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Batch.cs" />
+    <Compile Include="DataSelection.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

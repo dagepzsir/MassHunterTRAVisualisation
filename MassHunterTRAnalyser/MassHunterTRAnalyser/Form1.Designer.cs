@@ -43,14 +43,15 @@
             // 
             // listView1
             // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.dataFile,
             this.sampleName});
             this.listView1.FullRowSelect = true;
             this.listView1.Location = new System.Drawing.Point(12, 27);
-            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(161, 491);
+            this.listView1.Size = new System.Drawing.Size(161, 546);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -71,7 +72,7 @@
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(783, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(924, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -101,16 +102,16 @@
             this.userControl11.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.userControl11.Location = new System.Drawing.Point(179, 27);
+            this.userControl11.Location = new System.Drawing.Point(179, 18);
             this.userControl11.Name = "userControl11";
-            this.userControl11.Size = new System.Drawing.Size(592, 491);
+            this.userControl11.Size = new System.Drawing.Size(733, 555);
             this.userControl11.TabIndex = 3;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(783, 530);
+            this.ClientSize = new System.Drawing.Size(924, 585);
             this.Controls.Add(this.userControl11);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.menuStrip1);
