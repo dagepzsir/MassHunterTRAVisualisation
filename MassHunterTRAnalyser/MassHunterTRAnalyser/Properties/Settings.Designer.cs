@@ -25,22 +25,12 @@ namespace MassHunterTRAnalyser.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>255,0,0</string>
-  <string>0,255,0</string>
-  <string>0,0,255</string>
-  <string>75,0,130</string>
-  <string>139,69,19</string>
-  <string>255,0,255</string>
-  <string>0,255,127</string>
-</ArrayOfString>")]
-        public string[] Colors {
+        public global::System.Collections.Generic.List<MassHunterTRAnalyser.Data_Classes.StandardData> Standards {
             get {
-                return ((string[])(this["Colors"]));
+                return ((global::System.Collections.Generic.List<MassHunterTRAnalyser.Data_Classes.StandardData>)(this["Standards"]));
             }
             set {
-                this["Colors"] = value;
+                this["Standards"] = value;
             }
         }
     }

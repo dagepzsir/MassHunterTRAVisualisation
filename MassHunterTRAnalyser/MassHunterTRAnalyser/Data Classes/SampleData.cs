@@ -8,10 +8,24 @@ using System.Xml.Linq;
 
 namespace MassHunterTRAnalyser
 {
+    public enum SampleType
+    {
+        NotSet,
+        Blank,
+        Standard,
+        Sample
+    }
     public class SampleData
     {
-        public string SampleName { get; private set; }
         public string DataFileName { get; private set; }
+
+        //Can be set
+        public string SampleName { get; set; }
+        //User set parameters
+        public int StandardLevel = -1;
+        public SampleType TypeOfSample = SampleType.NotSet;
+        public string StandardType = null;
+
         public List<Tuple<double, Dictionary<string, double>>> TimeResolvedData = new List<Tuple<double, Dictionary<string, double>>>();
         public List<DataSelection> DataSelections = new List<DataSelection>();
         public SampleData(string sampledatapath)
@@ -31,6 +45,25 @@ namespace MassHunterTRAnalyser
                 }
             }
             return output;
+        }
+        public string SampleTypeString
+        {
+            get
+            {
+                switch (TypeOfSample)
+                {
+                    case SampleType.NotSet:
+                        return "Not set";
+                    case SampleType.Blank:
+                        return "Blank";
+                    case SampleType.Standard:
+                        return "Standard";
+                    case SampleType.Sample:
+                        return "Sample";
+                    default:
+                        return "Not set";
+                }
+            }
         }
         private void LoadSampleData(string sampledatapath)
         {

@@ -19,45 +19,8 @@ namespace MassHunterTRAnalyser
         }
         Tuple<double, double> currRange = new Tuple<double, double>(0, 0);
         List<SampleData> loadedData;
-        public void UpdateData()
-        {
-            chart1.Enabled = true;
-            chart1.Series.Clear();
-            chart1.ChartAreas[0].AxisX.StripLines.Clear();
-            chart1.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
-            checkedListBox1.Items.Clear();
-            dataGridView1.Rows.Clear();
-            foreach (ListViewItem selectedItem in listView1.SelectedItems)
-            {
-                loadedData = ((Form1)this.Parent).selectedBatch.MeasuredData.FindAll(item => item.DataFileName == selectedItem.Text);
-                Dictionary<string, Series> serieses = new Dictionary<string, Series>();
-                foreach (SampleData sampleData in loadedData)
-                {
-                    foreach (var traData in sampleData.TimeResolvedData)
-                    {
-                        //Load measured data into the chart
-                        foreach (string element in traData.Item2.Keys)
-                        {
-                            if (serieses.ContainsKey(element) == false)
-                            {
-                                Series currentSeries = new Series(element + " - " + sampleData.DataFileName);
-                                currentSeries.ChartType = SeriesChartType.Point;
-                                serieses.Add(element, currentSeries);
-                                chart1.Series.Add(serieses.Last().Value);
-                                checkedListBox1.Items.Add(element + " - " + sampleData.DataFileName);
-                                checkedListBox1.SetItemChecked(checkedListBox1.Items.Count - 1, true);
-
-                            }
-                            serieses[element].Points.AddXY(traData.Item1, traData.Item2[element]);
-                        }
-                    }
-                    //load selected areas from sampleData object
-                    loadSelections(sampleData);
-                }
-            }
-
-            
-        }
+        Batch loadedBatch = null;
+        
         private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             //Change the visibility of measored elements
@@ -67,9 +30,11 @@ namespace MassHunterTRAnalyser
                 chart1.Series.FindByName(checkedListBox1.Items[e.Index].ToString()).Enabled = false;
         }
 
-        private void UserControl1_Load(object sender, EventArgs e)
+        public void UserControl1_DataLoaded(object sender, DataLoadedEventArgs e)
         {
-            MessageBox.Show(Parent.Parent.Parent.Text);
+            loadedBatch = e.LoadedBatch;
+            PopulateListBox();
+            UpdateData();
         }
 
         private void chart1_SelectionRangeChanging(object sender, CursorEventArgs e)
@@ -89,7 +54,6 @@ namespace MassHunterTRAnalyser
             }
             
         }
-
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             //Handle selection type change
@@ -133,7 +97,6 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
-
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedCells.Count > 0)
@@ -158,7 +121,6 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
-
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             chart1.ChartAreas[0].AxisX.StripLines.RemoveAt(e.Row.Index);
@@ -167,7 +129,82 @@ namespace MassHunterTRAnalyser
                 sampledata.DataSelections.RemoveAt(e.Row.Index);
             }
         }
+        private void addSelectionButton_Click(object sender, EventArgs e)
+        {
+            foreach (SampleData sample in loadedBatch.MeasuredData)
+            {
+                if (sample.DataFileName != listView1.SelectedItems[0].Text)
+                {
+                    if (loadedData[0].DataSelections.Count > 0)
+                    {
+                        if (allRangeRadio.Checked)
+                            sample.DataSelections = loadedData[0].DataSelections;
+                        else if (selectedRangeRadio.Checked)
+                        {
+                            foreach (DataGridViewRow row in dataGridView1.SelectedRows)
+                            {
+                                sample.DataSelections.Add(loadedData[0].DataSelections[row.Index]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private void listView1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            UpdateData();
+        }
 
+        public void UpdateData()
+        {
+            //Reset GUI
+            resetGUI();
+
+            foreach (ListViewItem selectedItem in listView1.SelectedItems)
+            {
+                loadedData = loadedBatch.MeasuredData.FindAll(item => item.DataFileName == selectedItem.Text);
+                Dictionary<string, Series> serieses = new Dictionary<string, Series>();
+                foreach (SampleData sampleData in loadedData)
+                {
+                    foreach (var traData in sampleData.TimeResolvedData)
+                    {
+                        //Load measured data into the chart
+                        foreach (string element in traData.Item2.Keys)
+                        {
+                            if (serieses.ContainsKey(element) == false)
+                            {
+                                Series currentSeries = new Series(element + " - " + sampleData.DataFileName);
+                                currentSeries.ChartType = SeriesChartType.Point;
+                                serieses.Add(element, currentSeries);
+                                chart1.Series.Add(serieses.Last().Value);
+                                checkedListBox1.Items.Add(element + " - " + sampleData.DataFileName);
+                                checkedListBox1.SetItemChecked(checkedListBox1.Items.Count - 1, true);
+
+                            }
+                            serieses[element].Points.AddXY(traData.Item1, traData.Item2[element]);
+                        }
+                    }
+                    //load selected areas from sampleData object
+                    loadSelections(sampleData);
+                }
+            }
+        }
+
+        public void SaveRegionChanges()
+        {
+
+        }
+        public void PopulateListBox()
+        {
+            if (loadedBatch != null)
+            {
+                listView1.Items.Clear();
+                foreach (SampleData data in loadedBatch.MeasuredData)
+                {
+                    listView1.Items.Add(new ListViewItem(new string[] { data.DataFileName, data.SampleName, data.SampleTypeString }));
+                }
+            }
+        }
         private void loadSelections(SampleData sampledata)
         {
             foreach (DataSelection selection in sampledata.DataSelections)
@@ -195,29 +232,14 @@ namespace MassHunterTRAnalyser
             newLine.StripWidth = Math.Abs(rangeofselection.Item1 - rangeofselection.Item2);
             chart1.ChartAreas[0].AxisX.StripLines.Add(newLine);
         }
-
-        private void addSelectionButton_Click(object sender, EventArgs e)
+        private void resetGUI()
         {
-            foreach (SampleData sample in ((Form1)this.Parent).selectedBatch.MeasuredData)
-            {
-                if (loadedData[0].DataSelections.Count > 0)
-                {
-                    if(allRangeRadio.Checked)
-                        sample.DataSelections = loadedData[0].DataSelections;
-                    else if(selectedRangeRadio.Checked)
-                    {
-                        for(int i = 0;i < dataGridView1.SelectedRows.Count; i++)
-                        {
-                            sample.DataSelections.Add(loadedData[0].DataSelections[i]);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            chart1.Enabled = true;
+            chart1.Series.Clear();
+            chart1.ChartAreas[0].AxisX.StripLines.Clear();
+            chart1.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
+            checkedListBox1.Items.Clear();
+            dataGridView1.Rows.Clear();
         }
     }
 }

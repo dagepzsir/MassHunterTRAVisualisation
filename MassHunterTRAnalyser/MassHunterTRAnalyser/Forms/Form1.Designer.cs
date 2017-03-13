@@ -34,12 +34,14 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.userControl11 = new MassHunterTRAnalyser.UserControl1();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.sampleTypesTab = new System.Windows.Forms.TabPage();
+            this.sampleTypeControl1 = new MassHunterTRAnalyser.SampleTypeControl();
             this.rangesTab = new System.Windows.Forms.TabPage();
+            this.userControl11 = new MassHunterTRAnalyser.UserControl1();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.sampleTypesTab.SuspendLayout();
             this.rangesTab.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,14 +77,6 @@
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
-            // userControl11
-            // 
-            this.userControl11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.userControl11.Location = new System.Drawing.Point(3, 3);
-            this.userControl11.Name = "userControl11";
-            this.userControl11.Size = new System.Drawing.Size(910, 529);
-            this.userControl11.TabIndex = 3;
-            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.sampleTypesTab);
@@ -93,9 +87,11 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(924, 561);
             this.tabControl1.TabIndex = 4;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // sampleTypesTab
             // 
+            this.sampleTypesTab.Controls.Add(this.sampleTypeControl1);
             this.sampleTypesTab.Location = new System.Drawing.Point(4, 22);
             this.sampleTypesTab.Name = "sampleTypesTab";
             this.sampleTypesTab.Padding = new System.Windows.Forms.Padding(3);
@@ -103,6 +99,13 @@
             this.sampleTypesTab.TabIndex = 0;
             this.sampleTypesTab.Text = "Sample Types";
             this.sampleTypesTab.UseVisualStyleBackColor = true;
+            // 
+            // sampleTypeControl1
+            // 
+            this.sampleTypeControl1.Location = new System.Drawing.Point(0, 0);
+            this.sampleTypeControl1.Name = "sampleTypeControl1";
+            this.sampleTypeControl1.Size = new System.Drawing.Size(916, 535);
+            this.sampleTypeControl1.TabIndex = 0;
             // 
             // rangesTab
             // 
@@ -115,6 +118,14 @@
             this.rangesTab.Text = "Sample Sections";
             this.rangesTab.UseVisualStyleBackColor = true;
             // 
+            // userControl11
+            // 
+            this.userControl11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.userControl11.Location = new System.Drawing.Point(3, 3);
+            this.userControl11.Name = "userControl11";
+            this.userControl11.Size = new System.Drawing.Size(910, 529);
+            this.userControl11.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -125,9 +136,11 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
+            this.sampleTypesTab.ResumeLayout(false);
             this.rangesTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -145,6 +158,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage sampleTypesTab;
         private System.Windows.Forms.TabPage rangesTab;
+        private SampleTypeControl sampleTypeControl1;
     }
 }
 

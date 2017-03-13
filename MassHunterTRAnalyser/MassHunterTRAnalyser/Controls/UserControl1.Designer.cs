@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -44,21 +43,11 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.dataFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sampleName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.sampleType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(287, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(677, 95);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // chart1
             // 
@@ -75,10 +64,10 @@
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Enabled = false;
-            this.chart1.Location = new System.Drawing.Point(167, 100);
+            this.chart1.Location = new System.Drawing.Point(228, 0);
             this.chart1.Margin = new System.Windows.Forms.Padding(0);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(797, 334);
+            this.chart1.Size = new System.Drawing.Size(736, 434);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
             this.chart1.SelectionRangeChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart1_SelectionRangeChanging);
@@ -86,10 +75,11 @@
             // 
             // checkedListBox1
             // 
+            this.checkedListBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(167, 3);
+            this.checkedListBox1.Location = new System.Drawing.Point(825, 441);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(114, 94);
+            this.checkedListBox1.Size = new System.Drawing.Size(136, 109);
             this.checkedListBox1.TabIndex = 2;
             this.checkedListBox1.ThreeDCheckBoxes = true;
             this.checkedListBox1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox1_ItemCheck);
@@ -105,9 +95,9 @@
             this.SelectionType,
             this.SelectionStart,
             this.SelectionEnd});
-            this.dataGridView1.Location = new System.Drawing.Point(167, 437);
+            this.dataGridView1.Location = new System.Drawing.Point(228, 437);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(511, 115);
+            this.dataGridView1.Size = new System.Drawing.Size(450, 115);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
@@ -188,14 +178,16 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.dataFile,
-            this.sampleName});
+            this.sampleName,
+            this.sampleType});
             this.listView1.FullRowSelect = true;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(161, 555);
+            this.listView1.Size = new System.Drawing.Size(225, 555);
             this.listView1.TabIndex = 8;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged_1);
             // 
             // dataFile
             // 
@@ -204,6 +196,12 @@
             // sampleName
             // 
             this.sampleName.Text = "Sample Name";
+            this.sampleName.Width = 79;
+            // 
+            // sampleType
+            // 
+            this.sampleType.Text = "Sample Type";
+            this.sampleType.Width = 82;
             // 
             // UserControl1
             // 
@@ -215,11 +213,8 @@
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.chart1);
-            this.Controls.Add(this.pictureBox1);
             this.Name = "UserControl1";
             this.Size = new System.Drawing.Size(964, 555);
-            this.Load += new System.EventHandler(this.UserControl1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -229,8 +224,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.DataGridView dataGridView1;
@@ -245,5 +238,6 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader dataFile;
         private System.Windows.Forms.ColumnHeader sampleName;
+        private System.Windows.Forms.ColumnHeader sampleType;
     }
 }

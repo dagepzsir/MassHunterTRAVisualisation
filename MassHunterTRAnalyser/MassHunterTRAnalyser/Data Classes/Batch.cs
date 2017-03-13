@@ -34,7 +34,6 @@ namespace MassHunterTRAnalyser
             string xmlns = "{Acquisition}";
             var elements = from element in acqMethod.Elements(xmlns + "IcpmsElement")
                            select element;
-            int colorCount = Utils.GetColorsFromSettings().Count;
             elementCount = elements.Count();
 
             /*if(elementCount > colorCount)
