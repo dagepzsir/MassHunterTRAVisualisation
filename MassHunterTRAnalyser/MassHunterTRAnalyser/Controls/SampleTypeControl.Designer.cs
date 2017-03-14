@@ -54,10 +54,12 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(545, 436);
+            this.dataGridView1.Size = new System.Drawing.Size(545, 433);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEnter);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
+            this.dataGridView1.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridView1_CurrentCellDirtyStateChanged);
+            this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             // 
             // sampleDataFile
             // 
@@ -92,8 +94,6 @@
             // standardType
             // 
             this.standardType.HeaderText = "Standard Type";
-            this.standardType.Items.AddRange(new object[] {
-            "NIST 614"});
             this.standardType.Name = "standardType";
             this.standardType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.standardType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;

@@ -25,12 +25,13 @@ namespace MassHunterTRAnalyser.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.List<MassHunterTRAnalyser.Data_Classes.StandardData> Standards {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StandardData {
             get {
-                return ((global::System.Collections.Generic.List<MassHunterTRAnalyser.Data_Classes.StandardData>)(this["Standards"]));
+                return ((string)(this["StandardData"]));
             }
             set {
-                this["Standards"] = value;
+                this["StandardData"] = value;
             }
         }
     }

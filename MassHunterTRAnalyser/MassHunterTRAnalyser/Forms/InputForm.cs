@@ -18,5 +18,17 @@ namespace MassHunterTRAnalyser.Forms
             this.Text = text;
         }
         public string InputText { get { return textBox1.Text; } }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
     }
 }

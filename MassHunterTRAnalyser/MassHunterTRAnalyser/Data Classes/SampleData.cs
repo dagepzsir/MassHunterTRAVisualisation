@@ -22,15 +22,22 @@ namespace MassHunterTRAnalyser
         //Can be set
         public string SampleName { get; set; }
         //User set parameters
-        public int StandardLevel = -1;
-        public SampleType TypeOfSample = SampleType.NotSet;
-        public string StandardType = null;
+        public int StandardLevel  { get; set; }
+        public SampleType TypeOfSample { get; set; }
+        public string StandardType { get; set; }
+        public List<DataSelection> DataSelections { get; set; }
 
         public List<Tuple<double, Dictionary<string, double>>> TimeResolvedData = new List<Tuple<double, Dictionary<string, double>>>();
-        public List<DataSelection> DataSelections = new List<DataSelection>();
+        public bool ShouldSerializeTimeResolvedData()
+        {
+            return false;
+        }
+
         public SampleData(string sampledatapath)
         {
             LoadSampleData(sampledatapath);
+            
+            DataSelections = new List<DataSelection>();
         }
         public Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> GetSelectedData()
         {
