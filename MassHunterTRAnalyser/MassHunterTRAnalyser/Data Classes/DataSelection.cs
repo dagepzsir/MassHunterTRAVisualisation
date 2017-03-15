@@ -26,19 +26,26 @@ namespace MassHunterTRAnalyser
 
         public double Min { get { return Math.Min(RangeOfSelection.Item1, RangeOfSelection.Item2); } }
         public double Max { get { return Math.Max(RangeOfSelection.Item2, RangeOfSelection.Item2); } }
-        public string SelectionTypeToString()
+        public string SelectionTypeToString
         {
-            switch (SelectionType)
+            get
             {
-                case SelectionType.None:
-                    return "None";
-                case SelectionType.Background:
-                    return "Background";
-                case SelectionType.Data:
-                    return "Data";
-                default:
-                    return "None";
+                switch (SelectionType)
+                {
+                    case SelectionType.None:
+                        return "None";
+                    case SelectionType.Background:
+                        return "Background";
+                    case SelectionType.Data:
+                        return "Data";
+                    default:
+                        return "None";
+                }
             }
+        }
+        public bool ShouldSerializeSelectionTypeToString()
+        {
+            return false;
         }
     }
 }

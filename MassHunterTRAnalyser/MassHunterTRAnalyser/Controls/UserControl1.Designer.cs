@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -44,6 +45,7 @@
             this.dataFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sampleName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sampleType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -64,10 +66,13 @@
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Enabled = false;
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(228, 0);
             this.chart1.Margin = new System.Windows.Forms.Padding(0);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(736, 434);
+            this.chart1.SuppressExceptions = true;
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
             this.chart1.SelectionRangeChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chart1_SelectionRangeChanging);
@@ -130,7 +135,7 @@
             // addSelectionButton
             // 
             this.addSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addSelectionButton.Location = new System.Drawing.Point(684, 437);
+            this.addSelectionButton.Location = new System.Drawing.Point(684, 460);
             this.addSelectionButton.Name = "addSelectionButton";
             this.addSelectionButton.Size = new System.Drawing.Size(118, 23);
             this.addSelectionButton.TabIndex = 4;
@@ -141,7 +146,7 @@
             // selectedRangeRadio
             // 
             this.selectedRangeRadio.AutoSize = true;
-            this.selectedRangeRadio.Location = new System.Drawing.Point(12, 42);
+            this.selectedRangeRadio.Location = new System.Drawing.Point(12, 40);
             this.selectedRangeRadio.Name = "selectedRangeRadio";
             this.selectedRangeRadio.Size = new System.Drawing.Size(117, 17);
             this.selectedRangeRadio.TabIndex = 5;
@@ -165,9 +170,9 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.allRangeRadio);
             this.groupBox1.Controls.Add(this.selectedRangeRadio);
-            this.groupBox1.Location = new System.Drawing.Point(684, 466);
+            this.groupBox1.Location = new System.Drawing.Point(684, 489);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(135, 69);
+            this.groupBox1.Size = new System.Drawing.Size(135, 63);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Adding options";
@@ -203,10 +208,23 @@
             this.sampleType.Text = "Sample Type";
             this.sampleType.Width = 82;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(684, 437);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(69, 17);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "Logscale";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // UserControl1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.addSelectionButton);
@@ -220,6 +238,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -239,5 +258,6 @@
         private System.Windows.Forms.ColumnHeader dataFile;
         private System.Windows.Forms.ColumnHeader sampleName;
         private System.Windows.Forms.ColumnHeader sampleType;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

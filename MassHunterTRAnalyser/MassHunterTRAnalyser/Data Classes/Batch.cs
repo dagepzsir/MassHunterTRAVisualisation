@@ -21,17 +21,20 @@ namespace MassHunterTRAnalyser
         private void LoadFromFile(string folderpath)
         {
             List<string> dataFiles = Directory.EnumerateDirectories(folderpath, "*.d").ToList();
-            MeasuredData = new List<SampleData>();
+
             //Load acq data
             string analysisFile = Path.Combine(folderpath, "analysis.json");
             if (File.Exists(analysisFile))
             {
                 List<SampleData> storedData;
+
+                //Load user set sample options
                 using (StreamReader reader = new StreamReader(analysisFile))
                 {
                     storedData = JsonConvert.DeserializeObject<List<SampleData>>(reader.ReadToEnd());
                 }
                 
+                //Read acq data from MassHunter files
                 foreach (SampleData data in storedData)
                 {
                     string datafilepath = dataFiles.Find(item => item.Contains(data.DataFileName));
@@ -41,6 +44,8 @@ namespace MassHunterTRAnalyser
             }
             else
             {
+                MeasuredData = new List<SampleData>();
+
                 foreach (string dataFileFolder in dataFiles)
                 {
                     MeasuredData.Add(new SampleData(dataFileFolder));

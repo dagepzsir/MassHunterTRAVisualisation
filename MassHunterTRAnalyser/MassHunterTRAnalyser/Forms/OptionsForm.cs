@@ -17,10 +17,11 @@ namespace MassHunterTRAnalyser.Forms
         public OptionsForm(List<StandardData> storedstandards)
         {
             InitializeComponent();
+            //Load standards from MainForm
             standardEditorControl1.storedStandards = storedstandards;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void acceptButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             Properties.Settings.Default.StandardData = JsonConvert.SerializeObject(standardEditorControl1.storedStandards);
@@ -30,6 +31,7 @@ namespace MassHunterTRAnalyser.Forms
 
         private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //IF user left empty cells prompt warning
             if(standardEditorControl1.HasEmptyCell)
             {
                 if(MessageBox.Show("The elements concentrations, ratios will not be saved where you left empty cells! Do you want to close this window?", "Empty Cells", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) ==  DialogResult.No)

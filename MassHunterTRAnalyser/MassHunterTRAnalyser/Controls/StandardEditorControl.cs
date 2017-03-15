@@ -55,36 +55,17 @@ namespace MassHunterTRAnalyser.Controls
             }
         }
         private StandardData selectedStandard;
+        #region Events
         private void StandardEditorControl_Load(object sender, EventArgs e)
         {
-            foreach (StandardData stdData in ((Parent as OptionsForm).Owner as Form1).StoredStandards)
+            //Populate listview with stored standards
+            foreach (StandardData stdData in storedStandards)
             {
                 listView1.Items.Add(stdData.StandardName, stdData.StandardName, "");
             }
 
             if(listView1.Items.Count > 0)
                 listView1.Items[0].Selected = true;
-        }
-        private void loadStanradData()
-        {
-            //Clear previous data
-            elementDataGridView.Rows.Clear();
-            isotopeRatioDataGridView.Rows.Clear();
-
-            if (selectedStandard != null)
-            {
-                //Populate element dataGridView
-                foreach (string key in selectedStandard.ElementConcentrations.Keys)
-                {
-                    elementDataGridView.Rows.Add(key, selectedStandard.ElementConcentrations[key].Item1, selectedStandard.ElementConcentrations[key].Item2);
-                }
-
-                //Populate isotope ratio datagridview
-                foreach (string key in selectedStandard.IsotopeRatios.Keys)
-                {
-                    isotopeRatioDataGridView.Rows.Add(key, selectedStandard.IsotopeRatios[key].Item1, selectedStandard.IsotopeRatios[key].Item2, selectedStandard.IsotopeRatios[key].Item3);
-                }
-            }
         }
         private void addStdButton_Click(object sender, EventArgs e)
         {
@@ -122,17 +103,18 @@ namespace MassHunterTRAnalyser.Controls
         {
             elementDataGridView.Enabled = true;
             isotopeRatioDataGridView.Enabled = true;
+            //Load selected standard
             if (listView1.SelectedIndices.Count > 0)
-            {
                 selectedStandard = storedStandards[listView1.SelectedIndices[0]];
-            }
             else
                 selectedStandard = null;
+
             loadStanradData();
         }
 
         private void elementDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
+            //Fix combobox behaviour
             if (e.RowIndex > -1 && ((DataGridView)sender).Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
             {
                 ((DataGridView)sender).BeginEdit(true);
@@ -143,11 +125,11 @@ namespace MassHunterTRAnalyser.Controls
         {
             if (e.RowIndex > -1 && e.ColumnIndex > -1)
             {
-                if (elementDataGridView.Rows[e.RowIndex].Cells[0].Value != null && elementDataGridView.Rows[e.RowIndex].Cells[1].Value != null && elementDataGridView.Rows[e.RowIndex].Cells[2].Value != null)
+                //If all cells filled store element data
+                if (elementDataGridView[0, e.RowIndex].Value != null && elementDataGridView[1, e.RowIndex].Value != null && elementDataGridView[2, e.RowIndex].Value != null)
                 {
-
-                    string key = elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    Tuple<double, string> data = new Tuple<double, string>(Convert.ToDouble(elementDataGridView.Rows[e.RowIndex].Cells[1].Value), elementDataGridView.Rows[e.RowIndex].Cells[2].Value.ToString());
+                    string key = elementDataGridView[0, e.RowIndex].Value.ToString();
+                    Tuple<double, string> data = new Tuple<double, string>(Convert.ToDouble(elementDataGridView[1, e.RowIndex].Value), elementDataGridView[2, e.RowIndex].Value.ToString());
                     if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
                     {
                         selectedStandard.ElementConcentrations[key] = data;
@@ -157,10 +139,23 @@ namespace MassHunterTRAnalyser.Controls
                         selectedStandard.ElementConcentrations.Add(key, data);
                     }
                 }
+                if(isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
+                {
+                    string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    Tuple<int, int, double> data = new Tuple<int, int, double>(Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
+                    if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
+                    {
+                        selectedStandard.IsotopeRatios[key] = data;
+                    }
+                    else
+                    {
+                        selectedStandard.IsotopeRatios.Add(key, data);
+                    }
+                }
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void removeStdBurron_Click(object sender, EventArgs e)
         {
             int indexRemoved = listView1.SelectedIndices[0];
             storedStandards.Remove(selectedStandard);
@@ -177,6 +172,29 @@ namespace MassHunterTRAnalyser.Controls
                 isotopeRatioDataGridView.Rows.Clear();
             }
             
+        }
+#endregion
+
+        private void loadStanradData()
+        {
+            //Clear previous data
+            elementDataGridView.Rows.Clear();
+            isotopeRatioDataGridView.Rows.Clear();
+
+            if (selectedStandard != null)
+            {
+                //Populate element dataGridView
+                foreach (string key in selectedStandard.ElementConcentrations.Keys)
+                {
+                    elementDataGridView.Rows.Add(key, selectedStandard.ElementConcentrations[key].Item1, selectedStandard.ElementConcentrations[key].Item2);
+                }
+
+                //Populate isotope ratio datagridview
+                foreach (string key in selectedStandard.IsotopeRatios.Keys)
+                {
+                    isotopeRatioDataGridView.Rows.Add(key, selectedStandard.IsotopeRatios[key].Item1, selectedStandard.IsotopeRatios[key].Item2, selectedStandard.IsotopeRatios[key].Item3);
+                }
+            }
         }
     }
 }

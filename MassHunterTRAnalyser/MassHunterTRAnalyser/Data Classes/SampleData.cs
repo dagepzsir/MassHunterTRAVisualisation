@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,26 +20,37 @@ namespace MassHunterTRAnalyser
     {
         public string DataFileName { get; set; }
 
-        //Can be set
-        public string SampleName { get; set; }
         //User set parameters
+        public string SampleName { get; set; }
         public int StandardLevel  { get; set; }
         public SampleType TypeOfSample { get; set; }
         public string StandardType { get; set; }
         public List<DataSelection> DataSelections { get; set; }
 
         public List<Tuple<double, Dictionary<string, double>>> TimeResolvedData = new List<Tuple<double, Dictionary<string, double>>>();
+       
+        //Required for JsonSerializer
         public bool ShouldSerializeTimeResolvedData()
         {
             return false;
         }
         public SampleData() { }
+
+        /// <summary>
+        /// Use to initialize new SampleData, in the case of compleatly new data never opened with this software
+        /// </summary>
+        /// <param name="sampledatapath">Folder containing the tabulated measurement data</param>
         public SampleData(string sampledatapath)
         {
-            LoadMeasuredSampleData(sampledatapath, false);
-            
+            //Set to false to load NEW acq data (new batch file which were never opened with this software)
+            LoadMeasuredSampleData(sampledatapath, false);       
             DataSelections = new List<DataSelection>();
         }
+
+        /// <summary>
+        /// Returns a dictionary containing the selected portions of the data series
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> GetSelectedData()
         {
             Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> output = new Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>>();
@@ -51,8 +63,13 @@ namespace MassHunterTRAnalyser
                         output[selection].Add(data);
                 }
             }
+            
             return output;
         }
+
+        /// <summary>
+        /// Returns the type of the sample in string format
+        /// </summary>
         public string SampleTypeString
         {
             get
@@ -72,6 +89,12 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
+
+        /// <summary>
+        /// Load sample from file
+        /// </summary>
+        /// <param name="sampledatapath">Folder containing the tabulated acq. data</param>
+        /// <param name="alreadysaved">Set to <b>true</b> to read newly acquired data (never analysed before). Set to <b>false/b> if there is a save file for it</param>
         public void LoadMeasuredSampleData(string sampledatapath, bool alreadysaved)
         {
             string datafile = Path.GetFileNameWithoutExtension(sampledatapath) + ".csv";
@@ -115,9 +138,9 @@ namespace MassHunterTRAnalyser
                         Dictionary<string, double> measuredIntensities = new Dictionary<string, double>();
                         for (int i = 1; i < currentLine.Length; i++)
                         {
-                            measuredIntensities.Add(header[i], Convert.ToDouble(currentLine[i]));
+                            measuredIntensities.Add(header[i], Convert.ToDouble(currentLine[i], CultureInfo.CreateSpecificCulture("en-GB")));
                         }
-                        data = new Tuple<double, Dictionary<string, double>>(Convert.ToDouble(currentLine[0]), measuredIntensities);
+                        data = new Tuple<double, Dictionary<string, double>>(Convert.ToDouble(currentLine[0], CultureInfo.CreateSpecificCulture("en-GB")), measuredIntensities);
                         csvData.Add(data);
                     }
                 }

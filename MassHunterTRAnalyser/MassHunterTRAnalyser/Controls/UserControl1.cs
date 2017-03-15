@@ -18,16 +18,17 @@ namespace MassHunterTRAnalyser
             InitializeComponent();
         }
         Tuple<double, double> currRange = new Tuple<double, double>(0, 0);
-        List<SampleData> loadedData;
+        SampleData selectedSample;
         Batch loadedBatch = null;
-        
+        #region Events
         private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            //Change the visibility of measored elements
+            //Change the visibility of measured elements
             if(e.NewValue == CheckState.Checked)
                 chart1.Series.FindByName(checkedListBox1.Items[e.Index].ToString()).Enabled = true;
             else
                 chart1.Series.FindByName(checkedListBox1.Items[e.Index].ToString()).Enabled = false;
+            chart1.ChartAreas[0].RecalculateAxesScale();
         }
 
         public void UserControl1_DataLoaded(object sender, DataLoadedEventArgs e)
@@ -48,16 +49,13 @@ namespace MassHunterTRAnalyser
             //Add the selected range to the chart and datagridview, store the area in the corresponding sampledata object
             addStripeLineToChart(MassHunterTRAnalyser.SelectionType.None, currRange);
             dataGridView1.Rows.Add(chart1.ChartAreas[0].AxisX.StripLines.Count, "None", currRange.Item1, currRange.Item2);
-            foreach (SampleData sampledata in loadedData)
-            {
-                sampledata.DataSelections.Add(new DataSelection(chart1.ChartAreas[0].AxisX.StripLines.Count.ToString(), currRange, MassHunterTRAnalyser.SelectionType.None));
-            }
+            selectedSample.DataSelections.Add(new DataSelection(chart1.ChartAreas[0].AxisX.StripLines.Count.ToString(), currRange, MassHunterTRAnalyser.SelectionType.None));
             
         }
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             //Handle selection type change
-            MassHunterTRAnalyser.SelectionType selectedType = MassHunterTRAnalyser.SelectionType.None;
+            SelectionType selectedType = MassHunterTRAnalyser.SelectionType.None;
             if(e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
                 StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
@@ -87,14 +85,11 @@ namespace MassHunterTRAnalyser
                 chart1.ChartAreas[0].CursorX.Position = selectedLine.IntervalOffset + selectedLine.StripWidth;
             }
 
-            //Store selectedd areas in the SampleData objects for later use (maybe will change to store actual measured data aswell)
+            //Store selected areas in the SampleData objects for later use
             if (e.RowIndex > -1)
             {
-                foreach (SampleData sampledata in loadedData)
-                {
-                    sampledata.DataSelections[e.RowIndex].RangeOfSelection = new Tuple<double, double>(Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
-                    sampledata.DataSelections[e.RowIndex].SelectionType = selectedType;
-                }
+                selectedSample.DataSelections[e.RowIndex].RangeOfSelection = new Tuple<double, double>(Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
+                selectedSample.DataSelections[e.RowIndex].SelectionType = selectedType;
             }
         }
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -103,7 +98,7 @@ namespace MassHunterTRAnalyser
             {
                 if (dataGridView1.SelectedCells[0].RowIndex > -1)
                 {
-                    //Deselect all selection
+                    //Deselect all of the selections
                     foreach (StripLine line in chart1.ChartAreas[0].AxisX.StripLines)
                     {
                         line.BorderWidth = 0;
@@ -123,27 +118,28 @@ namespace MassHunterTRAnalyser
         }
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
+            //Remove row from database
             chart1.ChartAreas[0].AxisX.StripLines.RemoveAt(e.Row.Index);
-            foreach (SampleData sampledata in loadedData)
-            {
-                sampledata.DataSelections.RemoveAt(e.Row.Index);
-            }
+            selectedSample.DataSelections.RemoveAt(e.Row.Index);
         }
         private void addSelectionButton_Click(object sender, EventArgs e)
         {
+            //Add selected ranges to all samples
             foreach (SampleData sample in loadedBatch.MeasuredData)
             {
+                //Dont add to the selected sample
                 if (sample.DataFileName != listView1.SelectedItems[0].Text)
                 {
-                    if (loadedData[0].DataSelections.Count > 0)
+                    //Add only if there are selected ranges
+                    if (selectedSample.DataSelections.Count > 0)
                     {
                         if (allRangeRadio.Checked)
-                            sample.DataSelections = loadedData[0].DataSelections;
+                            sample.DataSelections = selectedSample.DataSelections;
                         else if (selectedRangeRadio.Checked)
                         {
                             foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                             {
-                                sample.DataSelections.Add(loadedData[0].DataSelections[row.Index]);
+                                sample.DataSelections.Add(selectedSample.DataSelections[row.Index]);
                             }
                         }
                     }
@@ -154,7 +150,15 @@ namespace MassHunterTRAnalyser
         {
             UpdateData();
         }
-
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            chart1.ChartAreas[0].AxisY.IsLogarithmic = checkBox1.Checked;
+            if (checkBox1.Checked)
+                chart1.ChartAreas[0].AxisY.Minimum = 100;
+            else
+                chart1.ChartAreas[0].AxisY.Minimum = 0;
+        }
+        #endregion
         public void UpdateData()
         {
             //Reset GUI
@@ -162,37 +166,30 @@ namespace MassHunterTRAnalyser
 
             foreach (ListViewItem selectedItem in listView1.SelectedItems)
             {
-                loadedData = loadedBatch.MeasuredData.FindAll(item => item.DataFileName == selectedItem.Text);
+                selectedSample = loadedBatch.MeasuredData.Find(item => item.DataFileName == selectedItem.Text);
                 Dictionary<string, Series> serieses = new Dictionary<string, Series>();
-                foreach (SampleData sampleData in loadedData)
+                foreach (var traData in selectedSample.TimeResolvedData)
                 {
-                    foreach (var traData in sampleData.TimeResolvedData)
+                    //Load measured data into the chart
+                    foreach (string element in traData.Item2.Keys)
                     {
-                        //Load measured data into the chart
-                        foreach (string element in traData.Item2.Keys)
+                        if (serieses.ContainsKey(element) == false)
                         {
-                            if (serieses.ContainsKey(element) == false)
-                            {
-                                Series currentSeries = new Series(element + " - " + sampleData.DataFileName);
-                                currentSeries.ChartType = SeriesChartType.Point;
-                                serieses.Add(element, currentSeries);
-                                chart1.Series.Add(serieses.Last().Value);
-                                checkedListBox1.Items.Add(element + " - " + sampleData.DataFileName);
-                                checkedListBox1.SetItemChecked(checkedListBox1.Items.Count - 1, true);
+                            Series currentSeries = new Series(element + " - " + selectedSample.DataFileName);
+                            currentSeries.ChartType = SeriesChartType.Line;
+                            
+                            serieses.Add(element, currentSeries);
+                            chart1.Series.Add(serieses.Last().Value);
+                            checkedListBox1.Items.Add(element + " - " + selectedSample.DataFileName);
+                            checkedListBox1.SetItemChecked(checkedListBox1.Items.Count - 1, true);
 
-                            }
-                            serieses[element].Points.AddXY(traData.Item1, traData.Item2[element]);
                         }
+                        serieses[element].Points.AddXY(traData.Item1, traData.Item2[element]);
                     }
-                    //load selected areas from sampleData object
-                    loadSelections(sampleData);
                 }
+                //load selected areas from sampleData object
+                loadSelections(selectedSample);
             }
-        }
-
-        public void SaveRegionChanges()
-        {
-
         }
         public void PopulateListBox()
         {
@@ -209,7 +206,7 @@ namespace MassHunterTRAnalyser
         {
             foreach (DataSelection selection in sampledata.DataSelections)
             {
-                dataGridView1.Rows.Add(selection.Name, selection.SelectionTypeToString(), selection.RangeOfSelection.Item1, selection.RangeOfSelection.Item2);
+                dataGridView1.Rows.Add(selection.Name, selection.SelectionTypeToString, selection.RangeOfSelection.Item1, selection.RangeOfSelection.Item2);
                 addStripeLineToChart(selection.SelectionType, selection.RangeOfSelection);
             }
         }
@@ -241,5 +238,6 @@ namespace MassHunterTRAnalyser
             checkedListBox1.Items.Clear();
             dataGridView1.Rows.Clear();
         }
+
     }
 }

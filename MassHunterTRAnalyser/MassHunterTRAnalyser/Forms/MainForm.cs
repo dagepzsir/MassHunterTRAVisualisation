@@ -16,9 +16,9 @@ using Newtonsoft.Json.Converters;
 
 namespace MassHunterTRAnalyser
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -33,14 +33,17 @@ namespace MassHunterTRAnalyser
             if (handler != null)
                 handler(this, e);
         }
+
+        #region FormEvents
         private void openBtn_Click(object sender, EventArgs e)
         {
             if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 if(folderBrowserDialog1.SelectedPath.Contains(".b"))
                 {
+                    //Load selected batch from disk
                     selectedBatch = new Batch(folderBrowserDialog1.SelectedPath);
-
+                    //Trigger DataLoaded event
                     OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
                     saveToolStripMenuItem.Enabled = true;
                 }
@@ -53,6 +56,7 @@ namespace MassHunterTRAnalyser
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Wire in DatLoaded event handlers from controls
             this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
             this.DataLoaded += userControl11.UserControl1_DataLoaded;
 
@@ -65,10 +69,9 @@ namespace MassHunterTRAnalyser
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //Populate range selection listbox of tab opened
             if(tabControl1.SelectedIndex == 1)
-            {
                 userControl11.PopulateListBox();
-            }
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -81,12 +84,13 @@ namespace MassHunterTRAnalyser
         {
             saveWork();
         }
+        #endregion
 
         private void saveWork()
-        {
-            
+        {    
             using (StreamWriter sw = new StreamWriter(Path.Combine(folderBrowserDialog1.SelectedPath, "analysis.json"), false))
             {
+                //Serialize sample data to a json and save it to ~\analysis.json
                 string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
                 sw.WriteLine(serialized);
             }

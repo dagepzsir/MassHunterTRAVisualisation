@@ -20,6 +20,14 @@ namespace MassHunterTRAnalyser
 
         Batch loadedBatch;
         List<StandardData> StoredStandards;
+        #region Events
+        public void SampleTypeControl_DataLoaded(object sender, DataLoadedEventArgs e)
+        {
+            loadedBatch = e.LoadedBatch;
+            StoredStandards = e.StoredStandards;
+            loadStandardNames();
+            loadSampleData();
+        }
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)
@@ -40,28 +48,36 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
-        private void SampleTypeControl_Load(object sender, EventArgs e)
+        private void dataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            
-        }
-
-
-        public void SampleTypeControl_DataLoaded(object sender, DataLoadedEventArgs e)
-        {
-            loadedBatch = e.LoadedBatch;
-            StoredStandards = e.StoredStandards;
-            loadStandardNames();
-            loadSampleData();
-        }
-
-        private void loadStandardNames()
-        {
-            foreach (StandardData standard in StoredStandards)
+            //Fix combobox behaviour
+            if (e.RowIndex > -1 && dataGridView1.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
             {
-                (dataGridView1.Columns[4] as DataGridViewComboBoxColumn).Items.Add(standard.StandardName);
+                if (dataGridView1[e.ColumnIndex, e.RowIndex].Style.BackColor == dataGridView1[e.ColumnIndex, e.RowIndex].OwningColumn.DefaultCellStyle.BackColor)
+                {
+                    dataGridView1.BeginEdit(true);
+                    ((ComboBox)dataGridView1.EditingControl).DroppedDown = true;
+                }
             }
         }
-
+        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            if (dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString() != "Standard")
+            {
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], false);
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], false);
+            }
+            else
+            {
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], true);
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], true);
+            }
+        }
+        private void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            //Fix combobox behaviour
+            dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
         private void enableCell(DataGridViewCell cell, bool enabled)
         {
             if(cell is DataGridViewComboBoxCell)
@@ -106,17 +122,13 @@ namespace MassHunterTRAnalyser
             }
             
         }
-
-        public void SaveTypeChanges()
-        {
-
-        }
+        #endregion
 
         private void updateSampleData(int index)
         {
             SampleData changedSample = loadedBatch.MeasuredData[index];
             SampleType sampleType = SampleType.NotSet;
-            switch (dataGridView1.Rows[index].Cells[2].Value.ToString())
+            switch (dataGridView1[2, index].Value.ToString())
             {
                 case "Not set":
                     sampleType = SampleType.NotSet;
@@ -131,11 +143,11 @@ namespace MassHunterTRAnalyser
                     sampleType = SampleType.Standard;
                     break;
             }
-            changedSample.SampleName = dataGridView1.Rows[index].Cells[1].Value.ToString();
+            changedSample.SampleName = dataGridView1[1, index].Value.ToString();
             changedSample.TypeOfSample = sampleType;
-            changedSample.StandardLevel = int.Parse(dataGridView1.Rows[index].Cells[3].Value.ToString());
-            if (dataGridView1.Rows[index].Cells[4].Value != null)
-                changedSample.StandardType = dataGridView1.Rows[index].Cells[4].Value.ToString();
+            changedSample.StandardLevel = int.Parse(dataGridView1[3, index].Value.ToString());
+            if (dataGridView1[4, index].Value != null)
+                changedSample.StandardType = dataGridView1[4, index].Value.ToString();
             else
                 changedSample.StandardType = "";
         }
@@ -145,7 +157,6 @@ namespace MassHunterTRAnalyser
             {
                 foreach (SampleData sampleData in loadedBatch.MeasuredData)
                 {
-
                     dataGridView1.Rows.Add(sampleData.DataFileName, sampleData.SampleName, sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
                     updateSampleData(dataGridView1.Rows.Count - 1);
                 }
@@ -155,38 +166,14 @@ namespace MassHunterTRAnalyser
                 MessageBox.Show("Nothing loaded!");
             }
         }
-
-
-        //Enable one-click enter to combobox
-        private void dataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)
+        private void loadStandardNames()
         {
-            if(e.RowIndex > -1 && dataGridView1.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
+            foreach (StandardData standard in StoredStandards)
             {
-                if (dataGridView1[e.ColumnIndex, e.RowIndex].Style.BackColor == dataGridView1[e.ColumnIndex, e.RowIndex].OwningColumn.DefaultCellStyle.BackColor)
-                {
-                    dataGridView1.BeginEdit(true);
-                    ((ComboBox)dataGridView1.EditingControl).DroppedDown = true;
-                }
+                (dataGridView1.Columns[4] as DataGridViewComboBoxColumn).Items.Add(standard.StandardName);
             }
         }
 
-        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            if (dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString() != "Standard")
-            {
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], false);
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], false);
-            }
-            else
-            {
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], true);
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], true);
-            }
-        }
 
-        private void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
-        }
     }
 }
