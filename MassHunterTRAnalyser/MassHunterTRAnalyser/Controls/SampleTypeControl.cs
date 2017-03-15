@@ -146,7 +146,7 @@ namespace MassHunterTRAnalyser
                 foreach (SampleData sampleData in loadedBatch.MeasuredData)
                 {
 
-                    dataGridView1.Rows.Add(sampleData.DataFileName, sampleData.SampleName, "Sample", -1, null);
+                    dataGridView1.Rows.Add(sampleData.DataFileName, sampleData.SampleName, sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
                     updateSampleData(dataGridView1.Rows.Count - 1);
                 }
             }

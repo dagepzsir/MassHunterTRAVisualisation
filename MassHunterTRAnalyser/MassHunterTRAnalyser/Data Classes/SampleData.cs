@@ -10,14 +10,14 @@ namespace MassHunterTRAnalyser
 {
     public enum SampleType
     {
-        NotSet,
-        Blank,
-        Standard,
-        Sample
+        NotSet = 0,
+        Blank = 1,
+        Standard = 2,
+        Sample = 3
     }
     public class SampleData
     {
-        public string DataFileName { get; private set; }
+        public string DataFileName { get; set; }
 
         //Can be set
         public string SampleName { get; set; }
@@ -32,10 +32,10 @@ namespace MassHunterTRAnalyser
         {
             return false;
         }
-
+        public SampleData() { }
         public SampleData(string sampledatapath)
         {
-            LoadSampleData(sampledatapath);
+            LoadMeasuredSampleData(sampledatapath, false);
             
             DataSelections = new List<DataSelection>();
         }
@@ -72,21 +72,26 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
-        private void LoadSampleData(string sampledatapath)
+        public void LoadMeasuredSampleData(string sampledatapath, bool alreadysaved)
         {
             string datafile = Path.GetFileNameWithoutExtension(sampledatapath) + ".csv";
             string finalPath = Path.Combine(sampledatapath, datafile);
             if (File.Exists(finalPath))
             {
-                //Load sample information from XML
-                string sampleInfoPath = Path.Combine(sampledatapath, "AcqData", "sample_info.xml");
-                XDocument sampleInfo = XDocument.Load(sampleInfoPath);
-                var fields = from field in sampleInfo.Descendants("Name")
-                             where field.Value == "Sample Name"
-                             select field.Parent;
-                SampleName = fields.ElementAt(0).Descendants("Value").ElementAt(0).Value;
-                DataFileName = Path.GetFileNameWithoutExtension(sampledatapath);
-
+                if (alreadysaved == false)
+                {
+                    //Load sample information from XML
+                    string sampleInfoPath = Path.Combine(sampledatapath, "AcqData", "sample_info.xml");
+                    XDocument sampleInfo = XDocument.Load(sampleInfoPath);
+                    var fields = from field in sampleInfo.Descendants("Name")
+                                 where field.Value == "Sample Name"
+                                 select field.Parent;
+                    SampleName = fields.ElementAt(0).Descendants("Value").ElementAt(0).Value;
+                    DataFileName = Path.GetFileNameWithoutExtension(sampledatapath);
+                    StandardType = null;
+                    StandardLevel = -1;
+                    TypeOfSample = SampleType.Sample;
+                }
                 List<Tuple<double, Dictionary<string, double>>> csvData = new List<Tuple<double, Dictionary<string, double>>>();
                 //Load sample data CSV
                 using (StreamReader reader = new StreamReader(finalPath))

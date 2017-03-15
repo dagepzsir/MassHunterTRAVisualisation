@@ -40,7 +40,7 @@ namespace MassHunterTRAnalyser
                 if(folderBrowserDialog1.SelectedPath.Contains(".b"))
                 {
                     selectedBatch = new Batch(folderBrowserDialog1.SelectedPath);
-                    
+
                     OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
                     saveToolStripMenuItem.Enabled = true;
                 }
@@ -84,14 +84,11 @@ namespace MassHunterTRAnalyser
 
         private void saveWork()
         {
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Include;
+            
             using (StreamWriter sw = new StreamWriter(Path.Combine(folderBrowserDialog1.SelectedPath, "analysis.json"), false))
             {
-                using (JsonWriter jw = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(jw, selectedBatch.MeasuredData);
-                }
+                string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
+                sw.WriteLine(serialized);
             }
         }
     }
