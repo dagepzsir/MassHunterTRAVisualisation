@@ -27,7 +27,7 @@ namespace MassHunterTRAnalyser
         public string StandardType { get; set; }
         public List<DataSelection> DataSelections { get; set; }
 
-        public List<Tuple<double, Dictionary<string, double>>> TimeResolvedData = new List<Tuple<double, Dictionary<string, double>>>();
+        public List<(double time, Dictionary<string, double> data)> TimeResolvedData = new List<(double time, Dictionary<string, double> data)>();
        
         //Required for JsonSerializer
         public bool ShouldSerializeTimeResolvedData()
@@ -45,19 +45,20 @@ namespace MassHunterTRAnalyser
             //Set to false to load NEW acq data (new batch file which were never opened with this software)
             LoadMeasuredSampleData(sampledatapath, false);       
             DataSelections = new List<DataSelection>();
+            
         }
 
         /// <summary>
         /// Returns a dictionary containing the selected portions of the data series
         /// </summary>
         /// <returns></returns>
-        public Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> GetSelectedData()
+        public Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>> GetSelectedData()
         {
-            Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>> output = new Dictionary<DataSelection, List<Tuple<double, Dictionary<string, double>>>>();
+            Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>> output = new Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>>();
             foreach (DataSelection selection in DataSelections)
             {
-                output.Add(selection, new List<Tuple<double, Dictionary<string, double>>>());
-                foreach (Tuple<double, Dictionary<string, double>> data in TimeResolvedData)
+                output.Add(selection, new List<(double time, Dictionary<string, double> data)>());
+                foreach ((double time, Dictionary<string, double> data) data in TimeResolvedData)
                 {
                     if (data.Item1 >= selection.Min && data.Item1 <= selection.Max)
                         output[selection].Add(data);
@@ -115,7 +116,7 @@ namespace MassHunterTRAnalyser
                     StandardLevel = -1;
                     TypeOfSample = SampleType.Sample;
                 }
-                List<Tuple<double, Dictionary<string, double>>> csvData = new List<Tuple<double, Dictionary<string, double>>>();
+                List<(double time, Dictionary<string, double> data)> csvData = new List<(double time, Dictionary<string, double> data)>();
                 //Load sample data CSV
                 using (StreamReader reader = new StreamReader(finalPath))
                 {
@@ -134,13 +135,13 @@ namespace MassHunterTRAnalyser
                         string[] currentLine = reader.ReadLine().Split(',');
                         if (currentLine.Length == 1)
                             break;
-                        Tuple<double, Dictionary<string, double>> data;
+                        (double time, Dictionary<string, double> data) data;
                         Dictionary<string, double> measuredIntensities = new Dictionary<string, double>();
                         for (int i = 1; i < currentLine.Length; i++)
                         {
                             measuredIntensities.Add(header[i], Convert.ToDouble(currentLine[i], CultureInfo.CreateSpecificCulture("en-GB")));
                         }
-                        data = new Tuple<double, Dictionary<string, double>>(Convert.ToDouble(currentLine[0], CultureInfo.CreateSpecificCulture("en-GB")), measuredIntensities);
+                        data = (time: Convert.ToDouble(currentLine[0], CultureInfo.CreateSpecificCulture("en-GB")), data: measuredIntensities);
                         csvData.Add(data);
                     }
                 }

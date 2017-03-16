@@ -17,7 +17,7 @@ namespace MassHunterTRAnalyser
         {
             InitializeComponent();
         }
-        Tuple<double, double> currRange = new Tuple<double, double>(0, 0);
+        (double SelectionStart, double SelectionEnd) currRange;
         SampleData selectedSample;
         Batch loadedBatch = null;
         #region Events
@@ -41,7 +41,7 @@ namespace MassHunterTRAnalyser
         private void chart1_SelectionRangeChanging(object sender, CursorEventArgs e)
         {
             //Store current selection range
-            currRange = new Tuple<double, double>(e.NewSelectionStart, e.NewSelectionEnd);
+            currRange = (SelectionStart: e.NewSelectionStart, SelectionEnd: e.NewSelectionEnd);
         }
 
         private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
@@ -88,7 +88,7 @@ namespace MassHunterTRAnalyser
             //Store selected areas in the SampleData objects for later use
             if (e.RowIndex > -1)
             {
-                selectedSample.DataSelections[e.RowIndex].RangeOfSelection = new Tuple<double, double>(Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
+                selectedSample.DataSelections[e.RowIndex].RangeOfSelection = (SelectionStart: Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), SelectionEnd: Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
                 selectedSample.DataSelections[e.RowIndex].SelectionType = selectedType;
             }
         }
@@ -210,7 +210,7 @@ namespace MassHunterTRAnalyser
                 addStripeLineToChart(selection.SelectionType, selection.RangeOfSelection);
             }
         }
-        private void addStripeLineToChart(SelectionType type, Tuple<double, double> rangeofselection)
+        private void addStripeLineToChart(SelectionType type, (double SelectionStart, double SelectionEnd) rangeofselection)
         {
             StripLine newLine = new StripLine();
             switch (type)

@@ -78,7 +78,7 @@ namespace MassHunterTRAnalyser.Controls
                     if (listView1.Items.ContainsKey(txtForm.InputText) == false)
                     {
                         listView1.Items.Add(txtForm.InputText);
-                        storedStandards.Add(new StandardData(txtForm.InputText, new Dictionary<string, Tuple<double, string>>(), new Dictionary<string, Tuple<int, int, double>>()));
+                        storedStandards.Add(new StandardData(txtForm.InputText, new Dictionary<string, (double Concentration, string Unit)>(), new Dictionary<string, (int Nominator, int Denominator, double Ratio)>()));
 
                         elementDataGridView.Enabled = true;
                         isotopeRatioDataGridView.Enabled = true;
@@ -129,7 +129,7 @@ namespace MassHunterTRAnalyser.Controls
                 if (elementDataGridView[0, e.RowIndex].Value != null && elementDataGridView[1, e.RowIndex].Value != null && elementDataGridView[2, e.RowIndex].Value != null)
                 {
                     string key = elementDataGridView[0, e.RowIndex].Value.ToString();
-                    Tuple<double, string> data = new Tuple<double, string>(Convert.ToDouble(elementDataGridView[1, e.RowIndex].Value), elementDataGridView[2, e.RowIndex].Value.ToString());
+                    (double Concentration, string Unit) data = (Concentration: Convert.ToDouble(elementDataGridView[1, e.RowIndex].Value), Unit: elementDataGridView[2, e.RowIndex].Value.ToString());
                     if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
                     {
                         selectedStandard.ElementConcentrations[key] = data;
@@ -142,7 +142,7 @@ namespace MassHunterTRAnalyser.Controls
                 if(isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
                 {
                     string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    Tuple<int, int, double> data = new Tuple<int, int, double>(Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
+                    (int Nominator, int Denominator, double Ratio) data = (Nominator: Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
                     if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
                     {
                         selectedStandard.IsotopeRatios[key] = data;

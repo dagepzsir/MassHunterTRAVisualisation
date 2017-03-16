@@ -15,17 +15,18 @@ namespace MassHunterTRAnalyser
     public class DataSelection
     {
         public SelectionType SelectionType { get; set; }
-        public Tuple<double, double> RangeOfSelection { get; set; }
+        public (double SelectionStart, double SelectionEnd) RangeOfSelection { get; set; }
         public string Name { get; set; }
-        public DataSelection(string name, Tuple<double, double> rangeofselection, SelectionType selectiontype)
+        public DataSelection(string name, (double SelectionStart, double SelectionEnd) rangeofselection, SelectionType selectiontype)
         {
             this.Name = name;
             this.SelectionType = selectiontype;
             this.RangeOfSelection = rangeofselection;
+            
         }
 
-        public double Min { get { return Math.Min(RangeOfSelection.Item1, RangeOfSelection.Item2); } }
-        public double Max { get { return Math.Max(RangeOfSelection.Item2, RangeOfSelection.Item2); } }
+        public double Min => Math.Min(RangeOfSelection.SelectionStart, RangeOfSelection.SelectionEnd);
+        public double Max => Math.Max(RangeOfSelection.SelectionStart, RangeOfSelection.SelectionEnd);
         public string SelectionTypeToString
         {
             get
