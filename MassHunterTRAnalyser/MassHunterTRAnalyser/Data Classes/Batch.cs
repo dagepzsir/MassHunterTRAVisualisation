@@ -7,18 +7,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using MassHunterTRAnalyser.Data_Classes;
+
 namespace MassHunterTRAnalyser
 {
     public class Batch
     {
         public List<SampleData> MeasuredData { get; set; }
-        public Batch(string path)
+        public bool AlreadySaved;
+        public Batch(string path, List<StandardData> storedstandards)
         {
-            LoadFromFile(path);
+            loadFromFile(path, storedstandards);
         }
 
         //Load selected batch
-        private void LoadFromFile(string folderpath)
+        private void loadFromFile(string folderpath, List<StandardData> storedstandards)
         {
             List<string> dataFiles = Directory.EnumerateDirectories(folderpath, "*.d").ToList();
 
@@ -27,7 +30,7 @@ namespace MassHunterTRAnalyser
             if (File.Exists(analysisFile))
             {
                 List<SampleData> storedData;
-
+                AlreadySaved = true;
                 //Load user set sample options
                 using (StreamReader reader = new StreamReader(analysisFile))
                 {
@@ -38,17 +41,17 @@ namespace MassHunterTRAnalyser
                 foreach (SampleData data in storedData)
                 {
                     string datafilepath = dataFiles.Find(item => item.Contains(data.DataFileName));
-                    data.LoadMeasuredSampleData(datafilepath, true);
+                    data.LoadMeasuredSampleData(datafilepath, true, storedstandards);
                 }
                 MeasuredData = storedData;
             }
             else
             {
                 MeasuredData = new List<SampleData>();
-
+                AlreadySaved = false;
                 foreach (string dataFileFolder in dataFiles)
                 {
-                    MeasuredData.Add(new SampleData(dataFileFolder));
+                    MeasuredData.Add(new SampleData(dataFileFolder, storedstandards));
                 }
             }
         }

@@ -54,9 +54,9 @@
     <StartupObject>MassHunterTRAnalyser.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -71,8 +71,11 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\StandardEditorControl.cs">
@@ -81,8 +84,10 @@
     <Compile Include="Controls\StandardEditorControl.Designer.cs">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data Classes\CSV.cs" />
     <Compile Include="Data Classes\Batch.cs" />
     <Compile Include="Data Classes\DataSelection.cs" />
+    <Compile Include="Data Classes\ExcelFile.cs" />
     <Compile Include="Data Classes\StandardData.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>

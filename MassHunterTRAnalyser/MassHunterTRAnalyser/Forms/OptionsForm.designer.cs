@@ -58,7 +58,7 @@
             // 
             this.standardEditorControl1.Location = new System.Drawing.Point(12, 12);
             this.standardEditorControl1.Name = "standardEditorControl1";
-            this.standardEditorControl1.Size = new System.Drawing.Size(644, 299);
+            this.standardEditorControl1.Size = new System.Drawing.Size(644, 305);
             this.standardEditorControl1.TabIndex = 0;
             // 
             // OptionsForm
@@ -75,7 +75,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OptionsForm";
-            this.Text = "OptionsForm";
+            this.Text = "Standard options";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OptionsForm_FormClosing);
             this.ResumeLayout(false);
 

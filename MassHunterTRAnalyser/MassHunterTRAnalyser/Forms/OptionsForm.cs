@@ -18,15 +18,16 @@ namespace MassHunterTRAnalyser.Forms
         {
             InitializeComponent();
             //Load standards from MainForm
-            standardEditorControl1.storedStandards = storedstandards;
+            standardEditorControl1.StoredStandards = storedstandards;
         }
 
         private void acceptButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
-            Properties.Settings.Default.StandardData = JsonConvert.SerializeObject(standardEditorControl1.storedStandards);
+            Properties.Settings.Default.StandardData = JsonConvert.SerializeObject(standardEditorControl1.StoredStandards);
             Properties.Settings.Default.Save();
             Properties.Settings.Default.Reload();
+            (this.Owner as MainForm).sampleTypeControl1.LoadStandardNames();
         }
 
         private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)

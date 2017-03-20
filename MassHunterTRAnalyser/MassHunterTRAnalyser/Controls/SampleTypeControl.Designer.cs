@@ -31,6 +31,7 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.sampleDataFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sampleComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sampleType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.standardLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.standardType = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -48,13 +49,14 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.sampleDataFile,
             this.sampleName,
+            this.sampleComment,
             this.sampleType,
             this.standardLevel,
             this.standardType});
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(545, 433);
+            this.dataGridView1.Size = new System.Drawing.Size(602, 433);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEnter);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
@@ -73,6 +75,11 @@
             this.sampleName.HeaderText = "Sample Name";
             this.sampleName.Name = "sampleName";
             this.sampleName.Width = 98;
+            // 
+            // sampleComment
+            // 
+            this.sampleComment.HeaderText = "Comment";
+            this.sampleComment.Name = "sampleComment";
             // 
             // sampleType
             // 
@@ -104,7 +111,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dataGridView1);
             this.Name = "SampleTypeControl";
-            this.Size = new System.Drawing.Size(545, 436);
+            this.Size = new System.Drawing.Size(602, 436);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -115,6 +122,7 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn sampleDataFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn sampleName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sampleComment;
         private System.Windows.Forms.DataGridViewComboBoxColumn sampleType;
         private System.Windows.Forms.DataGridViewTextBoxColumn standardLevel;
         private System.Windows.Forms.DataGridViewComboBoxColumn standardType;

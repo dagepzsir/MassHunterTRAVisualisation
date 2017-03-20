@@ -34,12 +34,14 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadSampleNamesFromXlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.sampleTypesTab = new System.Windows.Forms.TabPage();
             this.sampleTypeControl1 = new MassHunterTRAnalyser.SampleTypeControl();
             this.rangesTab = new System.Windows.Forms.TabPage();
             this.userControl11 = new MassHunterTRAnalyser.UserControl1();
+            this.openXLSDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.sampleTypesTab.SuspendLayout();
@@ -50,7 +52,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.loadSampleNamesFromXlsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(971, 24);
@@ -69,7 +72,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openBtn_Click);
             // 
@@ -77,7 +80,7 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -88,6 +91,13 @@
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
+            // loadSampleNamesFromXlsToolStripMenuItem
+            // 
+            this.loadSampleNamesFromXlsToolStripMenuItem.Name = "loadSampleNamesFromXlsToolStripMenuItem";
+            this.loadSampleNamesFromXlsToolStripMenuItem.Size = new System.Drawing.Size(169, 20);
+            this.loadSampleNamesFromXlsToolStripMenuItem.Text = "Load sample names from xls";
+            this.loadSampleNamesFromXlsToolStripMenuItem.Click += new System.EventHandler(this.loadSampleNamesFromXlsToolStripMenuItem_Click);
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.sampleTypesTab);
@@ -96,7 +106,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(971, 561);
+            this.tabControl1.Size = new System.Drawing.Size(971, 562);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -106,7 +116,7 @@
             this.sampleTypesTab.Location = new System.Drawing.Point(4, 22);
             this.sampleTypesTab.Name = "sampleTypesTab";
             this.sampleTypesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.sampleTypesTab.Size = new System.Drawing.Size(963, 535);
+            this.sampleTypesTab.Size = new System.Drawing.Size(963, 536);
             this.sampleTypesTab.TabIndex = 0;
             this.sampleTypesTab.Text = "Sample Types";
             this.sampleTypesTab.UseVisualStyleBackColor = true;
@@ -116,7 +126,7 @@
             this.sampleTypeControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.sampleTypeControl1.Location = new System.Drawing.Point(3, 3);
             this.sampleTypeControl1.Name = "sampleTypeControl1";
-            this.sampleTypeControl1.Size = new System.Drawing.Size(957, 529);
+            this.sampleTypeControl1.Size = new System.Drawing.Size(957, 530);
             this.sampleTypeControl1.TabIndex = 0;
             // 
             // rangesTab
@@ -125,7 +135,7 @@
             this.rangesTab.Location = new System.Drawing.Point(4, 22);
             this.rangesTab.Name = "rangesTab";
             this.rangesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.rangesTab.Size = new System.Drawing.Size(963, 535);
+            this.rangesTab.Size = new System.Drawing.Size(963, 536);
             this.rangesTab.TabIndex = 1;
             this.rangesTab.Text = "Sample Sections";
             this.rangesTab.UseVisualStyleBackColor = true;
@@ -135,14 +145,19 @@
             this.userControl11.Dock = System.Windows.Forms.DockStyle.Fill;
             this.userControl11.Location = new System.Drawing.Point(3, 3);
             this.userControl11.Name = "userControl11";
-            this.userControl11.Size = new System.Drawing.Size(957, 529);
+            this.userControl11.Size = new System.Drawing.Size(957, 530);
             this.userControl11.TabIndex = 3;
+            // 
+            // openXLSDialog
+            // 
+            this.openXLSDialog.FileName = "openFileDialog1";
+            this.openXLSDialog.Filter = "\"Microsoft Excel files|*.xlsx|CSV|*.csv";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(971, 585);
+            this.ClientSize = new System.Drawing.Size(971, 586);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -171,8 +186,10 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage sampleTypesTab;
         private System.Windows.Forms.TabPage rangesTab;
-        private SampleTypeControl sampleTypeControl1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        public SampleTypeControl sampleTypeControl1;
+        private System.Windows.Forms.ToolStripMenuItem loadSampleNamesFromXlsToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openXLSDialog;
     }
 }
 

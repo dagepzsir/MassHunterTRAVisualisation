@@ -43,6 +43,8 @@
             this.ratioColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.loadCSV = new System.Windows.Forms.Button();
+            this.openCSVDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.elementDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.isotopeRatioDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -62,7 +64,7 @@
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(159, 389);
+            this.listView1.Size = new System.Drawing.Size(159, 380);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -76,7 +78,7 @@
             // addStdButton
             // 
             this.addStdButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addStdButton.Location = new System.Drawing.Point(3, 395);
+            this.addStdButton.Location = new System.Drawing.Point(3, 386);
             this.addStdButton.Name = "addStdButton";
             this.addStdButton.Size = new System.Drawing.Size(75, 23);
             this.addStdButton.TabIndex = 1;
@@ -87,7 +89,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(84, 395);
+            this.button2.Location = new System.Drawing.Point(84, 386);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -106,7 +108,7 @@
             this.elementDataGridView.Enabled = false;
             this.elementDataGridView.Location = new System.Drawing.Point(0, 0);
             this.elementDataGridView.Name = "elementDataGridView";
-            this.elementDataGridView.Size = new System.Drawing.Size(681, 244);
+            this.elementDataGridView.Size = new System.Drawing.Size(681, 254);
             this.elementDataGridView.TabIndex = 3;
             this.elementDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.elementDataGridView_CellEnter);
             this.elementDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.elementDataGridView_CellValueChanged);
@@ -125,10 +127,10 @@
             // 
             this.unitColumn.HeaderText = "Unit";
             this.unitColumn.Items.AddRange(new object[] {
-            "ug/kg",
+            "µg/g",
+            "µg/kg",
+            "%m/m",
             "mg/kg",
-            "(m/m)%",
-            "ug/g",
             "mg/g"});
             this.unitColumn.Name = "unitColumn";
             // 
@@ -144,7 +146,7 @@
             this.isotopeRatioDataGridView.Enabled = false;
             this.isotopeRatioDataGridView.Location = new System.Drawing.Point(0, 0);
             this.isotopeRatioDataGridView.Name = "isotopeRatioDataGridView";
-            this.isotopeRatioDataGridView.Size = new System.Drawing.Size(681, 157);
+            this.isotopeRatioDataGridView.Size = new System.Drawing.Size(681, 164);
             this.isotopeRatioDataGridView.TabIndex = 4;
             // 
             // elementsNameColumn
@@ -175,7 +177,7 @@
             this.groupBox1.Controls.Add(this.splitContainer1);
             this.groupBox1.Location = new System.Drawing.Point(165, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(687, 424);
+            this.groupBox1.Size = new System.Drawing.Size(687, 441);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Standard Data";
@@ -194,21 +196,38 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.isotopeRatioDataGridView);
-            this.splitContainer1.Size = new System.Drawing.Size(681, 405);
-            this.splitContainer1.SplitterDistance = 244;
+            this.splitContainer1.Size = new System.Drawing.Size(681, 422);
+            this.splitContainer1.SplitterDistance = 254;
             this.splitContainer1.TabIndex = 5;
+            // 
+            // loadCSV
+            // 
+            this.loadCSV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.loadCSV.Location = new System.Drawing.Point(3, 415);
+            this.loadCSV.Name = "loadCSV";
+            this.loadCSV.Size = new System.Drawing.Size(159, 23);
+            this.loadCSV.TabIndex = 6;
+            this.loadCSV.Text = "Load Standard data from file";
+            this.loadCSV.UseVisualStyleBackColor = true;
+            this.loadCSV.Click += new System.EventHandler(this.loadCSV_Click);
+            // 
+            // openCSVDialog
+            // 
+            this.openCSVDialog.Filter = "Microsoft Excel|*.xlsx|CSV files|*.csv";
+            this.openCSVDialog.Title = "Open Standard Data from CSV";
             // 
             // StandardEditorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.loadCSV);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.addStdButton);
             this.Controls.Add(this.listView1);
             this.Name = "StandardEditorControl";
-            this.Size = new System.Drawing.Size(852, 427);
-            this.Load += new System.EventHandler(this.StandardEditorControl_Load);
+            this.Size = new System.Drawing.Size(852, 444);
+            this.Load += new System.EventHandler(this.standardEditorControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.elementDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.isotopeRatioDataGridView)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -228,13 +247,15 @@
         private System.Windows.Forms.DataGridView isotopeRatioDataGridView;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn elementNameColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn concColumn;
-        private System.Windows.Forms.DataGridViewComboBoxColumn unitColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn elementsNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn numeratorIsotope;
         private System.Windows.Forms.DataGridViewTextBoxColumn denominatorIsotope;
         private System.Windows.Forms.DataGridViewTextBoxColumn ratioColumn;
         public System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Button loadCSV;
+        private System.Windows.Forms.OpenFileDialog openCSVDialog;
+        private System.Windows.Forms.DataGridViewTextBoxColumn elementNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn concColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn unitColumn;
     }
 }

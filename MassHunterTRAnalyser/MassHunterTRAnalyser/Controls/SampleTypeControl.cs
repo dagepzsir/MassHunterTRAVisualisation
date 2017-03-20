@@ -25,7 +25,7 @@ namespace MassHunterTRAnalyser
         {
             loadedBatch = e.LoadedBatch;
             StoredStandards = e.StoredStandards;
-            loadStandardNames();
+            LoadStandardNames();
             loadSampleData();
         }
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -33,17 +33,17 @@ namespace MassHunterTRAnalyser
             if (e.RowIndex > -1)
             {
                 updateSampleData(e.RowIndex);
-                if(e.ColumnIndex == 2)
+                if(dataGridView1.Columns[e.ColumnIndex].Name == "sampleType")
                 {
-                    if(dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString() != "Standard")
+                    if(dataGridView1.Rows[e.RowIndex].Cells["sampleType"].Value.ToString() != "Standard")
                     {
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], false);
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], false);
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], false);
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], false);
                     }
                     else
                     {
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], true);
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], true);
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], true);
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], true);
                     }
                 }
             }
@@ -62,15 +62,15 @@ namespace MassHunterTRAnalyser
         }
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString() != "Standard")
+            if (dataGridView1.Rows[e.RowIndex].Cells["sampleType"].Value.ToString() != "Standard")
             {
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], false);
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], false);
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], false);
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], false);
             }
             else
             {
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[3], true);
-                enableCell(dataGridView1.Rows[e.RowIndex].Cells[4], true);
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], true);
+                enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], true);
             }
         }
         private void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -122,13 +122,16 @@ namespace MassHunterTRAnalyser
             }
             
         }
+        public void Reset()
+        {
+            dataGridView1.Rows.Clear();
+        }
         #endregion
-
         private void updateSampleData(int index)
         {
             SampleData changedSample = loadedBatch.MeasuredData[index];
             SampleType sampleType = SampleType.NotSet;
-            switch (dataGridView1[2, index].Value.ToString())
+            switch (dataGridView1["sampleType", index].Value.ToString())
             {
                 case "Not set":
                     sampleType = SampleType.NotSet;
@@ -143,13 +146,33 @@ namespace MassHunterTRAnalyser
                     sampleType = SampleType.Standard;
                     break;
             }
-            changedSample.SampleName = dataGridView1[1, index].Value.ToString();
+            changedSample.SampleName = dataGridView1["sampleName", index].Value.ToString();
             changedSample.TypeOfSample = sampleType;
-            changedSample.StandardLevel = int.Parse(dataGridView1[3, index].Value.ToString());
-            if (dataGridView1[4, index].Value != null)
-                changedSample.StandardType = dataGridView1[4, index].Value.ToString();
+            changedSample.Comment = dataGridView1["sampleComment", index].Value.ToString();
+            changedSample.StandardLevel = int.Parse(dataGridView1["standardLevel", index].Value.ToString());
+            if (dataGridView1["standardType", index].Value != null)
+                changedSample.StandardType = dataGridView1["standardType", index].Value.ToString();
             else
                 changedSample.StandardType = "";
+        }
+        public void SetSampleNamesAndComments((List<string> samplenames, List<string> comments) newnamesandcomments)
+        {
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                string newname = newnamesandcomments.samplenames[i];
+                string newcomment = newnamesandcomments.comments[i];
+                dataGridView1["sampleName", i].Value = newname;
+                dataGridView1["sampleComment", i].Value = newcomment;
+                foreach (StandardData standard in StoredStandards)
+                {
+                    if (newname.Replace(" ", "").ToLower().Contains(standard.StandardName.Replace(" ", "").ToLower()) || newcomment.Replace(" ", "").ToLower().Contains(standard.StandardName.Replace(" ", "").ToLower()))
+                    {
+                        dataGridView1["sampleType", i].Value = "Standard";
+                        dataGridView1["standardType", i].Value = standard.StandardName;
+                        break;
+                    }
+                }
+            }
         }
         private void loadSampleData()
         {
@@ -157,7 +180,7 @@ namespace MassHunterTRAnalyser
             {
                 foreach (SampleData sampleData in loadedBatch.MeasuredData)
                 {
-                    dataGridView1.Rows.Add(sampleData.DataFileName, sampleData.SampleName, sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
+                    dataGridView1.Rows.Add(sampleData.DataFileName, sampleData.SampleName, sampleData.Comment ,sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
                     updateSampleData(dataGridView1.Rows.Count - 1);
                 }
             }
@@ -166,14 +189,16 @@ namespace MassHunterTRAnalyser
                 MessageBox.Show("Nothing loaded!");
             }
         }
-        private void loadStandardNames()
+        public void LoadStandardNames()
         {
-            foreach (StandardData standard in StoredStandards)
+            (dataGridView1.Columns["standardType"] as DataGridViewComboBoxColumn).Items.Clear();
+            if (StoredStandards != null)
             {
-                (dataGridView1.Columns[4] as DataGridViewComboBoxColumn).Items.Add(standard.StandardName);
+                foreach (StandardData standard in StoredStandards)
+                {
+                    (dataGridView1.Columns["standardType"] as DataGridViewComboBoxColumn).Items.Add(standard.StandardName);
+                }
             }
         }
-
-
     }
 }

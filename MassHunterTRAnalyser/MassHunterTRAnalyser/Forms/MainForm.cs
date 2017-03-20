@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using MassHunterTRAnalyser.Properties;
 using System.IO;
 using Newtonsoft.Json.Converters;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace MassHunterTRAnalyser
 {
@@ -39,13 +41,22 @@ namespace MassHunterTRAnalyser
         {
             if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                if(folderBrowserDialog1.SelectedPath.Contains(".b"))
+                sampleTypeControl1.Reset();
+
+                if (folderBrowserDialog1.SelectedPath.Contains(".b"))
                 {
                     //Load selected batch from disk
-                    selectedBatch = new Batch(folderBrowserDialog1.SelectedPath);
+                    selectedBatch = new Batch(folderBrowserDialog1.SelectedPath, StoredStandards);
                     //Trigger DataLoaded event
                     OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
                     saveToolStripMenuItem.Enabled = true;
+                }
+                if (!selectedBatch.AlreadySaved)
+                {
+                    if (MessageBox.Show("Do you want to load sample names and comments from MassHunter DA table export? (If you modified the names/comments after the batch was added to the queue this is required!)", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        loadNewNamesAndComments();
+                    }
                 }
             }
         }
@@ -63,7 +74,7 @@ namespace MassHunterTRAnalyser
             //Load StandardData
             StoredStandards = new List<StandardData>();
             if (Settings.Default.StandardData != "")
-                StoredStandards = JsonConvert.DeserializeObject<List<StandardData>>(Properties.Settings.Default.StandardData);
+                StoredStandards = JsonConvert.DeserializeObject<List<StandardData>>(Settings.Default.StandardData);
 
         }
 
@@ -95,8 +106,47 @@ namespace MassHunterTRAnalyser
                 sw.WriteLine(serialized);
             }
         }
-    }
 
+        private void loadSampleNamesFromXlsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            loadNewNamesAndComments();
+        }
+
+        private void loadNewNamesAndComments()
+        {
+            if (openXLSDialog.ShowDialog() == DialogResult.OK)
+            {
+                DataTable data;
+                if(openXLSDialog.FileName.Contains("xls"))
+                {
+                    ExcelFile file = new ExcelFile(openXLSDialog.FileName);
+                    data = file.XLSData;
+                }
+                else
+                {
+                    CSV csv = new CSV(openXLSDialog.FileName);
+                    data = csv.CSVData;
+                }
+                List<string> comments = new List<string>();
+                List<string> samplenames = new List<string>();
+                int commentColumn = 0;
+                int nameColumn = 0;
+                for (int i = 0; i < data.Columns.Count; i++)
+                {
+                    if (data.Rows[1][i].ToString() == "Comment")
+                        commentColumn = i;
+                    else if (data.Rows[1][i].ToString() == "Sample Name")
+                        nameColumn = i;
+                }
+                for (int i = 2; i < data.Rows.Count; i++)
+                {
+                    comments.Add(data.Rows[i][commentColumn].ToString());
+                    samplenames.Add(data.Rows[i][nameColumn].ToString());
+                }
+                sampleTypeControl1.SetSampleNamesAndComments((samplenames, comments));
+            }
+        }
+    }
     public class DataLoadedEventArgs: EventArgs
     {
         public Batch LoadedBatch;
