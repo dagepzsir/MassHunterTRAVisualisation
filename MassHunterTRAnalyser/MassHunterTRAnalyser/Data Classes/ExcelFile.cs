@@ -55,6 +55,13 @@ namespace MassHunterTRAnalyser.Data_Classes
                 {
                     if (cell.DataType.Value == CellValues.SharedString)
                         realValue = doc.WorkbookPart.SharedStringTablePart.SharedStringTable.ChildElements.GetItem(int.Parse(value)).InnerText;
+                    else if (cell.DataType.Value == CellValues.Boolean)
+                    {
+                        if (cell.CellValue.Text == "0")
+                            realValue = "false";
+                        else if(cell.CellValue.Text == "1")
+                            realValue = "true";
+                    }
                 }
                 else
                     realValue = cell.CellValue.Text;

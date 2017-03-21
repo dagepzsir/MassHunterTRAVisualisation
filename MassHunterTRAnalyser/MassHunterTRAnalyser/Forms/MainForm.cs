@@ -129,14 +129,18 @@ namespace MassHunterTRAnalyser
                 }
                 List<string> comments = new List<string>();
                 List<string> samplenames = new List<string>();
+                
                 int commentColumn = 0;
                 int nameColumn = 0;
+                int rjctColumn = 0;
                 for (int i = 0; i < data.Columns.Count; i++)
                 {
                     if (data.Rows[1][i].ToString() == "Comment")
                         commentColumn = i;
                     else if (data.Rows[1][i].ToString() == "Sample Name")
                         nameColumn = i;
+                    else if (data.Rows[1][i].ToString() == "Rjct")
+                        rjctColumn = i;
                 }
                 for (int i = 2; i < data.Rows.Count; i++)
                 {
