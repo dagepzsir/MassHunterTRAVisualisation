@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.rjctSample = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.sampleDataFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sampleComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,6 +48,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.rjctSample,
             this.sampleDataFile,
             this.sampleName,
             this.sampleComment,
@@ -62,6 +64,16 @@
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridView1_CurrentCellDirtyStateChanged);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
+            // 
+            // rjctSample
+            // 
+            this.rjctSample.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.rjctSample.FalseValue = "False";
+            this.rjctSample.HeaderText = "Asd";
+            this.rjctSample.IndeterminateValue = "kozep";
+            this.rjctSample.Name = "rjctSample";
+            this.rjctSample.TrueValue = "True";
+            this.rjctSample.Width = 31;
             // 
             // sampleDataFile
             // 
@@ -120,6 +132,7 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn rjctSample;
         private System.Windows.Forms.DataGridViewTextBoxColumn sampleDataFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn sampleName;
         private System.Windows.Forms.DataGridViewTextBoxColumn sampleComment;

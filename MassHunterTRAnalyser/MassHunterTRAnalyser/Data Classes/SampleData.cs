@@ -24,6 +24,7 @@ namespace MassHunterTRAnalyser
         //User set parameters
         public string SampleName { get; set; }
         public string Comment { get; set; }
+        public bool Rejected { get; set; }
         public int StandardLevel  { get; set; }
         public SampleType TypeOfSample { get; set; }
         public string StandardType { get; set; }
@@ -125,7 +126,7 @@ namespace MassHunterTRAnalyser
                     Comment = comment.ElementAt(0).Descendants("Value").ElementAt(0).Value;
                     SampleName = fields.ElementAt(0).Descendants("Value").ElementAt(0).Value;
                     DataFileName = Path.GetFileNameWithoutExtension(sampledatapath);
-
+                    Rejected = false;
                     foreach (StandardData standard in storedstandards)
                     {
                         if (SampleName.Contains(standard.StandardName.Replace(" ", "")) || Comment.Contains(standard.StandardName.Replace(" ", "")))

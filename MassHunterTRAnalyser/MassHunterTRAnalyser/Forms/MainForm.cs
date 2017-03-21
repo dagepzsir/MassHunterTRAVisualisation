@@ -129,7 +129,7 @@ namespace MassHunterTRAnalyser
                 }
                 List<string> comments = new List<string>();
                 List<string> samplenames = new List<string>();
-                
+                List<bool> reject = new List<bool>();
                 int commentColumn = 0;
                 int nameColumn = 0;
                 int rjctColumn = 0;
@@ -146,8 +146,16 @@ namespace MassHunterTRAnalyser
                 {
                     comments.Add(data.Rows[i][commentColumn].ToString());
                     samplenames.Add(data.Rows[i][nameColumn].ToString());
+                    if (data.Rows[i][rjctColumn].ToString() == "true")
+                    {
+                        reject.Add(true);
+                    }
+                    else
+                        reject.Add(false);
                 }
-                sampleTypeControl1.SetSampleNamesAndComments((samplenames, comments));
+                
+
+                sampleTypeControl1.SetSampleNameCommentsRjct(samplenames, comments, reject);
             }
         }
     }

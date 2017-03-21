@@ -70,7 +70,7 @@ namespace MassHunterTRAnalyser
                         selectedType = MassHunterTRAnalyser.SelectionType.Background;
                         break;
                     case "Data":
-                        selectedLine.BackColor = Color.DarkGreen;
+                        selectedLine.BackColor = Color.LightGreen;
                         selectedType = MassHunterTRAnalyser.SelectionType.Data;
                         break;
                 }
@@ -198,7 +198,8 @@ namespace MassHunterTRAnalyser
                 listView1.Items.Clear();
                 foreach (SampleData data in loadedBatch.MeasuredData)
                 {
-                    listView1.Items.Add(new ListViewItem(new string[] { data.DataFileName, data.SampleName, data.SampleTypeString }));
+                    if(data.Rejected == false)
+                        listView1.Items.Add(new ListViewItem(new string[] { data.DataFileName, data.SampleName, data.SampleTypeString }));
                 }
             }
         }

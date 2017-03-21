@@ -148,6 +148,38 @@ namespace MassHunterTRAnalyser
             }
             changedSample.SampleName = dataGridView1["sampleName", index].Value.ToString();
             changedSample.TypeOfSample = sampleType;
+            DataGridViewCheckBoxCell chkBoxCell = (dataGridView1[0, index] as DataGridViewCheckBoxCell);
+            bool value;
+            if (chkBoxCell.Value.ToString() == "True")
+                value = true;
+            else
+                value = false;
+            if (chkBoxCell.Value != chkBoxCell.IndeterminateValue)
+            {
+                if (value == true)
+                {
+                    changedSample.Rejected = false;
+                    for (int i = 1; i < dataGridView1.Columns.Count; i++)
+                    {
+                        enableCell(dataGridView1[i, index], true);
+
+                    }
+                    if(sampleType != SampleType.Standard)
+                    {
+                        enableCell(dataGridView1["standardLevel", index], false);
+                        enableCell(dataGridView1["standardType", index], false);
+                    }
+                }
+                else
+                {
+                    changedSample.Rejected = true;
+                    for(int i = 1; i < dataGridView1.Columns.Count; i++)
+                    {
+                        enableCell(dataGridView1[i, index], false);
+                    }
+                }
+            }
+
             changedSample.Comment = dataGridView1["sampleComment", index].Value.ToString();
             changedSample.StandardLevel = int.Parse(dataGridView1["standardLevel", index].Value.ToString());
             if (dataGridView1["standardType", index].Value != null)
@@ -155,14 +187,21 @@ namespace MassHunterTRAnalyser
             else
                 changedSample.StandardType = "";
         }
-        public void SetSampleNamesAndComments((List<string> samplenames, List<string> comments) newnamesandcomments)
+        public void SetSampleNameCommentsRjct(List<string> samplenames, List<string> comments, List<bool> reject)
         {
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                string newname = newnamesandcomments.samplenames[i];
-                string newcomment = newnamesandcomments.comments[i];
+                string newname = samplenames[i];
+                string newcomment = comments[i];
                 dataGridView1["sampleName", i].Value = newname;
                 dataGridView1["sampleComment", i].Value = newcomment;
+
+                DataGridViewCheckBoxCell cell = (dataGridView1["rjctSample", i] as DataGridViewCheckBoxCell);
+                if (reject[i] == false)
+                    cell.Value = cell.TrueValue;
+                else
+                    cell.Value = cell.FalseValue;
+
                 foreach (StandardData standard in StoredStandards)
                 {
                     if (newname.Replace(" ", "").ToLower().Contains(standard.StandardName.Replace(" ", "").ToLower()) || newcomment.Replace(" ", "").ToLower().Contains(standard.StandardName.Replace(" ", "").ToLower()))
@@ -171,6 +210,7 @@ namespace MassHunterTRAnalyser
                         dataGridView1["standardType", i].Value = standard.StandardName;
                         break;
                     }
+
                 }
             }
         }
@@ -180,7 +220,13 @@ namespace MassHunterTRAnalyser
             {
                 foreach (SampleData sampleData in loadedBatch.MeasuredData)
                 {
-                    dataGridView1.Rows.Add(sampleData.DataFileName, sampleData.SampleName, sampleData.Comment ,sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
+                    bool rjctCellValue;
+                    if (sampleData.Rejected == true)
+                        rjctCellValue = false;
+                    else
+                        rjctCellValue = true;
+
+                    dataGridView1.Rows.Add(rjctCellValue, sampleData.DataFileName, sampleData.SampleName, sampleData.Comment ,sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
                     updateSampleData(dataGridView1.Rows.Count - 1);
                 }
             }
