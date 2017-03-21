@@ -11,6 +11,7 @@ using MassHunterTRAnalyser.Data_Classes;
 using MassHunterTRAnalyser.Forms;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Windows;
 
 namespace MassHunterTRAnalyser.Controls
 {
@@ -74,7 +75,7 @@ namespace MassHunterTRAnalyser.Controls
 
         private void addStdButton_Click(object sender, EventArgs e)
         {
-            InputForm txtForm = new InputForm("Standard's name");
+            InputForm txtForm = new InputForm("Standard's name", "");
             while(txtForm.ShowDialog(this) == DialogResult.OK)
             {
                 txtForm.Focus();
@@ -302,6 +303,18 @@ namespace MassHunterTRAnalyser.Controls
                 }
             }
             return standardsFromFile;
+        }
+
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewItem clicked = listView1.HitTest(e.Location).Item;
+            string oldname = clicked.Text;
+            InputForm input = new InputForm("Standard name", clicked.Text);
+            if(input.ShowDialog() == DialogResult.OK)
+            {
+                StoredStandards.Find(item => item.StandardName == oldname).StandardName = input.InputText;
+            }
+            populateListView();
         }
     }
 }

@@ -36,12 +36,14 @@
             this.sampleType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.standardLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.standardType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.sampleGroup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToResizeRows = false;
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -54,16 +56,21 @@
             this.sampleComment,
             this.sampleType,
             this.standardLevel,
-            this.standardType});
+            this.standardType,
+            this.sampleGroup});
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(602, 433);
+            this.dataGridView1.Size = new System.Drawing.Size(725, 433);
             this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             this.dataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEnter);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridView1_CurrentCellDirtyStateChanged);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
+            this.dataGridView1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dataGridView1_KeyPress);
+            this.dataGridView1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyUp);
             // 
             // rjctSample
             // 
@@ -86,7 +93,7 @@
             this.sampleName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.sampleName.HeaderText = "Sample Name";
             this.sampleName.Name = "sampleName";
-            this.sampleName.Width = 98;
+            this.sampleName.Width = 90;
             // 
             // sampleComment
             // 
@@ -117,13 +124,18 @@
             this.standardType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.standardType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // sampleGroup
+            // 
+            this.sampleGroup.HeaderText = "Sample Group";
+            this.sampleGroup.Name = "sampleGroup";
+            // 
             // SampleTypeControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dataGridView1);
             this.Name = "SampleTypeControl";
-            this.Size = new System.Drawing.Size(602, 436);
+            this.Size = new System.Drawing.Size(725, 436);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -139,5 +151,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn sampleType;
         private System.Windows.Forms.DataGridViewTextBoxColumn standardLevel;
         private System.Windows.Forms.DataGridViewComboBoxColumn standardType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sampleGroup;
     }
 }

@@ -8,7 +8,7 @@ namespace MassHunterTRAnalyser.Data_Classes
 {
     class SampleGroup
     {
-        private List<string> sampleDataFileNames;
+        private List<string> sampleDataFileNames = new List<string>();
         public bool ShouldSerializeSamples()
         {
             return false;

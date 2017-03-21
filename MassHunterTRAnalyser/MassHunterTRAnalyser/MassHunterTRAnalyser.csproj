@@ -81,12 +81,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\SampleGroupping.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SampleGroupping.Designer.cs">
-      <DependentUpon>SampleGroupping.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\StandardEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -139,9 +133,6 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
-    <EmbeddedResource Include="Controls\SampleGroupping.resx">
-      <DependentUpon>SampleGroupping.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\StandardEditorControl.resx">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
     </EmbeddedResource>

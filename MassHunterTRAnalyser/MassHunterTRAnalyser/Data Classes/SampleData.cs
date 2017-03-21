@@ -28,6 +28,7 @@ namespace MassHunterTRAnalyser
         public int StandardLevel  { get; set; }
         public SampleType TypeOfSample { get; set; }
         public string StandardType { get; set; }
+        public string SampleGroup { get; set; }
         public List<DataSelection> DataSelections { get; set; }
 
         public List<(double time, Dictionary<string, double> data)> TimeResolvedData = new List<(double time, Dictionary<string, double> data)>();
@@ -65,7 +66,7 @@ namespace MassHunterTRAnalyser
                     output.Add(selection, new List<(double time, Dictionary<string, double> data)>());
                     foreach ((double time, Dictionary<string, double> data) data in TimeResolvedData)
                     {
-                        if (data.Item1 >= selection.Min && data.Item1 <= selection.Max)
+                        if (data.time >= selection.Min && data.time <= selection.Max)
                             output[selection].Add(data);
                     }
                 }

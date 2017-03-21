@@ -61,6 +61,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.standardName});
             this.listView1.HideSelection = false;
+            this.listView1.LabelEdit = true;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
@@ -69,6 +70,7 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
             // standardName
             // 
@@ -205,7 +207,7 @@
             this.loadCSV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.loadCSV.Location = new System.Drawing.Point(3, 415);
             this.loadCSV.Name = "loadCSV";
-            this.loadCSV.Size = new System.Drawing.Size(159, 23);
+            this.loadCSV.Size = new System.Drawing.Size(156, 23);
             this.loadCSV.TabIndex = 6;
             this.loadCSV.Text = "Load Standard data from file";
             this.loadCSV.UseVisualStyleBackColor = true;

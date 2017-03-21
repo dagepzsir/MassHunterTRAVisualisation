@@ -12,10 +12,11 @@ namespace MassHunterTRAnalyser.Forms
 {
     public partial class InputForm : Form
     {
-        public InputForm(string text)
+        public InputForm(string text, string textboxtext)
         {
             InitializeComponent();
             this.Text = text;
+            this.textBox1.Text = textboxtext;
         }
         public string InputText { get { return textBox1.Text; } }
 

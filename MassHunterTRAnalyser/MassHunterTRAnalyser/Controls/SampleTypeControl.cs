@@ -32,8 +32,11 @@ namespace MassHunterTRAnalyser
         {
             if (e.RowIndex > -1)
             {
-                updateSampleData(e.RowIndex);
-                if(dataGridView1.Columns[e.ColumnIndex].Name == "sampleType")
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "rjctSample")
+                {
+                    disableRejectedSampleLine(e.RowIndex);
+                }
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "sampleType")
                 {
                     if(dataGridView1.Rows[e.RowIndex].Cells["sampleType"].Value.ToString() != "Standard")
                     {
@@ -48,6 +51,38 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
+
+        private void disableRejectedSampleLine(int rowindex)
+        {
+            DataGridViewCheckBoxCell chkBoxCell = (dataGridView1["rjctSample", rowindex] as DataGridViewCheckBoxCell);
+            bool value;
+            if (chkBoxCell.Value.ToString() == "True")
+                value = true;
+            else
+                value = false;
+
+            if (value == true)
+            {
+                for (int i = 1; i < dataGridView1.Columns.Count; i++)
+                {
+                    enableCell(dataGridView1[i, rowindex], true);
+
+                }
+                if (dataGridView1["sampleType", rowindex].Value.ToString() != "Standard")
+                {
+                    enableCell(dataGridView1["standardLevel", rowindex], false);
+                    enableCell(dataGridView1["standardType", rowindex], false);
+                }
+            }
+            else
+            {
+                for (int i = 1; i < dataGridView1.Columns.Count; i++)
+                {
+                    enableCell(dataGridView1[i, rowindex], false);
+                }
+            }
+        }
+
         private void dataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             //Fix combobox behaviour
@@ -148,40 +183,27 @@ namespace MassHunterTRAnalyser
             }
             changedSample.SampleName = dataGridView1["sampleName", index].Value.ToString();
             changedSample.TypeOfSample = sampleType;
+
             DataGridViewCheckBoxCell chkBoxCell = (dataGridView1[0, index] as DataGridViewCheckBoxCell);
             bool value;
             if (chkBoxCell.Value.ToString() == "True")
                 value = true;
             else
                 value = false;
-            if (chkBoxCell.Value != chkBoxCell.IndeterminateValue)
-            {
-                if (value == true)
-                {
-                    changedSample.Rejected = false;
-                    for (int i = 1; i < dataGridView1.Columns.Count; i++)
-                    {
-                        enableCell(dataGridView1[i, index], true);
 
-                    }
-                    if(sampleType != SampleType.Standard)
-                    {
-                        enableCell(dataGridView1["standardLevel", index], false);
-                        enableCell(dataGridView1["standardType", index], false);
-                    }
-                }
-                else
-                {
-                    changedSample.Rejected = true;
-                    for(int i = 1; i < dataGridView1.Columns.Count; i++)
-                    {
-                        enableCell(dataGridView1[i, index], false);
-                    }
-                }
-            }
+            changedSample.Rejected = !value;
+
+            if (dataGridView1["sampleGroup", index].Value != null)
+                changedSample.SampleGroup = dataGridView1["sampleGroup", index].Value.ToString();
+            else
+                changedSample.SampleGroup = "";
 
             changedSample.Comment = dataGridView1["sampleComment", index].Value.ToString();
-            changedSample.StandardLevel = int.Parse(dataGridView1["standardLevel", index].Value.ToString());
+
+            if (dataGridView1["standardLevel", index].Value != null)
+                changedSample.StandardLevel = int.Parse(dataGridView1["standardLevel", index].Value.ToString());
+            else
+                changedSample.StandardLevel = -1;
             if (dataGridView1["standardType", index].Value != null)
                 changedSample.StandardType = dataGridView1["standardType", index].Value.ToString();
             else
@@ -226,8 +248,9 @@ namespace MassHunterTRAnalyser
                     else
                         rjctCellValue = true;
 
-                    dataGridView1.Rows.Add(rjctCellValue, sampleData.DataFileName, sampleData.SampleName, sampleData.Comment ,sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType);
+                    dataGridView1.Rows.Add(rjctCellValue, sampleData.DataFileName, sampleData.SampleName, sampleData.Comment ,sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType, loadedBatch.MeasuredData.IndexOf(sampleData));
                     updateSampleData(dataGridView1.Rows.Count - 1);
+                    disableRejectedSampleLine(dataGridView1.Rows.Count - 1);
                 }
             }
             else
@@ -244,6 +267,44 @@ namespace MassHunterTRAnalyser
                 {
                     (dataGridView1.Columns["standardType"] as DataGridViewComboBoxColumn).Items.Add(standard.StandardName);
                 }
+            }
+        }
+
+        private void dataGridView1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            updateSampleData(e.RowIndex);
+            dataGridView1.RefreshEdit();
+        }
+
+        private void dataGridView1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Control && e.KeyCode == Keys.V)
+            {
+                string stringFromClipBoard = (string)Clipboard.GetDataObject().GetData(DataFormats.Text);
+                foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+                {
+                    if(cell.ReadOnly == false)
+                        cell.Value = stringFromClipBoard;
+                   
+                }
+            }
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if (dataGridView1["sampleName", i].Style.BackColor != Color.LightGray)
+                    dataGridView1["sampleName", i].Style.BackColor = dataGridView1["sampleName", i].OwningColumn.DefaultCellStyle.BackColor;
+            }
+            foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+            {
+                if (dataGridView1["sampleName", cell.RowIndex].Style.BackColor != Color.LightGray)
+                    dataGridView1["sampleName", cell.RowIndex].Style.BackColor = Color.LightBlue;
             }
         }
     }
