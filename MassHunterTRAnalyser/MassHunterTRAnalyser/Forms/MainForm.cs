@@ -31,9 +31,7 @@ namespace MassHunterTRAnalyser
         public event EventHandler<DataLoadedEventArgs> DataLoaded;
         protected virtual void OnDataLoaded(DataLoadedEventArgs e)
         {
-            EventHandler<DataLoadedEventArgs> handler = DataLoaded;
-            if (handler != null)
-                handler(this, e);
+            DataLoaded?.Invoke(this, e);
         }
 
         #region FormEvents
@@ -50,26 +48,32 @@ namespace MassHunterTRAnalyser
                     //Trigger DataLoaded event
                     OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
                     saveToolStripMenuItem.Enabled = true;
-                }
-                if (!selectedBatch.AlreadySaved)
-                {
-                    if (MessageBox.Show("Do you want to load sample names and comments from MassHunter DA table export? (If you modified the names/comments after the batch was added to the queue this is required!)", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+
+                    if (!selectedBatch.AlreadySaved)
                     {
-                        loadNewNamesAndComments();
+                        if (MessageBox.Show("Do you want to load sample names and comments from MassHunter DA table export? (If you modified the names/comments after the batch was added to the queue this is required!)", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                        {
+                            loadNewNamesAndComments();
+                        }
                     }
+                }
+                else
+                {
+                    MessageBox.Show("The selected folder is not a valid MassHunter batch!");
                 }
             }
         }
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            userControl11.UpdateData();
+            selectionControl.UpdateData();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             //Wire in DatLoaded event handlers from controls
             this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
-            this.DataLoaded += userControl11.UserControl1_DataLoaded;
+            this.DataLoaded += selectionControl.UserControl1_DataLoaded;
+            this.DataLoaded += calibrationControl1.CalibrationControlDataLoaded;
 
             //Load StandardData
             StoredStandards = new List<StandardData>();
@@ -81,10 +85,11 @@ namespace MassHunterTRAnalyser
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Populate range selection listbox of tab opened
-            if(tabControl1.SelectedIndex == 1)
-                userControl11.PopulateListBox();
+            if (tabControl1.SelectedIndex == 1)
+                selectionControl.PopulateListBox();
+            else if (tabControl1.SelectedIndex == 2)
+                calibrationControl1.UpdateData(selectedBatch, StoredStandards);
         }
-
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionsForm optionsForm = new OptionsForm(StoredStandards);

@@ -13,17 +13,24 @@ namespace MassHunterTRAnalyser.Data_Classes
         {
             return false;
         }
-        public List<SampleData> Samples { get; set; }
+        public  List<SampleData> Samples { get; private set; }
         public string GroupName { get; set; }
 
-        public SampleGroup(string name, List<SampleData> samples)
+        public SampleGroup(string name)
         {
-            Samples = samples;
+            Samples = new List<SampleData>();
             GroupName = name;
-            foreach (SampleData data in Samples)
-            {
-                sampleDataFileNames.Add(data.DataFileName);
-            }
+        }
+
+        public void AddSample(SampleData sample)
+        {
+            Samples.Add(sample);
+            sampleDataFileNames.Add(sample.DataFileName);
+        }
+        public void RemoveSample(SampleData sample)
+        {
+            sampleDataFileNames.Remove(sample.DataFileName);
+            Samples.Remove(sample);
         }
         public void LoadSamplesByDataFile(List<SampleData> samples)
         {

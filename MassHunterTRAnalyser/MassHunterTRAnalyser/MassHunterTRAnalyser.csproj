@@ -81,6 +81,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CalibrationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CalibrationControl.Designer.cs">
+      <DependentUpon>CalibrationControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StandardEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -120,11 +126,11 @@
     <Compile Include="Controls\SampleTypeControl.Designer.cs">
       <DependentUpon>SampleTypeControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\UserControl1.cs">
+    <Compile Include="Controls\SelectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <Compile Include="Controls\SelectionControl.Designer.cs">
+      <DependentUpon>SelectionControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -133,6 +139,9 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
+    <EmbeddedResource Include="Controls\CalibrationControl.resx">
+      <DependentUpon>CalibrationControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\StandardEditorControl.resx">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -157,8 +166,8 @@
     <EmbeddedResource Include="Controls\SampleTypeControl.resx">
       <DependentUpon>SampleTypeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\SelectionControl.resx">
+      <DependentUpon>SelectionControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

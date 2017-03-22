@@ -11,15 +11,17 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace MassHunterTRAnalyser
 {
-    public partial class UserControl1 : UserControl
+    public partial class SelectionControl : UserControl
     {
-        public UserControl1()
+        public SelectionControl()
         {
             InitializeComponent();
         }
+
         (double SelectionStart, double SelectionEnd) currRange;
         SampleData selectedSample;
         Batch loadedBatch = null;
+
         #region Events
         private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
@@ -48,9 +50,8 @@ namespace MassHunterTRAnalyser
         {
             //Add the selected range to the chart and datagridview, store the area in the corresponding sampledata object
             addStripeLineToChart(MassHunterTRAnalyser.SelectionType.None, currRange);
-            dataGridView1.Rows.Add(chart1.ChartAreas[0].AxisX.StripLines.Count, "None", currRange.Item1, currRange.Item2);
+            dataGridView1.Rows.Add(chart1.ChartAreas[0].AxisX.StripLines.Count, "None", currRange.SelectionStart, currRange.SelectionEnd);
             selectedSample.DataSelections.Add(new DataSelection(chart1.ChartAreas[0].AxisX.StripLines.Count.ToString(), currRange, MassHunterTRAnalyser.SelectionType.None));
-            
         }
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -171,20 +172,21 @@ namespace MassHunterTRAnalyser
                 foreach (var traData in selectedSample.TimeResolvedData)
                 {
                     //Load measured data into the chart
-                    foreach (string element in traData.Item2.Keys)
+                    foreach (string element in traData.data.Keys)
                     {
                         if (serieses.ContainsKey(element) == false)
                         {
-                            Series currentSeries = new Series(element + " - " + selectedSample.DataFileName);
-                            currentSeries.ChartType = SeriesChartType.Line;
-                            
+                            Series currentSeries = new Series(element + " - " + selectedSample.DataFileName)
+                            {
+                                ChartType = SeriesChartType.Line
+                            };
                             serieses.Add(element, currentSeries);
                             chart1.Series.Add(serieses.Last().Value);
                             checkedListBox1.Items.Add(element + " - " + selectedSample.DataFileName);
                             checkedListBox1.SetItemChecked(checkedListBox1.Items.Count - 1, true);
 
                         }
-                        serieses[element].Points.AddXY(traData.Item1, traData.Item2[element]);
+                        serieses[element].Points.AddXY(traData.time, traData.data[element]);
                     }
                 }
                 //load selected areas from sampleData object
@@ -207,7 +209,7 @@ namespace MassHunterTRAnalyser
         {
             foreach (DataSelection selection in sampledata.DataSelections)
             {
-                dataGridView1.Rows.Add(selection.Name, selection.SelectionTypeToString, selection.RangeOfSelection.Item1, selection.RangeOfSelection.Item2);
+                dataGridView1.Rows.Add(selection.Name, selection.SelectionTypeToString, selection.RangeOfSelection.SelectionStart, selection.RangeOfSelection.SelectionEnd);
                 addStripeLineToChart(selection.SelectionType, selection.RangeOfSelection);
             }
         }
@@ -226,8 +228,8 @@ namespace MassHunterTRAnalyser
                     newLine.BackColor = Color.DarkGreen;
                     break;
             }
-            newLine.IntervalOffset = Math.Min(rangeofselection.Item1, rangeofselection.Item2);
-            newLine.StripWidth = Math.Abs(rangeofselection.Item1 - rangeofselection.Item2);
+            newLine.IntervalOffset = Math.Min(rangeofselection.SelectionStart, rangeofselection.SelectionEnd);
+            newLine.StripWidth = Math.Abs(rangeofselection.SelectionStart - rangeofselection.SelectionEnd);
             chart1.ChartAreas[0].AxisX.StripLines.Add(newLine);
         }
         private void resetGUI()
@@ -239,6 +241,5 @@ namespace MassHunterTRAnalyser
             checkedListBox1.Items.Clear();
             dataGridView1.Rows.Clear();
         }
-
     }
 }

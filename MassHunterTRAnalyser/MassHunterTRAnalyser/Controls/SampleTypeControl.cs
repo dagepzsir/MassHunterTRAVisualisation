@@ -20,6 +20,9 @@ namespace MassHunterTRAnalyser
 
         Batch loadedBatch;
         List<StandardData> StoredStandards;
+        List<SampleGroup> SampleGroups = new List<SampleGroup>();
+        string oldSampleGroup;
+        
         #region Events
         public void SampleTypeControl_DataLoaded(object sender, DataLoadedEventArgs e)
         {
@@ -27,7 +30,30 @@ namespace MassHunterTRAnalyser
             StoredStandards = e.StoredStandards;
             LoadStandardNames();
             loadSampleData();
+            populateSampleGroupTree();
         }
+
+        private void populateSampleGroupTree()
+        {
+            sampleTree.Nodes.Clear();
+            foreach (SampleGroup group in SampleGroups)
+            {
+                sampleTree.Nodes.Add(group.GroupName);
+                sampleTree.Nodes[sampleTree.Nodes.Count - 1].BackColor = Color.LightGray;
+                foreach (SampleData sample in group.Samples)
+                {
+                    TreeNode parent = sampleTree.Nodes[sampleTree.Nodes.Count - 1];
+                    parent.Nodes.Add(sample.SampleName + " - " + sample.SampleTypeString);
+                    if (sample.Rejected)
+                        parent.Nodes[parent.Nodes.Count - 1].BackColor = Color.LightGray;
+                    else
+                        parent.BackColor = Color.Empty;
+                }
+            }
+            
+            sampleTree.ExpandAll();
+        }
+
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)
@@ -78,7 +104,8 @@ namespace MassHunterTRAnalyser
             {
                 for (int i = 1; i < dataGridView1.Columns.Count; i++)
                 {
-                    enableCell(dataGridView1[i, rowindex], false);
+                    if(dataGridView1[i, rowindex].OwningColumn.Name != "sampleGroup")
+                        enableCell(dataGridView1[i, rowindex], false);
                 }
             }
         }
@@ -112,6 +139,10 @@ namespace MassHunterTRAnalyser
         {
             //Fix combobox behaviour
             dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            if(dataGridView1.SelectedCells[0].OwningColumn is DataGridViewComboBoxColumn || dataGridView1.SelectedCells[0].OwningColumn is DataGridViewCheckBoxColumn)
+            {
+                dataGridView1.EndEdit();
+            }
         }
         private void enableCell(DataGridViewCell cell, bool enabled)
         {
@@ -160,11 +191,14 @@ namespace MassHunterTRAnalyser
         public void Reset()
         {
             dataGridView1.Rows.Clear();
+            SampleGroups.Clear();
+            sampleTree.Nodes.Clear();
         }
         #endregion
         private void updateSampleData(int index)
         {
             SampleData changedSample = loadedBatch.MeasuredData[index];
+
             SampleType sampleType = SampleType.NotSet;
             switch (dataGridView1["sampleType", index].Value.ToString())
             {
@@ -234,7 +268,14 @@ namespace MassHunterTRAnalyser
                     }
 
                 }
+                updateSampleData(i);
+
+                
+                string sampleGroup = getSampleGroup(loadedBatch.MeasuredData[i], true);
+                dataGridView1["sampleGroup", i].Value = sampleGroup;
+                updateSampleData(i);
             }
+            constructGroups();
         }
         private void loadSampleData()
         {
@@ -248,16 +289,63 @@ namespace MassHunterTRAnalyser
                     else
                         rjctCellValue = true;
 
-                    dataGridView1.Rows.Add(rjctCellValue, sampleData.DataFileName, sampleData.SampleName, sampleData.Comment ,sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType, loadedBatch.MeasuredData.IndexOf(sampleData));
-                    updateSampleData(dataGridView1.Rows.Count - 1);
+                    string sampleGroupName = getSampleGroup(sampleData, false);
+
+                    dataGridView1.Rows.Add(rjctCellValue, sampleData.DataFileName, sampleData.SampleName, sampleData.Comment, sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType, sampleGroupName);
+
+                    //Construct sample groups
+                    SampleGroup existingGroup = SampleGroups.Find(item => item.GroupName == sampleData.SampleGroup);
+                    if (existingGroup != null)
+                    {
+                        if (existingGroup.Samples.Contains(sampleData) == false)
+                            existingGroup.AddSample(sampleData);
+                    }
+                    else
+                    {
+                        SampleGroup newGroup = new SampleGroup(loadedBatch.MeasuredData.IndexOf(sampleData).ToString());
+                        newGroup.AddSample(sampleData);
+                        SampleGroups.Add(newGroup);
+                    }
                     disableRejectedSampleLine(dataGridView1.Rows.Count - 1);
                 }
+                dataGridView1.ClearSelection();
             }
             else
             {
                 MessageBox.Show("Nothing loaded!");
             }
         }
+
+        private string getSampleGroup(SampleData sampleData, bool newgroups)
+        {
+            string sampleGroupName = "";
+
+            if (sampleData.SampleGroup == null || newgroups == true)
+            {
+                if (dataGridView1.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                    {
+                        if (sampleData.SampleName == dataGridView1["sampleName", i].Value.ToString() && sampleData.Comment == dataGridView1["sampleComment", i].Value.ToString())
+                        {
+                            sampleGroupName = dataGridView1["sampleGroup", i].Value.ToString();
+                            break;
+                        }
+                        else
+                            sampleGroupName = loadedBatch.MeasuredData.IndexOf(sampleData).ToString();
+                    }
+                }
+                else
+                {
+                    sampleGroupName = loadedBatch.MeasuredData.IndexOf(sampleData).ToString();
+                }
+            }
+            else
+                sampleGroupName = sampleData.SampleGroup;
+
+            return sampleGroupName;
+        }
+
         public void LoadStandardNames()
         {
             (dataGridView1.Columns["standardType"] as DataGridViewComboBoxColumn).Items.Clear();
@@ -270,18 +358,87 @@ namespace MassHunterTRAnalyser
             }
         }
 
-        private void dataGridView1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             updateSampleData(e.RowIndex);
-            dataGridView1.RefreshEdit();
+            handleSampleGroupChange(e.RowIndex);
+        }
+        private void constructGroups()
+        {
+            SampleGroups.Clear();
+            for(int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                SampleGroup existingGroup = SampleGroups.Find(item => item.GroupName == dataGridView1["sampleGroup", i].Value.ToString());
+                if (existingGroup != null)
+                {
+                    existingGroup.AddSample(loadedBatch.MeasuredData[i]);
+                }
+                else
+                {
+                    SampleGroup newGroup = new SampleGroup(loadedBatch.MeasuredData[i].SampleGroup);
+                    newGroup.AddSample(loadedBatch.MeasuredData[i]);
+                    SampleGroups.Add(newGroup);
+                }
+            }
+            populateSampleGroupTree();
+        }
+        private void handleSampleGroupChange(int rowindex)
+        {
+            if (dataGridView1["sampleGroup", rowindex].Value.ToString() != "" && dataGridView1["sampleGroup", rowindex].Value.ToString() != oldSampleGroup)
+            {
+                SampleGroup existingGroup = SampleGroups.Find(item => item.GroupName == dataGridView1["sampleGroup", rowindex].Value.ToString());
+                SampleData selectedSample = loadedBatch.MeasuredData[rowindex];
+
+                if (existingGroup != null)
+                {
+                    if (existingGroup.Samples[0].TypeOfSample != selectedSample.TypeOfSample)
+                    {
+                        if (MessageBox.Show("The type of the sample doesn't match the group's type! Do you want to set it anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                        {
+                            if(existingGroup.Samples.Contains(selectedSample) == false)
+                                existingGroup.AddSample(selectedSample);
+                            SampleGroup oldGroup = SampleGroups.Find(item => item.GroupName == oldSampleGroup);
+                            oldGroup.RemoveSample(selectedSample);
+                            if (oldGroup.Samples.Count == 0)
+                                SampleGroups.Remove(oldGroup);
+                        }
+                        else
+                        {
+                            dataGridView1["sampleGroup", rowindex].Value = oldSampleGroup;
+
+                        }
+                    }
+                    else
+                    {
+                        if(existingGroup.Samples.Contains(selectedSample) == false)
+                            existingGroup.AddSample(selectedSample);
+                        SampleGroup oldGroup = SampleGroups.Find(item => item.GroupName == oldSampleGroup);
+                        oldGroup.RemoveSample(selectedSample);
+                        if (oldGroup.Samples.Count == 0)
+                            SampleGroups.Remove(oldGroup);
+                    }
+                }
+                else
+                {
+                    SampleGroup newGroup = new SampleGroup(dataGridView1["sampleGroup", rowindex].Value.ToString());
+                    newGroup.AddSample(selectedSample);
+                    SampleGroups.Add(newGroup);
+
+                    SampleGroup oldGroup = SampleGroups.Find(item => item.GroupName == oldSampleGroup);
+                    if (oldGroup != null)
+                    {
+                        oldGroup.RemoveSample(selectedSample);
+                        if (oldGroup.Samples.Count == 0)
+                            SampleGroups.Remove(oldGroup);
+                    }
+                }
+                populateSampleGroupTree();
+            }
         }
 
         private void dataGridView1_KeyUp(object sender, KeyEventArgs e)
         {
+            //Enable copy pasting cells
             if(e.Control && e.KeyCode == Keys.V)
             {
                 string stringFromClipBoard = (string)Clipboard.GetDataObject().GetData(DataFormats.Text);
@@ -295,6 +452,14 @@ namespace MassHunterTRAnalyser
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            hilightSelectedSampleInRow();
+
+            if (dataGridView1.SelectedCells.Count > 0)
+                oldSampleGroup = dataGridView1["sampleGroup", dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+        }
+
+        private void hilightSelectedSampleInRow()
         {
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
