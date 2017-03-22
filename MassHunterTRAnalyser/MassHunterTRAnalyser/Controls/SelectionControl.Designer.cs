@@ -59,7 +59,7 @@
             chartArea1.AxisX.MajorGrid.Enabled = false;
             chartArea1.AxisX.ScaleView.Zoomable = false;
             chartArea1.AxisY.MajorGrid.Enabled = false;
-            chartArea1.CursorX.Interval = 0.01D;
+            chartArea1.CursorX.Interval = 0.001D;
             chartArea1.CursorX.IsUserEnabled = true;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.CursorX.LineWidth = 0;
@@ -139,7 +139,7 @@
             this.addSelectionButton.Name = "addSelectionButton";
             this.addSelectionButton.Size = new System.Drawing.Size(118, 23);
             this.addSelectionButton.TabIndex = 4;
-            this.addSelectionButton.Text = "Add to all Samples";
+            this.addSelectionButton.Text = "Apply to all Samples";
             this.addSelectionButton.UseVisualStyleBackColor = true;
             this.addSelectionButton.Click += new System.EventHandler(this.addSelectionButton_Click);
             // 
@@ -186,6 +186,7 @@
             this.sampleName,
             this.sampleType});
             this.listView1.FullRowSelect = true;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(225, 555);
@@ -246,18 +247,18 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SelectionName;
-        private System.Windows.Forms.DataGridViewComboBoxColumn SelectionType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SelectionStart;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SelectionEnd;
         private System.Windows.Forms.Button addSelectionButton;
         private System.Windows.Forms.RadioButton selectedRangeRadio;
         private System.Windows.Forms.RadioButton allRangeRadio;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader dataFile;
         private System.Windows.Forms.ColumnHeader sampleName;
         private System.Windows.Forms.ColumnHeader sampleType;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SelectionName;
+        private System.Windows.Forms.DataGridViewComboBoxColumn SelectionType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SelectionStart;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SelectionEnd;
+        public System.Windows.Forms.ListView listView1;
     }
 }

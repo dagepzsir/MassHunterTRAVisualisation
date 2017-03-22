@@ -81,11 +81,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\CalibrationControl.cs">
+    <Compile Include="Calculations.cs" />
+    <Compile Include="Controls\AveragesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\CalibrationControl.Designer.cs">
-      <DependentUpon>CalibrationControl.cs</DependentUpon>
+    <Compile Include="Controls\AveragesControl.Designer.cs">
+      <DependentUpon>AveragesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\StandardEditorControl.cs">
       <SubType>UserControl</SubType>
@@ -138,9 +139,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Utils.cs" />
-    <EmbeddedResource Include="Controls\CalibrationControl.resx">
-      <DependentUpon>CalibrationControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\AveragesControl.resx">
+      <DependentUpon>AveragesControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StandardEditorControl.resx">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>

@@ -41,14 +41,14 @@
             this.sampleTypeControl1 = new MassHunterTRAnalyser.SampleTypeControl();
             this.rangesTab = new System.Windows.Forms.TabPage();
             this.selectionControl = new MassHunterTRAnalyser.SelectionControl();
-            this.calibrationTab = new System.Windows.Forms.TabPage();
-            this.calibrationControl1 = new MassHunterTRAnalyser.Controls.CalibrationControl();
+            this.averagesTab = new System.Windows.Forms.TabPage();
+            this.averagesControl = new MassHunterTRAnalyser.Controls.AveragesControl();
             this.openXLSDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.sampleTypesTab.SuspendLayout();
             this.rangesTab.SuspendLayout();
-            this.calibrationTab.SuspendLayout();
+            this.averagesTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -105,7 +105,7 @@
             // 
             this.tabControl1.Controls.Add(this.sampleTypesTab);
             this.tabControl1.Controls.Add(this.rangesTab);
-            this.tabControl1.Controls.Add(this.calibrationTab);
+            this.tabControl1.Controls.Add(this.averagesTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
@@ -113,6 +113,7 @@
             this.tabControl1.Size = new System.Drawing.Size(1015, 562);
             this.tabControl1.TabIndex = 4;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            this.tabControl1.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabControl1_Selecting);
             // 
             // sampleTypesTab
             // 
@@ -139,7 +140,7 @@
             this.rangesTab.Location = new System.Drawing.Point(4, 22);
             this.rangesTab.Name = "rangesTab";
             this.rangesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.rangesTab.Size = new System.Drawing.Size(963, 536);
+            this.rangesTab.Size = new System.Drawing.Size(1007, 536);
             this.rangesTab.TabIndex = 1;
             this.rangesTab.Text = "Sample Sections";
             this.rangesTab.UseVisualStyleBackColor = true;
@@ -149,27 +150,27 @@
             this.selectionControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.selectionControl.Location = new System.Drawing.Point(3, 3);
             this.selectionControl.Name = "selectionControl";
-            this.selectionControl.Size = new System.Drawing.Size(957, 530);
+            this.selectionControl.Size = new System.Drawing.Size(1001, 530);
             this.selectionControl.TabIndex = 3;
             // 
-            // calibrationTab
+            // averagesTab
             // 
-            this.calibrationTab.Controls.Add(this.calibrationControl1);
-            this.calibrationTab.Location = new System.Drawing.Point(4, 22);
-            this.calibrationTab.Name = "calibrationTab";
-            this.calibrationTab.Padding = new System.Windows.Forms.Padding(3);
-            this.calibrationTab.Size = new System.Drawing.Size(963, 536);
-            this.calibrationTab.TabIndex = 2;
-            this.calibrationTab.Text = "Calibration";
-            this.calibrationTab.UseVisualStyleBackColor = true;
+            this.averagesTab.Controls.Add(this.averagesControl);
+            this.averagesTab.Location = new System.Drawing.Point(4, 22);
+            this.averagesTab.Name = "averagesTab";
+            this.averagesTab.Padding = new System.Windows.Forms.Padding(3);
+            this.averagesTab.Size = new System.Drawing.Size(1007, 536);
+            this.averagesTab.TabIndex = 2;
+            this.averagesTab.Text = "Averages/Statistics";
+            this.averagesTab.UseVisualStyleBackColor = true;
             // 
-            // calibrationControl1
+            // averagesControl
             // 
-            this.calibrationControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.calibrationControl1.Location = new System.Drawing.Point(3, 3);
-            this.calibrationControl1.Name = "calibrationControl1";
-            this.calibrationControl1.Size = new System.Drawing.Size(957, 530);
-            this.calibrationControl1.TabIndex = 0;
+            this.averagesControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.averagesControl.Location = new System.Drawing.Point(3, 3);
+            this.averagesControl.Name = "averagesControl";
+            this.averagesControl.Size = new System.Drawing.Size(1001, 530);
+            this.averagesControl.TabIndex = 0;
             // 
             // openXLSDialog
             // 
@@ -193,7 +194,7 @@
             this.tabControl1.ResumeLayout(false);
             this.sampleTypesTab.ResumeLayout(false);
             this.rangesTab.ResumeLayout(false);
-            this.calibrationTab.ResumeLayout(false);
+            this.averagesTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,8 +215,8 @@
         public SampleTypeControl sampleTypeControl1;
         private System.Windows.Forms.ToolStripMenuItem loadSampleNamesFromXlsToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openXLSDialog;
-        private System.Windows.Forms.TabPage calibrationTab;
-        private Controls.CalibrationControl calibrationControl1;
+        private System.Windows.Forms.TabPage averagesTab;
+        private Controls.AveragesControl averagesControl;
     }
 }
 

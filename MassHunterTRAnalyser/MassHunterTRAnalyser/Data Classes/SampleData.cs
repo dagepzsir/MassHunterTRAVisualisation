@@ -1,4 +1,5 @@
 ﻿using MassHunterTRAnalyser.Data_Classes;
+using MathNet.Numerics.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,7 +57,7 @@ namespace MassHunterTRAnalyser
         /// Returns a dictionary containing the selected portions of the data series
         /// </summary>
         /// <returns></returns>
-        public Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>> GetSelectedData()
+        public Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>> GetSelectedDataWithTime()
         {
             Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>> output = new Dictionary<DataSelection, List<(double time, Dictionary<string, double> data)>>();
             if (DataSelections.Count > 0)
@@ -78,6 +79,57 @@ namespace MassHunterTRAnalyser
 
             return output;
         }
+        public Dictionary<DataSelection, List<Dictionary<string, double>>> GetAllSelectedData()
+        {
+            Dictionary<DataSelection, List<Dictionary<string, double>>> output = new Dictionary<DataSelection, List<Dictionary<string, double>>>();
+            if (DataSelections.Count > 0)
+            {
+                foreach (DataSelection selection in DataSelections)
+                {
+                    output.Add(selection, new List<Dictionary<string, double>>());
+                    foreach ((double time, Dictionary<string, double> data) data in TimeResolvedData)
+                    {
+                        if (data.time >= selection.Min && data.time <= selection.Max)
+                            output[selection].Add(data.data);
+                    }
+                }
+            }
+            return output;
+        }
+
+        public List<Dictionary<string, double>> GetSelectedData(DataSelection selection)
+        {
+            List<Dictionary<string, double>> output = new List<Dictionary<string, double>>();
+            foreach ((double time, Dictionary<string, double> data) data in TimeResolvedData)
+            {
+                if (data.time >= selection.Min && data.time <= selection.Max)
+                    output.Add(data.data);
+            }
+
+            return output;
+        }    
+        private Dictionary<string, (double average, double stdev)> calculateSelectionStatistics(SelectionType selectiontype)
+        {
+            List<DataSelection> selections = DataSelections.FindAll(item => item.SelectionType == selectiontype);
+            List<Dictionary<string, double>> input = new List<Dictionary<string, double>>();
+            foreach (DataSelection selection in selections)
+            {
+                input.AddRange(GetSelectedData(selection));
+            }
+            Dictionary<string, (double average, double stdev)> output = Calculations.CalculateSelectionAverageStdevFromElementDictList(input);
+            return output;
+        }
+        public Dictionary<string, (double average, double stdev)> GetBackground()
+        {
+            return calculateSelectionStatistics(SelectionType.Background);
+        }
+        public Dictionary<string, (double average, double stdev)> GetBackgroundCorrectedSignals()
+        {
+            var background = this.calculateSelectionStatistics(SelectionType.Background);
+            var data = this.calculateSelectionStatistics(SelectionType.Data);
+            return Calculations.SubstractBackground(background, data);
+        }
+  
 
         /// <summary>
         /// Returns the type of the sample in string format

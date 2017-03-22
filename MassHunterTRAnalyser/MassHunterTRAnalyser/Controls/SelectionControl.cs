@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Globalization;
 
 namespace MassHunterTRAnalyser
 {
@@ -36,7 +37,7 @@ namespace MassHunterTRAnalyser
         public void UserControl1_DataLoaded(object sender, DataLoadedEventArgs e)
         {
             loadedBatch = e.LoadedBatch;
-            PopulateListBox();
+            populateListBox();
             UpdateData();
         }
 
@@ -56,9 +57,9 @@ namespace MassHunterTRAnalyser
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             //Handle selection type change
-            SelectionType selectedType = MassHunterTRAnalyser.SelectionType.None;
-            if(e.ColumnIndex == 1 && e.RowIndex >= 0)
+            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
+                SelectionType selectedType = selectedSample.DataSelections[e.RowIndex].SelectionType;
                 StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
                 switch(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString())
                 {
@@ -75,6 +76,8 @@ namespace MassHunterTRAnalyser
                         selectedType = MassHunterTRAnalyser.SelectionType.Data;
                         break;
                 }
+
+                selectedSample.DataSelections[e.RowIndex].SelectionType = selectedType;
             } //Handle Selection position change
             else if((e.ColumnIndex == 2 || e.ColumnIndex == 3) && e.RowIndex >= 0)
             {
@@ -84,13 +87,9 @@ namespace MassHunterTRAnalyser
                 chart1.ChartAreas[0].CursorX.SelectionEnd = selectedLine.IntervalOffset + selectedLine.StripWidth;
                 chart1.ChartAreas[0].CursorX.SelectionStart = selectedLine.IntervalOffset;
                 chart1.ChartAreas[0].CursorX.Position = selectedLine.IntervalOffset + selectedLine.StripWidth;
-            }
 
-            //Store selected areas in the SampleData objects for later use
-            if (e.RowIndex > -1)
-            {
                 selectedSample.DataSelections[e.RowIndex].RangeOfSelection = (SelectionStart: Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), SelectionEnd: Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
-                selectedSample.DataSelections[e.RowIndex].SelectionType = selectedType;
+
             }
         }
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -131,17 +130,13 @@ namespace MassHunterTRAnalyser
                 //Dont add to the selected sample
                 if (sample.DataFileName != listView1.SelectedItems[0].Text)
                 {
-                    //Add only if there are selected ranges
-                    if (selectedSample.DataSelections.Count > 0)
+                    if (allRangeRadio.Checked)
+                        sample.DataSelections = selectedSample.DataSelections;
+                    else if (selectedRangeRadio.Checked)
                     {
-                        if (allRangeRadio.Checked)
-                            sample.DataSelections = selectedSample.DataSelections;
-                        else if (selectedRangeRadio.Checked)
+                        foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                         {
-                            foreach (DataGridViewRow row in dataGridView1.SelectedRows)
-                            {
-                                sample.DataSelections.Add(selectedSample.DataSelections[row.Index]);
-                            }
+                            sample.DataSelections.Add(selectedSample.DataSelections[row.Index]);
                         }
                     }
                 }
@@ -193,7 +188,7 @@ namespace MassHunterTRAnalyser
                 loadSelections(selectedSample);
             }
         }
-        public void PopulateListBox()
+        private void populateListBox()
         {
             if (loadedBatch != null)
             {
@@ -225,7 +220,7 @@ namespace MassHunterTRAnalyser
                     newLine.BackColor = Color.LightGray;
                     break;
                 case MassHunterTRAnalyser.SelectionType.Data:
-                    newLine.BackColor = Color.DarkGreen;
+                    newLine.BackColor = Color.LightGreen;
                     break;
             }
             newLine.IntervalOffset = Math.Min(rangeofselection.SelectionStart, rangeofselection.SelectionEnd);

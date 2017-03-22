@@ -73,22 +73,33 @@ namespace MassHunterTRAnalyser
             //Wire in DatLoaded event handlers from controls
             this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
             this.DataLoaded += selectionControl.UserControl1_DataLoaded;
-            this.DataLoaded += calibrationControl1.CalibrationControlDataLoaded;
-
+            this.DataLoaded += averagesControl.CalibrationControlDataLoaded;
+            sampleTypeControl1.SampleGroupsChanged += averagesControl.SampleTypeControl1_SampleGroupsChanged;
             //Load StandardData
             StoredStandards = new List<StandardData>();
             if (Settings.Default.StandardData != "")
                 StoredStandards = JsonConvert.DeserializeObject<List<StandardData>>(Settings.Default.StandardData);
 
         }
-
+        
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Populate range selection listbox of tab opened
             if (tabControl1.SelectedIndex == 1)
-                selectionControl.PopulateListBox();
-            else if (tabControl1.SelectedIndex == 2)
-                calibrationControl1.UpdateData(selectedBatch, StoredStandards);
+            {
+                if (selectionControl.listView1.Items.Count > 0)
+                {
+                    selectionControl.listView1.Items[selectionControlLisViewIndex].Selected = true;
+                }
+                selectionControl.listView1.Select();
+
+            }
+            if (tabControl1.SelectedTab == tabControl1.TabPages["averagesTab"])
+            {
+                if(averagesTreeSelectedNode != null)
+                    averagesControl.sampleTree.SelectedNode = averagesTreeSelectedNode;
+                averagesControl.sampleTree.Select();
+            }
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -162,6 +173,15 @@ namespace MassHunterTRAnalyser
 
                 sampleTypeControl1.SetSampleNameCommentsRjct(samplenames, comments, reject);
             }
+        }
+
+        int selectionControlLisViewIndex;
+        TreeNode averagesTreeSelectedNode;
+        private void tabControl1_Selecting(object sender, TabControlCancelEventArgs e)
+        {
+            if(selectionControl.listView1.SelectedIndices.Count > 0)
+                selectionControlLisViewIndex = selectionControl.listView1.SelectedIndices[0];
+            averagesTreeSelectedNode = averagesControl.sampleTree.SelectedNode;
         }
     }
     public class DataLoadedEventArgs: EventArgs
