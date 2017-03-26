@@ -31,7 +31,7 @@ namespace MassHunterTRAnalyser
         public string StandardType { get; set; }
         public string SampleGroup { get; set; }
         public List<DataSelection> DataSelections { get; set; }
-
+         
         public List<(double time, Dictionary<string, double> data)> TimeResolvedData = new List<(double time, Dictionary<string, double> data)>();
        
         //Required for JsonSerializer

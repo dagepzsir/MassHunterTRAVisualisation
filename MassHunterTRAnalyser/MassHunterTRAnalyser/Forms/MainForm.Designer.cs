@@ -44,11 +44,14 @@
             this.averagesTab = new System.Windows.Forms.TabPage();
             this.averagesControl = new MassHunterTRAnalyser.Controls.AveragesControl();
             this.openXLSDialog = new System.Windows.Forms.OpenFileDialog();
+            this.calibrationTab = new System.Windows.Forms.TabPage();
+            this.calibrationControl1 = new MassHunterTRAnalyser.Controls.CalibrationControl();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.sampleTypesTab.SuspendLayout();
             this.rangesTab.SuspendLayout();
             this.averagesTab.SuspendLayout();
+            this.calibrationTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -105,6 +108,7 @@
             // 
             this.tabControl1.Controls.Add(this.sampleTypesTab);
             this.tabControl1.Controls.Add(this.rangesTab);
+            this.tabControl1.Controls.Add(this.calibrationTab);
             this.tabControl1.Controls.Add(this.averagesTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
@@ -177,6 +181,25 @@
             this.openXLSDialog.FileName = "openFileDialog1";
             this.openXLSDialog.Filter = "\"Microsoft Excel files|*.xlsx|CSV|*.csv";
             // 
+            // calibrationTab
+            // 
+            this.calibrationTab.Controls.Add(this.calibrationControl1);
+            this.calibrationTab.Location = new System.Drawing.Point(4, 22);
+            this.calibrationTab.Name = "calibrationTab";
+            this.calibrationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.calibrationTab.Size = new System.Drawing.Size(1007, 536);
+            this.calibrationTab.TabIndex = 3;
+            this.calibrationTab.Text = "Calibraion lines";
+            this.calibrationTab.UseVisualStyleBackColor = true;
+            // 
+            // calibrationControl1
+            // 
+            this.calibrationControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.calibrationControl1.Location = new System.Drawing.Point(3, 3);
+            this.calibrationControl1.Name = "calibrationControl1";
+            this.calibrationControl1.Size = new System.Drawing.Size(1001, 530);
+            this.calibrationControl1.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -195,6 +218,7 @@
             this.sampleTypesTab.ResumeLayout(false);
             this.rangesTab.ResumeLayout(false);
             this.averagesTab.ResumeLayout(false);
+            this.calibrationTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -217,6 +241,8 @@
         private System.Windows.Forms.OpenFileDialog openXLSDialog;
         private System.Windows.Forms.TabPage averagesTab;
         private Controls.AveragesControl averagesControl;
+        private System.Windows.Forms.TabPage calibrationTab;
+        private Controls.CalibrationControl calibrationControl1;
     }
 }
 

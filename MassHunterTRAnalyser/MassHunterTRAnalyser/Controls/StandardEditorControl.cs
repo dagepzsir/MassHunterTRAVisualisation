@@ -145,19 +145,6 @@ namespace MassHunterTRAnalyser.Controls
                         selectedStandard.ElementConcentrations.Add(key, data);
                     }
                 }
-                if(isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
-                {
-                    string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    (int Nominator, int Denominator, double Ratio) data = (Nominator: Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
-                    if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
-                    {
-                        selectedStandard.IsotopeRatios[key] = data;
-                    }
-                    else
-                    {
-                        selectedStandard.IsotopeRatios.Add(key, data);
-                    }
-                }
             }
         }
 
@@ -315,6 +302,23 @@ namespace MassHunterTRAnalyser.Controls
                 StoredStandards.Find(item => item.StandardName == oldname).StandardName = input.InputText;
             }
             populateListView();
+        }
+
+        private void isotopeRatioDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
+            {
+                string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+                (int Nominator, int Denominator, double Ratio) data = (Nominator: Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
+                if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
+                {
+                    selectedStandard.IsotopeRatios[key] = data;
+                }
+                else
+                {
+                    selectedStandard.IsotopeRatios.Add(key, data);
+                }
+            }
         }
     }
 }

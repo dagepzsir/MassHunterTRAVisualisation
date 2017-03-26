@@ -20,12 +20,12 @@ namespace MassHunterTRAnalyser.Controls
         List<SampleGroup> sampleGroups;
         List<StandardData> standardDatas;
         DataTable dataTable = new DataTable();
-        public void CalibrationControlDataLoaded(object sender, DataLoadedEventArgs e)
+        public void AveragesControlDataLoaded(object sender, DataLoadedEventArgs e)
         {
             standardDatas = e.StoredStandards;
             
         }
-        public void SampleTypeControl1_SampleGroupsChanged(object sender, SampleGroupsChangedEventArgs e)
+        public void SampleTypeControl1_SampleGroupsChanged(object sender, SampleDataChangedEventArgs e)
         {
             sampleGroups = e.SampleGroups;
             populateSampleGroupTree();

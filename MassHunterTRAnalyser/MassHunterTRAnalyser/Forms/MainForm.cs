@@ -23,6 +23,15 @@ namespace MassHunterTRAnalyser
         public MainForm()
         {
             InitializeComponent();
+
+            this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
+            this.DataLoaded += selectionControl.UserControl1_DataLoaded;
+            this.DataLoaded += averagesControl.AveragesControlDataLoaded;
+            this.DataLoaded += calibrationControl1.CalibrationControlDataLoaded;
+
+            sampleTypeControl1.SampleDataChanged += averagesControl.SampleTypeControl1_SampleGroupsChanged;
+            sampleTypeControl1.SampleDataChanged += calibrationControl1.SampleTypeControl1_SampleGroupsChanged;
+
         }
 
         //Local variables
@@ -43,6 +52,7 @@ namespace MassHunterTRAnalyser
 
                 if (folderBrowserDialog1.SelectedPath.Contains(".b"))
                 {
+
                     //Load selected batch from disk
                     selectedBatch = new Batch(folderBrowserDialog1.SelectedPath, StoredStandards);
                     //Trigger DataLoaded event
@@ -63,18 +73,12 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            selectionControl.UpdateData();
-        }
+  
 
         private void Form1_Load(object sender, EventArgs e)
         {
             //Wire in DatLoaded event handlers from controls
-            this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
-            this.DataLoaded += selectionControl.UserControl1_DataLoaded;
-            this.DataLoaded += averagesControl.CalibrationControlDataLoaded;
-            sampleTypeControl1.SampleGroupsChanged += averagesControl.SampleTypeControl1_SampleGroupsChanged;
+            
             //Load StandardData
             StoredStandards = new List<StandardData>();
             if (Settings.Default.StandardData != "")
@@ -99,6 +103,10 @@ namespace MassHunterTRAnalyser
                 if(averagesTreeSelectedNode != null)
                     averagesControl.sampleTree.SelectedNode = averagesTreeSelectedNode;
                 averagesControl.sampleTree.Select();
+            }
+            if (tabControl1.SelectedTab == tabControl1.TabPages["calibrationTab"])
+            {
+                calibrationControl1.UpdateCalibration();
             }
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)

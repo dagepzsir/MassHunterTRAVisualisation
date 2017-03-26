@@ -17,6 +17,38 @@ namespace MassHunterTRAnalyser.Data_Classes
         public  List<SampleData> Samples { get; private set; }
         public string GroupName { get; set; }
         public bool RejectedGroup { get; set; }
+        public SampleType GroupType
+        {
+            get
+            {
+                SampleType type = Samples[0].TypeOfSample;
+                string standardType = Samples[0].StandardType;
+                bool uniformeType = true;
+                foreach (SampleData sample in Samples)
+                {
+                    if (sample.TypeOfSample != type || sample.StandardType != standardType)
+                    {
+                        uniformeType = false;
+                        break;
+                    }
+                }
+                if (uniformeType == true)
+                    return type;
+                else
+                    return SampleType.NotSet;
+            }
+        }
+        public bool ShouldSerializeGroupType()
+        {
+            return false;
+        }
+        public int NumberofActiveSamples
+        {
+            get
+            {
+                return Samples.FindAll(item => item.Rejected == false).Count;
+            }
+        }
         public SampleGroup(string name)
         {
             Samples = new List<SampleData>();
@@ -47,13 +79,16 @@ namespace MassHunterTRAnalyser.Data_Classes
             List<Dictionary<string, double>> combinedList = new List<Dictionary<string, double>>();
             foreach (SampleData sample in Samples)
             {
-                var backgroundCorrectedSignals = sample.GetBackgroundCorrectedSignals();
-                Dictionary<string, double> tempDict = new Dictionary<string, double>();
-                foreach (string key in backgroundCorrectedSignals.Keys)
+                if (sample.Rejected == false)
                 {
-                    tempDict.Add(key, backgroundCorrectedSignals[key].average);
+                    var backgroundCorrectedSignals = sample.GetBackgroundCorrectedSignals();
+                    Dictionary<string, double> tempDict = new Dictionary<string, double>();
+                    foreach (string key in backgroundCorrectedSignals.Keys)
+                    {
+                        tempDict.Add(key, backgroundCorrectedSignals[key].average);
+                    }
+                    combinedList.Add(tempDict);
                 }
-                combinedList.Add(tempDict);
             }
             return Calculations.CalculateSelectionAverageStdevFromElementDictList(combinedList);
         }

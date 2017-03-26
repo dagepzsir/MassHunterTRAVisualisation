@@ -17,17 +17,17 @@ namespace MassHunterTRAnalyser
         {
             InitializeComponent();
         }
-        public event EventHandler<SampleGroupsChangedEventArgs> SampleGroupsChanged;
-        protected virtual void OnSampleGroupsChanged(SampleGroupsChangedEventArgs e)
+        public event EventHandler<SampleDataChangedEventArgs> SampleDataChanged;
+        protected virtual void OnSampleGroupsChanged(SampleDataChangedEventArgs e)
         {
-            SampleGroupsChanged?.Invoke(this, e);
+            SampleDataChanged?.Invoke(this, e);
         }
 
         Batch loadedBatch;
         List<StandardData> StoredStandards;
         List<SampleGroup> SampleGroups = new List<SampleGroup>();
         string oldSampleGroup;
-        
+        List<int> levels = new List<int>();
         #region Events
         public void SampleTypeControl_DataLoaded(object sender, DataLoadedEventArgs e)
         {
@@ -43,7 +43,7 @@ namespace MassHunterTRAnalyser
             sampleTree.Nodes.Clear();
             foreach (SampleGroup group in SampleGroups)
             {
-                sampleTree.Nodes.Add(group.GroupName);
+                sampleTree.Nodes.Add(group.GroupName, group.GroupName + " - " + group.GroupType);
                 sampleTree.Nodes[sampleTree.Nodes.Count - 1].BackColor = Color.LightGray;
                 foreach (SampleData sample in group.Samples)
                 {
@@ -58,7 +58,8 @@ namespace MassHunterTRAnalyser
                     }
                 }
             }
-            OnSampleGroupsChanged(new SampleGroupsChangedEventArgs(SampleGroups));
+            
+            OnSampleGroupsChanged(new SampleDataChangedEventArgs(SampleGroups, levels));
             sampleTree.ExpandAll();
         }
 
@@ -83,6 +84,7 @@ namespace MassHunterTRAnalyser
                         enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], true);
                     }
                 }
+                
             }
         }
 
@@ -300,7 +302,8 @@ namespace MassHunterTRAnalyser
                     string sampleGroupName = getSampleGroup(sampleData, false);
 
                     dataGridView1.Rows.Add(rjctCellValue, sampleData.DataFileName, sampleData.SampleName, sampleData.Comment, sampleData.SampleTypeString, sampleData.StandardLevel, sampleData.StandardType, sampleGroupName);
-
+                    if (levels.Contains(sampleData.StandardLevel) == false)
+                        levels.Add(sampleData.StandardLevel);
                     //Construct sample groups
                     SampleGroup existingGroup = SampleGroups.Find(item => item.GroupName == sampleData.SampleGroup);
                     if (existingGroup != null)
@@ -368,6 +371,19 @@ namespace MassHunterTRAnalyser
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "standardLevel")
+            {
+                SampleGroup group = SampleGroups.Find(item => item.GroupName == dataGridView1["sampleGroup", e.RowIndex].Value.ToString());
+                foreach (var sample in group.Samples)
+                {
+                    dataGridView1["standardLevel", loadedBatch.MeasuredData.IndexOf(sample)].Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                    sample.StandardLevel = Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value);
+                }
+                if (levels.Contains(Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value)) == false)
+                    levels.Add(Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value));
+
+                OnSampleGroupsChanged(new SampleDataChangedEventArgs(SampleGroups, levels));
+            }
             updateSampleData(e.RowIndex);
             constructGroups();
         }
@@ -426,12 +442,14 @@ namespace MassHunterTRAnalyser
         }
     }
 
-    public class SampleGroupsChangedEventArgs
+    public class SampleDataChangedEventArgs: EventArgs
     {
         public List<SampleGroup> SampleGroups { get; private set; }
-        public SampleGroupsChangedEventArgs(List<SampleGroup> samplegroups)
+        public List<int> Levels { get; private set; }
+        public SampleDataChangedEventArgs(List<SampleGroup> samplegroups, List<int> levels)
         {
             this.SampleGroups = samplegroups;
+            this.Levels = levels;
         }
     }
 }

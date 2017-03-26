@@ -150,6 +150,7 @@
             this.isotopeRatioDataGridView.Name = "isotopeRatioDataGridView";
             this.isotopeRatioDataGridView.Size = new System.Drawing.Size(681, 164);
             this.isotopeRatioDataGridView.TabIndex = 4;
+            this.isotopeRatioDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.isotopeRatioDataGridView_CellValueChanged);
             // 
             // elementsNameColumn
             // 

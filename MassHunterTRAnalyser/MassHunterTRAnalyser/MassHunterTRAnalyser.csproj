@@ -88,6 +88,12 @@
     <Compile Include="Controls\AveragesControl.Designer.cs">
       <DependentUpon>AveragesControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CalibrationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CalibrationControl.Designer.cs">
+      <DependentUpon>CalibrationControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StandardEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -141,6 +147,9 @@
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Controls\AveragesControl.resx">
       <DependentUpon>AveragesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CalibrationControl.resx">
+      <DependentUpon>CalibrationControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StandardEditorControl.resx">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
