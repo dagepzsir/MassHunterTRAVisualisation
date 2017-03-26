@@ -15,9 +15,11 @@ namespace MassHunterTRAnalyser
     {
         public List<SampleData> MeasuredData { get; set; }
         public bool AlreadySaved;
+        public string FolderPath { get; private set; }
         public Batch(string path, List<StandardData> storedstandards)
         {
             loadFromFile(path, storedstandards);
+            FolderPath = path;
         }
 
         //Load selected batch

@@ -37,7 +37,7 @@ namespace MassHunterTRAnalyser.Controls
             {
                 if (group.RejectedGroup == false)
                 {
-                    sampleTree.Nodes.Add(group.GroupName);
+                    sampleTree.Nodes.Add(group.GroupName, group.GroupName + " - " + group.GroupType);
                     foreach (SampleData sample in group.Samples)
                     {
                         TreeNode parent = sampleTree.Nodes[sampleTree.Nodes.Count - 1];
@@ -57,7 +57,7 @@ namespace MassHunterTRAnalyser.Controls
             {
                 if (e.Node.Parent != null)
                 {
-                    group = sampleGroups.Find(item => item.GroupName == e.Node.Parent.Text);
+                    group = sampleGroups.Find(item => item.GroupName == e.Node.Parent.Name);
                     SampleData sampleData = group.Samples.Find(item => item.DataFileName == e.Node.Name);
 
                     var data = sampleData.GetBackgroundCorrectedSignals();
@@ -70,7 +70,7 @@ namespace MassHunterTRAnalyser.Controls
                 }
                 else
                 {
-                    group = sampleGroups.Find(item => item.GroupName == e.Node.Text);
+                    group = sampleGroups.Find(item => e.Node.Name == (item.GroupName));
                     var data = group.CalulateGroupStatistics();
                     foreach (string element in data.Keys)
                     {

@@ -12,28 +12,35 @@ namespace MassHunterTRAnalyser
         public static Dictionary<string, (double average, double stdev)> SubstractBackground(Dictionary<string, (double average, double stdev)> background, Dictionary<string, (double average, double stdev)> data)
         {
             Dictionary<string, (double average, double stdev)> output = new Dictionary<string, (double average, double stdev)>();
-
-            foreach (string key in data.Keys)
+            if (data.Count > 0)
             {
-                output.Add(key, (average: data[key].average - background[key].average, stdev: data[key].stdev));
+                foreach (string key in data.Keys)
+                {
+                    output.Add(key, (average: data[key].average - background[key].average, stdev: data[key].stdev));
+                }
             }
             return output;
         }
         public static Dictionary<string, (double average, double stdev)> CalculateSelectionAverageStdevFromElementDictList(List<Dictionary<string, double>> elementdata)
         {
-            Dictionary<string, (double average, double stdev)> output = new Dictionary<string, (double average, double stdev)>();
-            foreach (string key in elementdata[0].Keys)
+            if (elementdata.Count > 0)
             {
-                List<double> measurementData = new List<double>();
-                foreach (Dictionary<string, double> measurement in elementdata)
+                Dictionary<string, (double average, double stdev)> output = new Dictionary<string, (double average, double stdev)>();
+                foreach (string key in elementdata[0].Keys)
                 {
-                    if(measurement.ContainsKey(key))
-                        measurementData.Add(measurement[key]);
+                    List<double> measurementData = new List<double>();
+                    foreach (Dictionary<string, double> measurement in elementdata)
+                    {
+                        if (measurement.ContainsKey(key))
+                            measurementData.Add(measurement[key]);
+                    }
+                    var meanAndStdev = Statistics.MeanStandardDeviation(measurementData);
+                    output.Add(key, (meanAndStdev.Item1, meanAndStdev.Item2));
                 }
-                var meanAndStdev = Statistics.MeanStandardDeviation(measurementData);
-                output.Add(key, (meanAndStdev.Item1, meanAndStdev.Item2));
+                return output;
             }
-            return output;
+            else
+                return new Dictionary<string, (double average, double stdev)>();
         }
         public static double RSD((double average, double stdev) averageandstdev)
         {

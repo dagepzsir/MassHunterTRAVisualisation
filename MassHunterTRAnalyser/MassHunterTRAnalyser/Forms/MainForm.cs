@@ -123,17 +123,15 @@ namespace MassHunterTRAnalyser
 
         private void saveWork()
         {    
-            using (StreamWriter sw = new StreamWriter(Path.Combine(folderBrowserDialog1.SelectedPath, "analysis.json"), false))
+            using (StreamWriter sw = new StreamWriter(Path.Combine(selectedBatch.FolderPath, "analysis.json"), false))
             {
                 //Serialize sample data to a json and save it to ~\analysis.json
-                string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
-                sw.WriteLine(serialized);
+                if (selectedBatch != null)
+                {
+                    string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
+                    sw.WriteLine(serialized);
+                }
             }
-        }
-
-        private void loadSampleNamesFromXlsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            loadNewNamesAndComments();
         }
 
         private void loadNewNamesAndComments()
@@ -190,6 +188,76 @@ namespace MassHunterTRAnalyser
             if(selectionControl.listView1.SelectedIndices.Count > 0)
                 selectionControlLisViewIndex = selectionControl.listView1.SelectedIndices[0];
             averagesTreeSelectedNode = averagesControl.sampleTree.SelectedNode;
+        }
+
+        private void loadSampleNamesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            loadNewNamesAndComments();
+        }
+
+        private void batchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if(folderBrowserDialog1.SelectedPath != selectedBatch.FolderPath)
+                {
+                    Batch importFrom = new Batch(folderBrowserDialog1.SelectedPath, StoredStandards);
+                    ImportBatchForm importForm = new ImportBatchForm(importFrom);
+
+                    if(importForm.ShowDialog() == DialogResult.OK)
+                    {
+                        List<SampleData> importedData = importForm.SampleDataToImport;
+                        string lastDataFile = selectedBatch.MeasuredData.Last().DataFileName;
+
+                        foreach (SampleData sample in importedData)
+                        {
+                            string folderName = generateDataFileName(lastDataFile, importedData.IndexOf(sample) + 1);
+                            string newSampleFolderInSelectedBatch = Path.Combine(selectedBatch.FolderPath, folderName + ".d");
+                            string sourcePath = Path.Combine(folderBrowserDialog1.SelectedPath, sample.DataFileName + ".d");
+
+                            Directory.CreateDirectory(newSampleFolderInSelectedBatch);
+                            foreach (string folder in Directory.GetDirectories(sourcePath))
+                            {
+                                Directory.CreateDirectory(folder.Replace(sourcePath, newSampleFolderInSelectedBatch));
+                            }
+                            foreach (string file in Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories))
+                            {
+                                if (file.Contains("csv") == false)
+                                    File.Copy(file, file.Replace(sourcePath, newSampleFolderInSelectedBatch));
+                                else
+                                    File.Copy(file, file.Replace(sourcePath, newSampleFolderInSelectedBatch).Replace(sample.DataFileName, folderName));
+                                
+                            }
+
+                            sample.DataFileName = folderName; 
+                            
+                            selectedBatch.MeasuredData.Add(sample);
+                        }
+                        OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
+                    }
+                }
+            }
+        }
+        private string generateDataFileName(string lastName, int increment)
+        {
+            List<char> charList = lastName.ToCharArray().ToList();
+            charList.RemoveAll(item => Char.IsLetter(item));
+            int dataFileStartingDigit = Convert.ToInt32(new string(charList.ToArray()));
+            string stringszam = (dataFileStartingDigit + increment).ToString();
+            while (stringszam.Length < 3)
+                stringszam = stringszam.Insert(0, "0");
+            string output = string.Format("{0}SMPL", stringszam);
+
+            return output;
+        }
+        private void importSampleData(List<SampleData> datatoimport)
+        {
+
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            saveWork();
         }
     }
     public class DataLoadedEventArgs: EventArgs

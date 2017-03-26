@@ -35,6 +35,7 @@ namespace MassHunterTRAnalyser
             StoredStandards = e.StoredStandards;
             LoadStandardNames();
             loadSampleData();
+            constructGroups();
             populateSampleGroupTree();
         }
 
@@ -44,22 +45,16 @@ namespace MassHunterTRAnalyser
             foreach (SampleGroup group in SampleGroups)
             {
                 sampleTree.Nodes.Add(group.GroupName, group.GroupName + " - " + group.GroupType);
-                sampleTree.Nodes[sampleTree.Nodes.Count - 1].BackColor = Color.LightGray;
+                if(group.RejectedGroup)
+                    sampleTree.Nodes[sampleTree.Nodes.Count - 1].BackColor = Color.LightGray;
                 foreach (SampleData sample in group.Samples)
                 {
                     TreeNode parent = sampleTree.Nodes[sampleTree.Nodes.Count - 1];
                     parent.Nodes.Add(sample.DataFileName, sample.DataFileName + " -" + sample.SampleName + " (" + sample.SampleTypeString + ")");
                     if (sample.Rejected)
                         parent.Nodes[parent.Nodes.Count - 1].BackColor = Color.LightGray;
-                    else
-                    {
-                        parent.BackColor = Color.Empty;
-                        group.RejectedGroup = false;
-                    }
                 }
             }
-            
-            OnSampleGroupsChanged(new SampleDataChangedEventArgs(SampleGroups, levels));
             sampleTree.ExpandAll();
         }
 
@@ -255,7 +250,7 @@ namespace MassHunterTRAnalyser
         }
         public void SetSampleNameCommentsRjct(List<string> samplenames, List<string> comments, List<bool> reject)
         {
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            for (int i = 0; i < samplenames.Count; i++)
             {
                 string newname = samplenames[i];
                 string newcomment = comments[i];
@@ -291,6 +286,7 @@ namespace MassHunterTRAnalyser
         {
             if(loadedBatch != null)
             {
+                dataGridView1.Rows.Clear();
                 foreach (SampleData sampleData in loadedBatch.MeasuredData)
                 {
                     bool rjctCellValue;
@@ -383,9 +379,12 @@ namespace MassHunterTRAnalyser
                     levels.Add(Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value));
 
                 OnSampleGroupsChanged(new SampleDataChangedEventArgs(SampleGroups, levels));
+                constructGroups();
             }
+            if(dataGridView1.Columns[e.ColumnIndex].Name == "sampleGroup")
+                constructGroups();
             updateSampleData(e.RowIndex);
-            constructGroups();
+            
         }
         private void constructGroups()
         {
@@ -396,14 +395,20 @@ namespace MassHunterTRAnalyser
                 if (existingGroup != null)
                 {
                     existingGroup.AddSample(loadedBatch.MeasuredData[i]);
+                    if (existingGroup.Samples.Last().Rejected == false)
+                        existingGroup.RejectedGroup = false;
                 }
                 else
                 {
                     SampleGroup newGroup = new SampleGroup(loadedBatch.MeasuredData[i].SampleGroup);
                     newGroup.AddSample(loadedBatch.MeasuredData[i]);
+                    if (newGroup.Samples.Last().Rejected == false)
+                        newGroup.RejectedGroup = false;
                     SampleGroups.Add(newGroup);
+                
                 }
             }
+            OnSampleGroupsChanged(new SampleDataChangedEventArgs(SampleGroups, levels));
             populateSampleGroupTree();
         }
         private void dataGridView1_KeyUp(object sender, KeyEventArgs e)

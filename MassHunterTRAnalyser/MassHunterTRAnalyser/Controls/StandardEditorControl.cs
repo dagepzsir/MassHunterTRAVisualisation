@@ -306,17 +306,20 @@ namespace MassHunterTRAnalyser.Controls
 
         private void isotopeRatioDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
+            if (e.RowIndex > -1)
             {
-                string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-                (int Nominator, int Denominator, double Ratio) data = (Nominator: Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
-                if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
+                if (isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
                 {
-                    selectedStandard.IsotopeRatios[key] = data;
-                }
-                else
-                {
-                    selectedStandard.IsotopeRatios.Add(key, data);
+                    string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    (int Nominator, int Denominator, double Ratio) data = (Nominator: Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
+                    if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
+                    {
+                        selectedStandard.IsotopeRatios[key] = data;
+                    }
+                    else
+                    {
+                        selectedStandard.IsotopeRatios.Add(key, data);
+                    }
                 }
             }
         }

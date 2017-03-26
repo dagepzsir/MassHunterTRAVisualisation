@@ -112,11 +112,15 @@ namespace MassHunterTRAnalyser
         {
             List<DataSelection> selections = DataSelections.FindAll(item => item.SelectionType == selectiontype);
             List<Dictionary<string, double>> input = new List<Dictionary<string, double>>();
-            foreach (DataSelection selection in selections)
+            Dictionary<string, (double average, double stdev)> output = new Dictionary<string, (double average, double stdev)>();
+            if (selections.Count > 0)
             {
-                input.AddRange(GetSelectedData(selection));
+                foreach (DataSelection selection in selections)
+                {
+                    input.AddRange(GetSelectedData(selection));
+                }
+                output = Calculations.CalculateSelectionAverageStdevFromElementDictList(input);
             }
-            Dictionary<string, (double average, double stdev)> output = Calculations.CalculateSelectionAverageStdevFromElementDictList(input);
             return output;
         }
         public Dictionary<string, (double average, double stdev)> GetBackground()
