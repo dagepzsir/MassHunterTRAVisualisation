@@ -100,6 +100,7 @@
     <Compile Include="Controls\StandardEditorControl.Designer.cs">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data Classes\CalibrationLine.cs" />
     <Compile Include="Data Classes\CSV.cs" />
     <Compile Include="Data Classes\Batch.cs" />
     <Compile Include="Data Classes\DataSelection.cs" />
@@ -151,6 +152,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Controls\AveragesControl.resx">
       <DependentUpon>AveragesControl.cs</DependentUpon>
     </EmbeddedResource>

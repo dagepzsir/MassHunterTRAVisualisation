@@ -113,7 +113,7 @@
             this.elementDataGridView.Size = new System.Drawing.Size(681, 254);
             this.elementDataGridView.TabIndex = 3;
             this.elementDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.elementDataGridView_CellEnter);
-            this.elementDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.elementDataGridView_CellValueChanged);
+            this.elementDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.elementDataGridView_CellValidating);
             // 
             // elementNameColumn
             // 

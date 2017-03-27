@@ -91,6 +91,7 @@ namespace MassHunterTRAnalyser
             //Populate range selection listbox of tab opened
             if (tabControl1.SelectedIndex == 1)
             {
+                selectionControl.PopulateListBox();
                 if (selectionControl.listView1.Items.Count > 0)
                 {
                     selectionControl.listView1.Items[selectionControlLisViewIndex].Selected = true;
@@ -103,10 +104,11 @@ namespace MassHunterTRAnalyser
                 if(averagesTreeSelectedNode != null)
                     averagesControl.sampleTree.SelectedNode = averagesTreeSelectedNode;
                 averagesControl.sampleTree.Select();
+                averagesControl.UpdateControl();
             }
             if (tabControl1.SelectedTab == tabControl1.TabPages["calibrationTab"])
             {
-                calibrationControl1.UpdateCalibration();
+                
             }
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -122,12 +124,12 @@ namespace MassHunterTRAnalyser
         #endregion
 
         private void saveWork()
-        {    
-            using (StreamWriter sw = new StreamWriter(Path.Combine(selectedBatch.FolderPath, "analysis.json"), false))
+        {
+            if (selectedBatch != null)
             {
-                //Serialize sample data to a json and save it to ~\analysis.json
-                if (selectedBatch != null)
+                using (StreamWriter sw = new StreamWriter(Path.Combine(selectedBatch.FolderPath, "analysis.json"), false))
                 {
+                    //Serialize sample data to a json and save it to ~\analysis.json
                     string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
                     sw.WriteLine(serialized);
                 }
@@ -242,7 +244,7 @@ namespace MassHunterTRAnalyser
         {
             List<char> charList = lastName.ToCharArray().ToList();
             charList.RemoveAll(item => Char.IsLetter(item));
-            int dataFileStartingDigit = Convert.ToInt32(new string(charList.ToArray()));
+            int dataFileStartingDigit = Utils.ConvertToInt32(new string(charList.ToArray()));
             string stringszam = (dataFileStartingDigit + increment).ToString();
             while (stringszam.Length < 3)
                 stringszam = stringszam.Insert(0, "0");

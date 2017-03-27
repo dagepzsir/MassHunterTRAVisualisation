@@ -60,27 +60,7 @@ namespace MassHunterTRAnalyser
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex > -1)
-            {
-                if (dataGridView1.Columns[e.ColumnIndex].Name == "rjctSample")
-                {
-                    disableRejectedSampleLine(e.RowIndex);
-                }
-                if (dataGridView1.Columns[e.ColumnIndex].Name == "sampleType")
-                {
-                    if(dataGridView1.Rows[e.RowIndex].Cells["sampleType"].Value.ToString() != "Standard")
-                    {
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], false);
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], false);
-                    }
-                    else
-                    {
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], true);
-                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], true);
-                    }
-                }
-                
-            }
+            
         }
 
         private void disableRejectedSampleLine(int rowindex)
@@ -240,7 +220,7 @@ namespace MassHunterTRAnalyser
             changedSample.Comment = dataGridView1["sampleComment", index].Value.ToString();
 
             if (dataGridView1["standardLevel", index].Value != null)
-                changedSample.StandardLevel = int.Parse(dataGridView1["standardLevel", index].Value.ToString());
+                changedSample.StandardLevel = Utils.ConvertToInt32(dataGridView1["standardLevel", index].Value);
             else
                 changedSample.StandardLevel = -1;
             if (dataGridView1["standardType", index].Value != null)
@@ -367,16 +347,38 @@ namespace MassHunterTRAnalyser
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex > -1)
+            {
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "rjctSample")
+                {
+                    disableRejectedSampleLine(e.RowIndex);
+                }
+                if (dataGridView1.Columns[e.ColumnIndex].Name == "sampleType")
+                {
+                    if (dataGridView1.Rows[e.RowIndex].Cells["sampleType"].Value.ToString() != "Standard")
+                    {
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], false);
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], false);
+                    }
+                    else
+                    {
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], true);
+                        enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], true);
+                    }
+                }
+
+            }
+
             if (dataGridView1.Columns[e.ColumnIndex].Name == "standardLevel")
             {
                 SampleGroup group = SampleGroups.Find(item => item.GroupName == dataGridView1["sampleGroup", e.RowIndex].Value.ToString());
                 foreach (var sample in group.Samples)
                 {
                     dataGridView1["standardLevel", loadedBatch.MeasuredData.IndexOf(sample)].Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
-                    sample.StandardLevel = Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value);
+                    sample.StandardLevel = Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value);
                 }
-                if (levels.Contains(Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value)) == false)
-                    levels.Add(Convert.ToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value));
+                if (levels.Contains(Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value)) == false)
+                    levels.Add(Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value));
 
                 OnSampleGroupsChanged(new SampleDataChangedEventArgs(SampleGroups, levels));
                 constructGroups();
@@ -384,7 +386,7 @@ namespace MassHunterTRAnalyser
             if(dataGridView1.Columns[e.ColumnIndex].Name == "sampleGroup")
                 constructGroups();
             updateSampleData(e.RowIndex);
-            
+            populateSampleGroupTree();
         }
         private void constructGroups()
         {
@@ -443,6 +445,19 @@ namespace MassHunterTRAnalyser
             {
                 if (dataGridView1["sampleName", cell.RowIndex].Style.BackColor != Color.LightGray)
                     dataGridView1["sampleName", cell.RowIndex].Style.BackColor = Color.LightBlue;
+            }
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "standardLevel")
+            {
+                int level = Utils.ConvertToInt32(e.FormattedValue);
+                if(level == int.MinValue)
+                {
+                    e.Cancel = true;
+                    (dataGridView1.EditingControl as TextBox).Undo();
+                }
             }
         }
     }

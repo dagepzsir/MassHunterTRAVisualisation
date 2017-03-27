@@ -127,26 +127,6 @@ namespace MassHunterTRAnalyser.Controls
                 ((ComboBox)((DataGridView)sender).EditingControl).DroppedDown = true;
             }
         }
-        private void elementDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > -1 && e.ColumnIndex > -1)
-            {
-                //If all cells filled store element data
-                if (elementDataGridView[0, e.RowIndex].Value != null && elementDataGridView[1, e.RowIndex].Value != null && elementDataGridView[2, e.RowIndex].Value != null)
-                {
-                    string key = elementDataGridView[0, e.RowIndex].Value.ToString();
-                    (double Concentration, string Unit) data = (Concentration: Convert.ToDouble(elementDataGridView[1, e.RowIndex].Value), Unit: elementDataGridView[2, e.RowIndex].Value.ToString());
-                    if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
-                    {
-                        selectedStandard.ElementConcentrations[key] = data;
-                    }
-                    else
-                    {
-                        selectedStandard.ElementConcentrations.Add(key, data);
-                    }
-                }
-            }
-        }
 
         private void removeStdBurron_Click(object sender, EventArgs e)
         {
@@ -259,7 +239,7 @@ namespace MassHunterTRAnalyser.Controls
                                             name += c;
                                     }
 
-                                    int massnumber = Convert.ToInt32(massstring);
+                                    int massnumber = Utils.ConvertToInt32(massstring);
                                     return (element: name, massnumber: massnumber);
                                 }
 
@@ -311,7 +291,7 @@ namespace MassHunterTRAnalyser.Controls
                 if (isotopeRatioDataGridView[0, e.RowIndex].Value != null && isotopeRatioDataGridView[1, e.RowIndex].Value != null && isotopeRatioDataGridView[2, e.RowIndex].Value != null && isotopeRatioDataGridView[3, e.RowIndex].Value != null)
                 {
                     string key = isotopeRatioDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    (int Nominator, int Denominator, double Ratio) data = (Nominator: Convert.ToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Convert.ToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
+                    (int Nominator, int Denominator, double Ratio) data = (Nominator: Utils.ConvertToInt32(isotopeRatioDataGridView[1, e.RowIndex].Value), Denominator: Utils.ConvertToInt32(elementDataGridView[2, e.RowIndex].Value), Ratio: Convert.ToDouble(isotopeRatioDataGridView[3, e.RowIndex].Value));
                     if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
                     {
                         selectedStandard.IsotopeRatios[key] = data;
@@ -319,6 +299,30 @@ namespace MassHunterTRAnalyser.Controls
                     else
                     {
                         selectedStandard.IsotopeRatios.Add(key, data);
+                    }
+                }
+            }
+        }
+
+        private void elementDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (e.RowIndex > -1 && e.ColumnIndex > -1)
+            {
+                //If all cells filled store element data
+                if (elementDataGridView[0, e.RowIndex].Value != null && elementDataGridView[1, e.RowIndex].Value != null && elementDataGridView[2, e.RowIndex].Value != null)
+                {
+                    string key = elementDataGridView[0, e.RowIndex].Value.ToString();
+                    double concentration = Utils.ConvertToDouble(elementDataGridView[1, e.RowIndex].Value);
+                    if (concentration == double.NaN)
+                        e.Cancel = true;
+                    (double Concentration, string Unit) data = (Concentration: concentration, Unit: elementDataGridView[2, e.RowIndex].Value.ToString());
+                    if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
+                    {
+                        selectedStandard.ElementConcentrations[key] = data;
+                    }
+                    else
+                    {
+                        selectedStandard.ElementConcentrations.Add(key, data);
                     }
                 }
             }

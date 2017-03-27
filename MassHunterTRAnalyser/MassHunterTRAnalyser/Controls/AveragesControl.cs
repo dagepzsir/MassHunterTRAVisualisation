@@ -46,7 +46,6 @@ namespace MassHunterTRAnalyser.Controls
                     }
                 }
             }
-            sampleTree.ExpandAll();
         }
 
         private void sampleTree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -114,6 +113,11 @@ namespace MassHunterTRAnalyser.Controls
                 column.DefaultCellStyle.Format = "0.000";
             }
 
+        }
+
+        public void UpdateControl()
+        {
+            populateSampleGroupTree();
         }
     }
 }

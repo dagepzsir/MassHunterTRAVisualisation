@@ -37,8 +37,8 @@ namespace MassHunterTRAnalyser
         public void UserControl1_DataLoaded(object sender, DataLoadedEventArgs e)
         {
             loadedBatch = e.LoadedBatch;
-            populateListBox();
-            UpdateData();
+            PopulateListBox();
+            updateData();
         }
 
         private void chart1_SelectionRangeChanging(object sender, CursorEventArgs e)
@@ -54,44 +54,7 @@ namespace MassHunterTRAnalyser
             dataGridView1.Rows.Add(chart1.ChartAreas[0].AxisX.StripLines.Count, "None", currRange.SelectionStart, currRange.SelectionEnd);
             selectedSample.DataSelections.Add(new DataSelection(chart1.ChartAreas[0].AxisX.StripLines.Count.ToString(), currRange, MassHunterTRAnalyser.SelectionType.None));
         }
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            //Handle selection type change
-            if (e.ColumnIndex == 1 && e.RowIndex >= 0)
-            {
-                SelectionType selectedType = selectedSample.DataSelections[e.RowIndex].SelectionType;
-                StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
-                switch(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString())
-                {
-                    case "None":
-                       selectedLine.BackColor = Color.FromArgb(255, Color.LightBlue);
-                        selectedType = MassHunterTRAnalyser.SelectionType.None;
-                        break;
-                    case "Background":
-                        selectedLine.BackColor = Color.LightGray;
-                        selectedType = MassHunterTRAnalyser.SelectionType.Background;
-                        break;
-                    case "Data":
-                        selectedLine.BackColor = Color.LightGreen;
-                        selectedType = MassHunterTRAnalyser.SelectionType.Data;
-                        break;
-                }
 
-                selectedSample.DataSelections[e.RowIndex].SelectionType = selectedType;
-            } //Handle Selection position change
-            else if((e.ColumnIndex == 2 || e.ColumnIndex == 3) && e.RowIndex >= 0)
-            {
-                StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
-                selectedLine.IntervalOffset = Math.Min(Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
-                selectedLine.StripWidth = Math.Abs(Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value) - Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
-                chart1.ChartAreas[0].CursorX.SelectionEnd = selectedLine.IntervalOffset + selectedLine.StripWidth;
-                chart1.ChartAreas[0].CursorX.SelectionStart = selectedLine.IntervalOffset;
-                chart1.ChartAreas[0].CursorX.Position = selectedLine.IntervalOffset + selectedLine.StripWidth;
-
-                selectedSample.DataSelections[e.RowIndex].RangeOfSelection = (SelectionStart: Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value), SelectionEnd: Convert.ToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
-
-            }
-        }
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedCells.Count > 0)
@@ -144,7 +107,7 @@ namespace MassHunterTRAnalyser
         }
         private void listView1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            UpdateData();
+            updateData();
         }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -155,7 +118,7 @@ namespace MassHunterTRAnalyser
                 chart1.ChartAreas[0].AxisY.Minimum = 0;
         }
         #endregion
-        public void UpdateData()
+        private void updateData()
         {
             //Reset GUI
             resetGUI();
@@ -188,7 +151,7 @@ namespace MassHunterTRAnalyser
                 loadSelections(selectedSample);
             }
         }
-        private void populateListBox()
+        public void PopulateListBox()
         {
             if (loadedBatch != null)
             {
@@ -230,11 +193,71 @@ namespace MassHunterTRAnalyser
         private void resetGUI()
         {
             chart1.Enabled = true;
+            
             chart1.Series.Clear();
             chart1.ChartAreas[0].AxisX.StripLines.Clear();
             chart1.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
             checkedListBox1.Items.Clear();
             dataGridView1.Rows.Clear();
+            
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "SelectionStart" || dataGridView1.Columns[e.ColumnIndex].Name == "SelectionEnd")
+            {
+                double value = Utils.ConvertToDouble(e.FormattedValue);
+                if (double.IsNaN(value))
+                {
+                    e.Cancel = true;
+                    ((TextBox)dataGridView1.EditingControl).Undo();
+                }
+            }
+        }
+
+        private void dataGridView1_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            //Handle selection type change
+
+           if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+            {
+                SelectionType selectedType = selectedSample.DataSelections[e.RowIndex].SelectionType;
+                StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
+                switch (dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString())
+                {
+                    case "None":
+                        selectedLine.BackColor = Color.FromArgb(255, Color.LightBlue);
+                        selectedType = MassHunterTRAnalyser.SelectionType.None;
+                        break;
+                    case "Background":
+                        selectedLine.BackColor = Color.LightGray;
+                        selectedType = MassHunterTRAnalyser.SelectionType.Background;
+                        break;
+                    case "Data":
+                        selectedLine.BackColor = Color.LightGreen;
+                        selectedType = MassHunterTRAnalyser.SelectionType.Data;
+                        break;
+                }
+
+                selectedSample.DataSelections[e.RowIndex].SelectionType = selectedType;
+            } //Handle Selection position change
+            else if ((e.ColumnIndex == 2 || e.ColumnIndex == 3) && e.RowIndex >= 0)
+            {
+                StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
+                double min = Math.Min(Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].FormattedValue), Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
+                double abs = Math.Abs(Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].FormattedValue) - Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
+
+                selectedLine.IntervalOffset = min;
+                selectedLine.StripWidth = abs;
+                chart1.ChartAreas[0].CursorX.SelectionEnd = selectedLine.IntervalOffset + selectedLine.StripWidth;
+                chart1.ChartAreas[0].CursorX.SelectionStart = selectedLine.IntervalOffset;
+                chart1.ChartAreas[0].CursorX.Position = selectedLine.IntervalOffset + selectedLine.StripWidth;
+
+                double selectionStart = Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value);
+                double selectionEnd = Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value);
+                selectedSample.DataSelections[e.RowIndex].RangeOfSelection = (SelectionStart: selectionStart, SelectionEnd: selectionEnd);
+
+            }
         }
     }
 }

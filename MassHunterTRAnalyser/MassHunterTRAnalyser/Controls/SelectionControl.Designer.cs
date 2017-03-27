@@ -104,7 +104,8 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(450, 115);
             this.dataGridView1.TabIndex = 3;
-            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
+            this.dataGridView1.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValidated);
+            this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             this.dataGridView1.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
             // 
@@ -255,10 +256,10 @@
         private System.Windows.Forms.ColumnHeader sampleName;
         private System.Windows.Forms.ColumnHeader sampleType;
         private System.Windows.Forms.CheckBox checkBox1;
+        public System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectionName;
         private System.Windows.Forms.DataGridViewComboBoxColumn SelectionType;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectionStart;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectionEnd;
-        public System.Windows.Forms.ListView listView1;
     }
 }

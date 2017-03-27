@@ -22,7 +22,11 @@ namespace MassHunterTRAnalyser.Controls
         List<StandardData> storedStandards;
         DataTable dataTable = new DataTable();
         List<int> levels = new List<int>();
-        Dictionary<int, List<(string element, double slope, double intercept, double r2)>> calibrationLines = new Dictionary<int, List<(string element, double slope, double intercept, double r2)>>();
+        List<CalibrationLine> calibLines = new List<CalibrationLine>();
+        CalibrationLine selectedCalibration;
+
+
+
         public CalibrationControl()
         {
             InitializeComponent();
@@ -38,24 +42,28 @@ namespace MassHunterTRAnalyser.Controls
         {
             storedStandards = e.StoredStandards;
             UpdateCalibration();
-
         }
-
         public void UpdateCalibration()
         {
             dataTable.Rows.Clear();
-            calibrationLines.Clear();
+            calibLines.Clear();
             chart1.Series.Clear();
             foreach (int level in levels)
             {
                 calculateCalibration(level);
             }
+            chart1.ChartAreas[0].RecalculateAxesScale();
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisY.Minimum = 0;
+
         }
 
         public void SampleTypeControl1_SampleGroupsChanged(object sender, SampleDataChangedEventArgs e)
         {
             sampleGroups = e.SampleGroups;
             levels = e.Levels;
+            if(storedStandards != null)
+                UpdateCalibration();
         }
 
         private void calculateCalibration(int level)
@@ -81,9 +89,7 @@ namespace MassHunterTRAnalyser.Controls
             foreach (var item in data)
             {
                 var calibrationLine = calibrationForElement(level, item.Key, item.Value);
-                if (calibrationLines.ContainsKey(level) == false)
-                    calibrationLines.Add(level, new List<(string element, double slope, double intercept, double r2)>());
-                calibrationLines[level].Add((item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared));
+                calibLines.Add(new CalibrationLine(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared));
                 dataTable.Rows.Add(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared);
             }
         }
@@ -140,7 +146,11 @@ namespace MassHunterTRAnalyser.Controls
         {
             if (dataGridView1.SelectedCells.Count > 0)
             {
-                string selectedChart = string.Format("{0}-{1}", dataGridView1["Level", dataGridView1.SelectedCells[0].RowIndex].Value, dataGridView1["Element", dataGridView1.SelectedCells[0].RowIndex].Value);
+                int level = Utils.ConvertToInt32(dataGridView1["Level", dataGridView1.SelectedCells[0].RowIndex].Value);
+                string element = dataGridView1["Element", dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
+                string selectedChart = string.Format("{0}-{1}", level, element);
+                selectedCalibration = calibLines.Find(item => item.Level == level && item.Element == element);
+                Debug.WriteLine(selectedCalibration.Element + " " + selectedCalibration.Level);
                 foreach (Series series in chart1.Series)
                 {
                     if (series.Name.Contains(selectedChart) == false)
@@ -148,16 +158,141 @@ namespace MassHunterTRAnalyser.Controls
                     else
                         series.Enabled = true;
                 }
+                if (selectedCalibration.ChartSettings == null)
+                {
+                    chart1.ChartAreas[0].AxisX.Minimum = 0;
+                    chart1.ChartAreas[0].AxisY.Minimum = 0;
+                    chart1.ChartAreas[0].AxisX.Maximum = double.NaN;
+                    chart1.ChartAreas[0].AxisY.Maximum = double.NaN;
+                    chart1.ChartAreas[0].RecalculateAxesScale();
+                    (double min, double max) xbounds = (chart1.ChartAreas[0].AxisX.Minimum, chart1.ChartAreas[0].AxisX.Maximum);
+                    (double min, double max) ybounds = (chart1.ChartAreas[0].AxisY.Minimum, chart1.ChartAreas[0].AxisY.Maximum);
+                    double xintervall = chart1.ChartAreas[0].AxisX.Interval;
+                    double yintervall = chart1.ChartAreas[0].AxisY.Interval;
+                    string xtitle = chart1.ChartAreas[0].AxisX.Title;
+                    string ytitle = chart1.ChartAreas[0].AxisY.Title;
+                    bool xtitlebold = chart1.ChartAreas[0].AxisX.TitleFont.Bold;
+                    bool ytitlebold = chart1.ChartAreas[0].AxisY.TitleFont.Bold;
+                    selectedCalibration.ChartSettings = new ChartSettings(xbounds, ybounds, xintervall, yintervall, xtitle, xtitlebold, ytitle, ytitlebold);
+                }
+
+                updateChartOptions(selectedCalibration);
+                
+                fillChartOptions(selectedCalibration);
+            }
+
+
+        }
+        private void fillChartOptions(CalibrationLine calibration)
+        {
+            xMinTextBox.Text = calibration.ChartSettings.XBoundaries.min.ToString();
+            xMaxTextbox.Text = calibration.ChartSettings.XBoundaries.max.ToString();
+            yMinTextBox.Text = calibration.ChartSettings.YBoundaries.min.ToString();
+            yMaxTextBox.Text = calibration.ChartSettings.YBoundaries.max.ToString();
+            xIntervallTextBox.Text = calibration.ChartSettings.XIntervall.ToString();
+            yIntervallTextBox.Text = calibration.ChartSettings.YIntervall.ToString();
+            xTitleTextBox.Text = calibration.ChartSettings.XTitle;
+            yTitelTextBox.Text = calibration.ChartSettings.YTitle;
+            xTitleBoldCheckBox.Checked = calibration.ChartSettings.XTitleBold;
+            yTitleBoldCheckBox.Checked = calibration.ChartSettings.YTitleBold;
+            
+        }
+        private void updateChartOptions(CalibrationLine calibration)
+        {
+            try
+            {
+                chart1.ChartAreas[0].AxisX.Minimum = calibration.ChartSettings.XBoundaries.min;
+                chart1.ChartAreas[0].AxisX.Maximum = calibration.ChartSettings.XBoundaries.max;
+                chart1.ChartAreas[0].AxisY.Minimum = calibration.ChartSettings.YBoundaries.min;
+                chart1.ChartAreas[0].AxisY.Maximum = calibration.ChartSettings.YBoundaries.max;
+
+                chart1.ChartAreas[0].AxisX.Interval = calibration.ChartSettings.XIntervall;
+                chart1.ChartAreas[0].AxisY.Interval = calibration.ChartSettings.YIntervall;
+
+                chart1.ChartAreas[0].AxisX.Title = calibration.ChartSettings.XTitle;
+                chart1.ChartAreas[0].AxisY.Title = calibration.ChartSettings.YTitle;
+                Font boldfont = new Font("Times New Roman", 9, FontStyle.Bold);
+                Font normalfont = new Font("Times New Roman", 9, FontStyle.Regular);
+                if (calibration.ChartSettings.XTitleBold)
+                {
+                    chart1.ChartAreas[0].AxisX.TitleFont = boldfont;
+                }
+                else
+                {
+                    chart1.ChartAreas[0].AxisX.TitleFont = normalfont;
+                }
+                if(calibration.ChartSettings.YTitleBold)
+                {
+                    chart1.ChartAreas[0].AxisY.TitleFont = boldfont;
+                }
+                else
+                {
+                    chart1.ChartAreas[0].AxisY.TitleFont = normalfont;
+                }
+
                 chart1.ChartAreas[0].RecalculateAxesScale();
-                chart1.ChartAreas[0].AxisX.Minimum = 0;
-                chart1.ChartAreas[0].AxisY.Minimum = 0;
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        
+        private void xMinTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                this.SelectNextControl(sender as TextBox, true, true, true, true);
+            }
+        }
+
+
+        private void xMaxTextbox_Validating(object sender, CancelEventArgs e)
+        {
+            double value = Utils.ConvertToDouble((sender as TextBox).Text);
+            if (selectedCalibration.ChartSettings.XBoundaries.min < value)
+                selectedCalibration.ChartSettings.XBoundaries.max = value;
+            else
+            {
+                MessageBox.Show("The maximum value must be greater than the minimum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                e.Cancel = true;
             }
 
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void xMinTextBox_Validating(object sender, CancelEventArgs e)
         {
-            calculateCalibration(1);
+            double value = Utils.ConvertToDouble((sender as TextBox).Text);
+            if (selectedCalibration.ChartSettings.XBoundaries.max > value)
+                selectedCalibration.ChartSettings.XBoundaries.min = value;
+            else
+            {
+                MessageBox.Show("The minimum value must be less than the maximum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                e.Cancel = true;
+            }
+
+        }
+        private void yMaxTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            double value = Utils.ConvertToDouble((sender as TextBox).Text);
+            if (selectedCalibration.ChartSettings.YBoundaries.min < value)
+                selectedCalibration.ChartSettings.YBoundaries.max = value;
+            else
+            {
+                MessageBox.Show("The maximum value must be greater than the minimum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                e.Cancel = true;
+            }
+        }
+
+        private void yMinTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            double value = Utils.ConvertToDouble((sender as TextBox).Text);
+            if (selectedCalibration.ChartSettings.YBoundaries.max > value)
+                selectedCalibration.ChartSettings.YBoundaries.min = value;
+            else
+            {
+                MessageBox.Show("The minimum value must be less than the maximum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                e.Cancel = true;
+            }
         }
     }
 }

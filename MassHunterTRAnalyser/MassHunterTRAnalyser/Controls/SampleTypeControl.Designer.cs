@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.sampleTree = new System.Windows.Forms.TreeView();
             this.rjctSample = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.sampleDataFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -38,6 +37,7 @@
             this.standardLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.standardType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.sampleGroup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sampleTree = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,20 +66,12 @@
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             this.dataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEnter);
+            this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridView1_CurrentCellDirtyStateChanged);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             this.dataGridView1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyUp);
-            // 
-            // sampleTree
-            // 
-            this.sampleTree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.sampleTree.Location = new System.Drawing.Point(740, 0);
-            this.sampleTree.Name = "sampleTree";
-            this.sampleTree.Size = new System.Drawing.Size(270, 465);
-            this.sampleTree.TabIndex = 4;
             // 
             // rjctSample
             // 
@@ -102,7 +94,7 @@
             this.sampleName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.sampleName.HeaderText = "Sample Name";
             this.sampleName.Name = "sampleName";
-            this.sampleName.Width = 98;
+            this.sampleName.Width = 90;
             // 
             // sampleComment
             // 
@@ -138,6 +130,15 @@
             this.sampleGroup.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.sampleGroup.HeaderText = "Sample Group";
             this.sampleGroup.Name = "sampleGroup";
+            // 
+            // sampleTree
+            // 
+            this.sampleTree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.sampleTree.Location = new System.Drawing.Point(740, 0);
+            this.sampleTree.Name = "sampleTree";
+            this.sampleTree.Size = new System.Drawing.Size(270, 465);
+            this.sampleTree.TabIndex = 4;
             // 
             // SampleTypeControl
             // 
