@@ -108,7 +108,7 @@ namespace MassHunterTRAnalyser
             }
             if (tabControl1.SelectedTab == tabControl1.TabPages["calibrationTab"])
             {
-                
+                calibrationControl1.UpdateCalibration();
             }
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -120,6 +120,7 @@ namespace MassHunterTRAnalyser
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveWork();
+
         }
         #endregion
 
@@ -133,6 +134,7 @@ namespace MassHunterTRAnalyser
                     string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
                     sw.WriteLine(serialized);
                 }
+                calibrationControl1.SaveCalibration();
             }
         }
 

@@ -243,20 +243,22 @@ namespace MassHunterTRAnalyser
             } //Handle Selection position change
             else if ((e.ColumnIndex == 2 || e.ColumnIndex == 3) && e.RowIndex >= 0)
             {
-                StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
-                double min = Math.Min(Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].FormattedValue), Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
-                double abs = Math.Abs(Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].FormattedValue) - Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
+                if (chart1.ChartAreas[0].AxisX.StripLines.Count > 0)
+                {
+                    StripLine selectedLine = chart1.ChartAreas[0].AxisX.StripLines[e.RowIndex];
+                    double min = Math.Min(Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].FormattedValue), Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
+                    double abs = Math.Abs(Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].FormattedValue) - Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value));
 
-                selectedLine.IntervalOffset = min;
-                selectedLine.StripWidth = abs;
-                chart1.ChartAreas[0].CursorX.SelectionEnd = selectedLine.IntervalOffset + selectedLine.StripWidth;
-                chart1.ChartAreas[0].CursorX.SelectionStart = selectedLine.IntervalOffset;
-                chart1.ChartAreas[0].CursorX.Position = selectedLine.IntervalOffset + selectedLine.StripWidth;
+                    selectedLine.IntervalOffset = min;
+                    selectedLine.StripWidth = abs;
+                    chart1.ChartAreas[0].CursorX.SelectionEnd = selectedLine.IntervalOffset + selectedLine.StripWidth;
+                    chart1.ChartAreas[0].CursorX.SelectionStart = selectedLine.IntervalOffset;
+                    chart1.ChartAreas[0].CursorX.Position = selectedLine.IntervalOffset + selectedLine.StripWidth;
 
-                double selectionStart = Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value);
-                double selectionEnd = Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value);
-                selectedSample.DataSelections[e.RowIndex].RangeOfSelection = (SelectionStart: selectionStart, SelectionEnd: selectionEnd);
-
+                    double selectionStart = Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[2].Value);
+                    double selectionEnd = Utils.ConvertToDouble(dataGridView1.Rows[e.RowIndex].Cells[3].Value);
+                    selectedSample.DataSelections[e.RowIndex].RangeOfSelection = (SelectionStart: selectionStart, SelectionEnd: selectionEnd);
+                }
             }
         }
     }

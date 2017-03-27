@@ -50,14 +50,19 @@ namespace MassHunterTRAnalyser.Controls
 
         private void sampleTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            calculateStatistics(e.Node);
+        }
+
+        private void calculateStatistics(TreeNode node)
+        {
             SampleGroup group;
             dataTable.Rows.Clear();
-            if (e.Node != null)
+            if (node != null)
             {
-                if (e.Node.Parent != null)
+                if (node.Parent != null)
                 {
-                    group = sampleGroups.Find(item => item.GroupName == e.Node.Parent.Name);
-                    SampleData sampleData = group.Samples.Find(item => item.DataFileName == e.Node.Name);
+                    group = sampleGroups.Find(item => item.GroupName == node.Parent.Name);
+                    SampleData sampleData = group.Samples.Find(item => item.DataFileName == node.Name);
 
                     var data = sampleData.GetBackgroundCorrectedSignals();
                     var background = sampleData.GetBackground();
@@ -69,17 +74,18 @@ namespace MassHunterTRAnalyser.Controls
                 }
                 else
                 {
-                    group = sampleGroups.Find(item => e.Node.Name == (item.GroupName));
+                    group = sampleGroups.Find(item => node.Name == (item.GroupName));
                     var data = group.CalulateGroupStatistics();
                     foreach (string element in data.Keys)
                     {
                         dataTable.Rows.Add(element, data[element].average, data[element].stdev, Calculations.RSD(data[element]));
                         enableCell(dataGridView1["Background", dataTable.Rows.Count - 1], false);
                     }
-                    
+
                 }
             }
         }
+
         private void enableCell(DataGridViewCell cell, bool enabled)
         {
             if (enabled)
@@ -118,6 +124,7 @@ namespace MassHunterTRAnalyser.Controls
         public void UpdateControl()
         {
             populateSampleGroupTree();
+            calculateStatistics(sampleTree.SelectedNode);
         }
     }
 }

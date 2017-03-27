@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -63,15 +63,15 @@
             // 
             // chart1
             // 
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisX.Title = "Koncentráció (ug/g)";
-            chartArea2.AxisY.MajorGrid.Enabled = false;
-            chartArea2.AxisY.Title = "Jel (cps)";
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.Title = "Koncentráció (ug/g)";
+            chartArea1.AxisY.MajorGrid.Enabled = false;
+            chartArea1.AxisY.Title = "Jel (cps)";
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(805, 321);
@@ -168,6 +168,8 @@
             this.yIntervallTextBox.Name = "yIntervallTextBox";
             this.yIntervallTextBox.Size = new System.Drawing.Size(45, 20);
             this.yIntervallTextBox.TabIndex = 6;
+            this.yIntervallTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yIntervallTextBox_Validating);
+            this.yIntervallTextBox.Validated += new System.EventHandler(this.yIntervallTextBox_Validated);
             // 
             // label7
             // 
@@ -184,6 +186,8 @@
             this.xIntervallTextBox.Name = "xIntervallTextBox";
             this.xIntervallTextBox.Size = new System.Drawing.Size(45, 20);
             this.xIntervallTextBox.TabIndex = 5;
+            this.xIntervallTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.xIntervallTextBox_Validating);
+            this.xIntervallTextBox.Validated += new System.EventHandler(this.xIntervallTextBox_Validated);
             // 
             // label8
             // 
@@ -242,6 +246,7 @@
             this.yMaxTextBox.Size = new System.Drawing.Size(44, 20);
             this.yMaxTextBox.TabIndex = 4;
             this.yMaxTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yMaxTextBox_Validating);
+            this.yMaxTextBox.Validated += new System.EventHandler(this.yMaxTextBox_Validated);
             // 
             // yMinTextBox
             // 
@@ -250,6 +255,7 @@
             this.yMinTextBox.Size = new System.Drawing.Size(44, 20);
             this.yMinTextBox.TabIndex = 3;
             this.yMinTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yMinTextBox_Validating);
+            this.yMinTextBox.Validated += new System.EventHandler(this.yMinTextBox_Validated);
             // 
             // label4
             // 
@@ -276,6 +282,7 @@
             this.xMaxTextbox.Size = new System.Drawing.Size(44, 20);
             this.xMaxTextbox.TabIndex = 2;
             this.xMaxTextbox.Validating += new System.ComponentModel.CancelEventHandler(this.xMaxTextbox_Validating);
+            this.xMaxTextbox.Validated += new System.EventHandler(this.xMaxTextbox_Validated);
             // 
             // xMinTextBox
             // 
@@ -285,6 +292,7 @@
             this.xMinTextBox.TabIndex = 1;
             this.xMinTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.xMinTextBox_KeyUp);
             this.xMinTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.xMinTextBox_Validating);
+            this.xMinTextBox.Validated += new System.EventHandler(this.xMinTextBox_Validated);
             // 
             // label1
             // 

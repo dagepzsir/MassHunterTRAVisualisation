@@ -11,6 +11,8 @@ using MassHunterTRAnalyser.Data_Classes;
 using MathNet.Numerics;
 using System.Diagnostics;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace MassHunterTRAnalyser.Controls
 {
@@ -25,7 +27,7 @@ namespace MassHunterTRAnalyser.Controls
         List<CalibrationLine> calibLines = new List<CalibrationLine>();
         CalibrationLine selectedCalibration;
 
-
+        string calibrationFilePath;
 
         public CalibrationControl()
         {
@@ -41,23 +43,29 @@ namespace MassHunterTRAnalyser.Controls
         public void CalibrationControlDataLoaded(object sender, DataLoadedEventArgs e)
         {
             storedStandards = e.StoredStandards;
+            calibrationFilePath = Path.Combine(e.LoadedBatch.FolderPath, "calibLines.json");
+            loadCalibrationFromFile(calibrationFilePath);
             UpdateCalibration();
         }
         public void UpdateCalibration()
         {
             dataTable.Rows.Clear();
-            calibLines.Clear();
+            calibLines.ForEach(item => item.ReserCalibData());
             chart1.Series.Clear();
             foreach (int level in levels)
             {
                 calculateCalibration(level);
             }
-            chart1.ChartAreas[0].RecalculateAxesScale();
-            chart1.ChartAreas[0].AxisX.Minimum = 0;
-            chart1.ChartAreas[0].AxisY.Minimum = 0;
-
         }
-
+        public void SaveCalibration()
+        {
+            using (StreamWriter sw = new StreamWriter(calibrationFilePath, false))
+            {
+                //Serialize sample data to a json and save it to ~\analysis.json
+                string serialized = JsonConvert.SerializeObject(calibLines);
+                sw.WriteLine(serialized);
+            }
+        }
         public void SampleTypeControl1_SampleGroupsChanged(object sender, SampleDataChangedEventArgs e)
         {
             sampleGroups = e.SampleGroups;
@@ -89,7 +97,15 @@ namespace MassHunterTRAnalyser.Controls
             foreach (var item in data)
             {
                 var calibrationLine = calibrationForElement(level, item.Key, item.Value);
-                calibLines.Add(new CalibrationLine(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared));
+                CalibrationLine existingLine = calibLines.Find(it => it.Level == level && it.Element == item.Key);
+                if(existingLine == null)
+                    calibLines.Add(new CalibrationLine(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared));
+                else
+                {
+                    existingLine.Slope = calibrationLine.slope;
+                    existingLine.Intercept = calibrationLine.intercept;
+                    existingLine.RSquared = calibrationLine.rSquared;
+                }
                 dataTable.Rows.Add(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared);
             }
         }
@@ -246,52 +262,126 @@ namespace MassHunterTRAnalyser.Controls
             }
         }
 
-
         private void xMaxTextbox_Validating(object sender, CancelEventArgs e)
         {
             double value = Utils.ConvertToDouble((sender as TextBox).Text);
-            if (selectedCalibration.ChartSettings.XBoundaries.min < value)
-                selectedCalibration.ChartSettings.XBoundaries.max = value;
-            else
+            if (double.IsNaN(value))
             {
-                MessageBox.Show("The maximum value must be greater than the minimum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 e.Cancel = true;
             }
-
+            else
+            {
+                if (selectedCalibration.ChartSettings.XBoundaries.min >= value)
+                {
+                    MessageBox.Show("The maximum value must be greater than the minimum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    e.Cancel = true;
+                }
+            }
         }
         private void xMinTextBox_Validating(object sender, CancelEventArgs e)
         {
             double value = Utils.ConvertToDouble((sender as TextBox).Text);
-            if (selectedCalibration.ChartSettings.XBoundaries.max > value)
-                selectedCalibration.ChartSettings.XBoundaries.min = value;
-            else
+
+            if (double.IsNaN(value))
             {
-                MessageBox.Show("The minimum value must be less than the maximum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 e.Cancel = true;
             }
-
+            else
+            {
+                if (selectedCalibration.ChartSettings.XBoundaries.max <= value)
+                {
+                    MessageBox.Show("The minimum value must be less than the maximum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    e.Cancel = true;
+                }
+            }
         }
         private void yMaxTextBox_Validating(object sender, CancelEventArgs e)
         {
             double value = Utils.ConvertToDouble((sender as TextBox).Text);
-            if (selectedCalibration.ChartSettings.YBoundaries.min < value)
-                selectedCalibration.ChartSettings.YBoundaries.max = value;
-            else
+            if (double.IsNaN(value))
             {
-                MessageBox.Show("The maximum value must be greater than the minimum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 e.Cancel = true;
             }
+            else
+            {
+                if (selectedCalibration.ChartSettings.YBoundaries.min >= value)
+                {
+                    MessageBox.Show("The maximum value must be greater than the minimum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    e.Cancel = true;
+                }
+            }
         }
-
         private void yMinTextBox_Validating(object sender, CancelEventArgs e)
         {
             double value = Utils.ConvertToDouble((sender as TextBox).Text);
-            if (selectedCalibration.ChartSettings.YBoundaries.max > value)
-                selectedCalibration.ChartSettings.YBoundaries.min = value;
+            if (double.IsNaN(value))
+            {
+                e.Cancel = true;
+            }
             else
             {
-                MessageBox.Show("The minimum value must be less than the maximum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (selectedCalibration.ChartSettings.YBoundaries.max <= value)
+                {
+                    MessageBox.Show("The minimum value must be less than the maximum!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    e.Cancel = true;
+                }
+
+            }
+        }
+        private void xIntervallTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            double value = Utils.ConvertToDouble((sender as TextBox).Text);
+            if (double.IsNaN(value))
                 e.Cancel = true;
+        }
+        private void yIntervallTextBox_Validating(object sender, CancelEventArgs e)
+        {
+            double value = Utils.ConvertToDouble((sender as TextBox).Text);
+            if (double.IsNaN(value))
+                e.Cancel = true;
+        }
+
+        private void xMinTextBox_Validated(object sender, EventArgs e)
+        {
+            selectedCalibration.ChartSettings.XBoundaries.min = Utils.ConvertToDouble((sender as TextBox).Text);
+            updateChartOptions(selectedCalibration);
+        }
+        private void xMaxTextbox_Validated(object sender, EventArgs e)
+        {
+            selectedCalibration.ChartSettings.XBoundaries.max = Utils.ConvertToDouble((sender as TextBox).Text);
+            updateChartOptions(selectedCalibration);
+        }
+        private void yMinTextBox_Validated(object sender, EventArgs e)
+        {
+            selectedCalibration.ChartSettings.YBoundaries.min = Utils.ConvertToDouble((sender as TextBox).Text);
+            updateChartOptions(selectedCalibration);
+        }
+        private void yMaxTextBox_Validated(object sender, EventArgs e)
+        {
+            selectedCalibration.ChartSettings.YBoundaries.max = Utils.ConvertToDouble((sender as TextBox).Text);
+            updateChartOptions(selectedCalibration);
+        }
+        private void xIntervallTextBox_Validated(object sender, EventArgs e)
+        {
+            selectedCalibration.ChartSettings.XIntervall = Utils.ConvertToDouble((sender as TextBox).Text);
+            updateChartOptions(selectedCalibration);
+        }
+        private void yIntervallTextBox_Validated(object sender, EventArgs e)
+        {
+            selectedCalibration.ChartSettings.YIntervall = Utils.ConvertToDouble((sender as TextBox).Text);
+            updateChartOptions(selectedCalibration);
+        }
+
+        private void loadCalibrationFromFile(string calibrationfile)
+        {
+            if(File.Exists(calibrationfile))
+            {
+                using (StreamReader reader = new StreamReader(calibrationfile))
+                {
+                    string calibDataJson = reader.ReadToEnd();
+                    calibLines = JsonConvert.DeserializeObject<List<CalibrationLine>>(calibDataJson);
+                }
+                
             }
         }
     }

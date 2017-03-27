@@ -32,9 +32,9 @@ namespace MassHunterTRAnalyser.Data_Classes
     class CalibrationLine
     {
         public int Level { get; private set; }
-        public double Slope { get; private set; }
-        public double Intercept { get; private set; }
-        public double RSquared { get; private set; }
+        public double Slope { get;  set; }
+        public double Intercept { get;  set; }
+        public double RSquared { get;  set; }
         public string Element { get; private set; }
         public ChartSettings ChartSettings { get; set; }
         public CalibrationLine(int level, string element, double slope, double intercept, double rsquared)
@@ -51,6 +51,11 @@ namespace MassHunterTRAnalyser.Data_Classes
         {
             return (cps * Slope) + Intercept;
         }
-
+        public void ReserCalibData()
+        {
+            Slope = double.NaN;
+            Intercept = double.NaN;
+            RSquared = double.NaN;
+        }
     }
 }
