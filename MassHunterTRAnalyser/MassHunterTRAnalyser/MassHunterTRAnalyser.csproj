@@ -105,6 +105,7 @@
     <Compile Include="Data Classes\Batch.cs" />
     <Compile Include="Data Classes\DataSelection.cs" />
     <Compile Include="Data Classes\ExcelFile.cs" />
+    <Compile Include="Data Classes\IData.cs" />
     <Compile Include="Data Classes\SampleGroup.cs" />
     <Compile Include="Data Classes\StandardData.cs" />
     <Compile Include="Forms\ImportBatchForm.cs">

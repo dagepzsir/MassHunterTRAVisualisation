@@ -121,73 +121,10 @@ namespace MassHunterTRAnalyser
         {
             saveWork();
         }
-        #endregion
 
-        private void saveWork()
-        {
-            if (selectedBatch != null)
-            {
-                using (StreamWriter sw = new StreamWriter(Path.Combine(selectedBatch.FolderPath, "analysis.json"), false))
-                {
-                    //Serialize sample data to a json and save it to ~\analysis.json
-                    string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
-                    sw.WriteLine(serialized);
-                }
-            }
-        }
-
-        private void loadNewNamesAndComments()
-        {
-            if (openXLSDialog.ShowDialog() == DialogResult.OK)
-            {
-                DataTable data;
-                if(openXLSDialog.FileName.Contains("xls"))
-                {
-                    ExcelFile file = new ExcelFile(openXLSDialog.FileName);
-                    data = file.XLSData;
-                }
-                else
-                {
-                    CSV csv = new CSV(openXLSDialog.FileName);
-                    data = csv.CSVData;
-                }
-                List<string> comments = new List<string>();
-                List<string> samplenames = new List<string>();
-                List<bool> reject = new List<bool>();
-                int commentColumn = 0;
-                int nameColumn = 0;
-                int rjctColumn = 0;
-                for (int i = 0; i < data.Columns.Count; i++)
-                {
-                    if (data.Rows[1][i].ToString() == "Comment")
-                        commentColumn = i;
-                    else if (data.Rows[1][i].ToString() == "Sample Name")
-                        nameColumn = i;
-                    else if (data.Rows[1][i].ToString() == "Rjct")
-                        rjctColumn = i;
-                }
-                for (int i = 2; i < data.Rows.Count; i++)
-                {
-                    comments.Add(data.Rows[i][commentColumn].ToString());
-                    samplenames.Add(data.Rows[i][nameColumn].ToString());
-                    if (data.Rows[i][rjctColumn].ToString() == "true")
-                    {
-                        reject.Add(true);
-                    }
-                    else
-                        reject.Add(false);
-                }
-                
-
-                sampleTypeControl1.SetSampleNameCommentsRjct(samplenames, comments, reject);
-            }
-        }
-
-        int selectionControlLisViewIndex;
-        TreeNode averagesTreeSelectedNode;
         private void tabControl1_Selecting(object sender, TabControlCancelEventArgs e)
         {
-            if(selectionControl.listView1.SelectedIndices.Count > 0)
+            if (selectionControl.listView1.SelectedIndices.Count > 0)
                 selectionControlLisViewIndex = selectionControl.listView1.SelectedIndices[0];
             averagesTreeSelectedNode = averagesControl.sampleTree.SelectedNode;
         }
@@ -199,14 +136,14 @@ namespace MassHunterTRAnalyser
 
         private void batchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                if(folderBrowserDialog1.SelectedPath != selectedBatch.FolderPath)
+                if (folderBrowserDialog1.SelectedPath != selectedBatch.FolderPath)
                 {
                     Batch importFrom = new Batch(folderBrowserDialog1.SelectedPath, StoredStandards);
                     ImportBatchForm importForm = new ImportBatchForm(importFrom);
 
-                    if(importForm.ShowDialog() == DialogResult.OK)
+                    if (importForm.ShowDialog() == DialogResult.OK)
                     {
                         List<SampleData> importedData = importForm.SampleDataToImport;
                         string lastDataFile = selectedBatch.MeasuredData.Last().DataFileName;
@@ -228,11 +165,11 @@ namespace MassHunterTRAnalyser
                                     File.Copy(file, file.Replace(sourcePath, newSampleFolderInSelectedBatch));
                                 else
                                     File.Copy(file, file.Replace(sourcePath, newSampleFolderInSelectedBatch).Replace(sample.DataFileName, folderName));
-                                
+
                             }
 
-                            sample.DataFileName = folderName; 
-                            
+                            sample.DataFileName = folderName;
+
                             selectedBatch.MeasuredData.Add(sample);
                         }
                         OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
@@ -240,6 +177,86 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            saveWork();
+        }
+        #endregion
+
+        private void saveWork()
+        {
+            if (selectedBatch != null)
+            {
+                using (StreamWriter sw = new StreamWriter(Path.Combine(selectedBatch.FolderPath, "analysis.json"), false))
+                {
+                    //Serialize sample data to a json and save it to ~\analysis.json
+                    string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
+                    sw.WriteLine(serialized);
+                }
+            }
+        }
+        private void loadNewNamesAndComments()
+        {
+            if (openXLSDialog.ShowDialog() == DialogResult.OK)
+            {
+                DataTable data;
+                IData fileData;
+                if(openXLSDialog.FileName.Contains("xls"))
+                    fileData = new ExcelFile(openXLSDialog.FileName);
+                else
+                    fileData = new CSV(openXLSDialog.FileName);
+                data = fileData.Data;
+
+                List<string> comments = new List<string>();
+                List<string> sampleNames = new List<string>();
+                List<bool> rejects = new List<bool>();
+                List<string> sampleTypes = new List<string>();
+
+                int commentColumn = 0;
+                int nameColumn = 0;
+                int rjctColumn = 0;
+                int sampleTypeColumn = 0;
+
+                for (int i = 0; i < data.Columns.Count; i++)
+                {
+                    switch (data.Rows[1][i].ToString())
+                    {
+                        case "Comment":
+                            commentColumn = i;
+                            break;
+                        case "Sample Name":
+                            nameColumn = i;
+                            break;
+                        case "Rjct":
+                            rjctColumn = i;
+                            break;
+                        case "Type":
+                            sampleTypeColumn = i;
+                            break;
+                    }
+
+                }
+
+                for (int i = 2; i < data.Rows.Count; i++)
+                {
+                    comments.Add(data.Rows[i][commentColumn].ToString());
+                    sampleNames.Add(data.Rows[i][nameColumn].ToString());
+                    if (data.Rows[i][rjctColumn].ToString() == "true")
+                    {
+                        rejects.Add(true);
+                    }
+                    else
+                        rejects.Add(false);
+                }
+                
+
+                sampleTypeControl1.SetSampleNameCommentsRjct(sampleNames, comments, rejects);
+            }
+        }
+
+        int selectionControlLisViewIndex;
+        TreeNode averagesTreeSelectedNode;
+        
         private string generateDataFileName(string lastName, int increment)
         {
             List<char> charList = lastName.ToCharArray().ToList();
@@ -255,11 +272,6 @@ namespace MassHunterTRAnalyser
         private void importSampleData(List<SampleData> datatoimport)
         {
 
-        }
-
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            saveWork();
         }
     }
     public class DataLoadedEventArgs: EventArgs

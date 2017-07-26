@@ -32,17 +32,20 @@ namespace MassHunterTRAnalyser.Controls
         }
         private void populateSampleGroupTree()
         {
-            sampleTree.Nodes.Clear();
-            foreach (SampleGroup group in sampleGroups)
+            if (sampleGroups != null)
             {
-                if (group.RejectedGroup == false)
+                sampleTree.Nodes.Clear();
+                foreach (SampleGroup group in sampleGroups)
                 {
-                    sampleTree.Nodes.Add(group.GroupName, group.GroupName + " - " + group.GroupType);
-                    foreach (SampleData sample in group.Samples)
+                    if (group.RejectedGroup == false)
                     {
-                        TreeNode parent = sampleTree.Nodes[sampleTree.Nodes.Count - 1];
-                        if (sample.Rejected == false)
-                            parent.Nodes.Add(sample.DataFileName, sample.DataFileName + " -" + sample.SampleName + " (" + sample.SampleTypeString + ")");
+                        sampleTree.Nodes.Add(group.GroupName, group.GroupName + " - " + group.GroupType);
+                        foreach (SampleData sample in group.Samples)
+                        {
+                            TreeNode parent = sampleTree.Nodes[sampleTree.Nodes.Count - 1];
+                            if (sample.Rejected == false)
+                                parent.Nodes.Add(sample.DataFileName, sample.DataFileName + " -" + sample.SampleName + " (" + sample.SampleTypeString + ")");
+                        }
                     }
                 }
             }

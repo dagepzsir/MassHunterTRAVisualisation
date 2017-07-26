@@ -44,7 +44,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.loadCSV = new System.Windows.Forms.Button();
-            this.openCSVDialog = new System.Windows.Forms.OpenFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.elementDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.isotopeRatioDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -216,8 +216,8 @@
             // 
             // openCSVDialog
             // 
-            this.openCSVDialog.Filter = "Microsoft Excel|*.xlsx|CSV files|*.csv";
-            this.openCSVDialog.Title = "Open Standard Data from CSV";
+            this.openFileDialog.Filter = "Microsoft Excel|*.xlsx|CSV files|*.csv";
+            this.openFileDialog.Title = "Open Standard Data from CSV";
             // 
             // StandardEditorControl
             // 
@@ -256,7 +256,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ratioColumn;
         public System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Button loadCSV;
-        private System.Windows.Forms.OpenFileDialog openCSVDialog;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.DataGridViewTextBoxColumn elementNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn concColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn unitColumn;

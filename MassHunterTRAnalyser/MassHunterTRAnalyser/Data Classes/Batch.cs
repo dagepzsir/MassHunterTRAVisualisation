@@ -54,6 +54,8 @@ namespace MassHunterTRAnalyser
                 foreach (string dataFileFolder in dataFiles)
                 {
                     MeasuredData.Add(new SampleData(dataFileFolder, storedstandards));
+                    if (MeasuredData.Last().DataFileName == "")
+                        MeasuredData.RemoveAt(MeasuredData.Count - 1);
                 }
             }
         }
