@@ -113,7 +113,7 @@
             this.elementDataGridView.Size = new System.Drawing.Size(681, 254);
             this.elementDataGridView.TabIndex = 3;
             this.elementDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.elementDataGridView_CellEnter);
-            this.elementDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.elementDataGridView_CellValidating);
+            this.elementDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.elementDataGridView_CellValueChanged);
             // 
             // elementNameColumn
             // 
@@ -214,7 +214,7 @@
             this.loadCSV.UseVisualStyleBackColor = true;
             this.loadCSV.Click += new System.EventHandler(this.loadCSV_Click);
             // 
-            // openCSVDialog
+            // openFileDialog
             // 
             this.openFileDialog.Filter = "Microsoft Excel|*.xlsx|CSV files|*.csv";
             this.openFileDialog.Title = "Open Standard Data from CSV";

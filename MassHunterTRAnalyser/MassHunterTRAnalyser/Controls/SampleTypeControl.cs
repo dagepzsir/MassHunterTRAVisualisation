@@ -200,7 +200,8 @@ namespace MassHunterTRAnalyser
                     sampleType = SampleType.Standard;
                     break;
             }
-            changedSample.SampleName = dataGridView1["sampleName", index].Value.ToString();
+            if(dataGridView1["sampleName", index].Value != null)
+                changedSample.SampleName = dataGridView1["sampleName", index].Value.ToString();
             changedSample.TypeOfSample = sampleType;
 
             DataGridViewCheckBoxCell chkBoxCell = (dataGridView1[0, index] as DataGridViewCheckBoxCell);

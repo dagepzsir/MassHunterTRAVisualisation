@@ -88,7 +88,8 @@ namespace MassHunterTRAnalyser.Controls
 
                         elementDataGridView.Enabled = true;
                         isotopeRatioDataGridView.Enabled = true;
-
+                        elementDataGridView.Rows.Clear();
+                        isotopeRatioDataGridView.Rows.Clear();
                         listView1.Items[listView1.Items.Count - 1].Selected = true;
                         listView1.Select();
                         break;
@@ -111,11 +112,10 @@ namespace MassHunterTRAnalyser.Controls
             isotopeRatioDataGridView.Enabled = true;
             //Load selected standard
             if (listView1.SelectedIndices.Count > 0)
+            {
                 selectedStandard = StoredStandards[listView1.SelectedIndices[0]];
-            else
-                selectedStandard = null;
-
-            loadStanradData();
+                loadStanradData();
+            }
         }
 
         private void elementDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
@@ -300,7 +300,7 @@ namespace MassHunterTRAnalyser.Controls
             }
         }
 
-        private void elementDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void elementDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1 && e.ColumnIndex > -1)
             {
@@ -309,9 +309,10 @@ namespace MassHunterTRAnalyser.Controls
                 {
                     string key = elementDataGridView[0, e.RowIndex].Value.ToString();
                     double concentration = Utils.ConvertToDouble(elementDataGridView[1, e.RowIndex].Value);
-                    if (concentration == double.NaN)
-                        e.Cancel = true;
+
+
                     (double Concentration, string Unit) data = (Concentration: concentration, Unit: elementDataGridView[2, e.RowIndex].Value.ToString());
+
                     if (selectedStandard.ElementConcentrations.ContainsKey(elementDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString()))
                     {
                         selectedStandard.ElementConcentrations[key] = data;
