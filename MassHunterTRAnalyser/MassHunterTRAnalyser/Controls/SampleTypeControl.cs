@@ -375,10 +375,16 @@ namespace MassHunterTRAnalyser
                     foreach (var sample in group.Samples)
                     {
                         dataGridView1["sampleType", loadedBatch.MeasuredData.IndexOf(sample)].Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                        for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                        {
+                            if (dataGridView1["sampleDataFile", i].Value.ToString() == sample.DataFileName)
+                            {
+                                updateSampleData(i);
+                                break;
+                            }
+                        }
                     }
-
                 }
-
             }
 
             if (dataGridView1.Columns[e.ColumnIndex].Name == "standardLevel")
@@ -387,6 +393,14 @@ namespace MassHunterTRAnalyser
                 foreach (var sample in group.Samples)
                 {
                     dataGridView1["standardLevel", loadedBatch.MeasuredData.IndexOf(sample)].Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                    {
+                        if (dataGridView1["sampleDataFile", i].Value.ToString() == sample.DataFileName)
+                        {
+                            updateSampleData(i);
+                            break;
+                        }
+                    }
                 }
                 if (levels.Contains(Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value)) == false)
                     levels.Add(Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value));

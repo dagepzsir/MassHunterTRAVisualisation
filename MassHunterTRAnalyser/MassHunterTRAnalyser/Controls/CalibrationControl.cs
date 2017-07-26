@@ -76,6 +76,8 @@ namespace MassHunterTRAnalyser.Controls
 
         private void calculateCalibration(int level)
         {
+            StandardData usedStandard = null;
+
             Dictionary<string, List<(string standard, double average)>> data = new Dictionary<string, List<(string standard, double average)>>();
             foreach (SampleGroup group in sampleGroups)
             {
@@ -83,6 +85,7 @@ namespace MassHunterTRAnalyser.Controls
                 {
                     if (group.GroupType == SampleType.Standard && group.Samples[0].StandardLevel == level)
                     {
+                        usedStandard = storedStandards.Find(item => item.StandardName == group.Samples[0].StandardType);
                         var groupAverage = group.CalulateGroupStatistics();
 
                         foreach (string key in groupAverage.Keys)
@@ -98,15 +101,26 @@ namespace MassHunterTRAnalyser.Controls
             {
                 var calibrationLine = calibrationForElement(level, item.Key, item.Value);
                 CalibrationLine existingLine = calibLines.Find(it => it.Level == level && it.Element == item.Key);
-                if(existingLine == null)
-                    calibLines.Add(new CalibrationLine(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared));
+                if (existingLine == null)
+                {
+                    foreach (string element in usedStandard.ElementConcentrations.Keys)
+                    {
+                        if(item.Key.Contains(element))
+                        {
+                            string unit = usedStandard.ElementConcentrations[element].Unit;
+                            calibLines.Add(new CalibrationLine(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared, unit));
+                            break;
+                        }
+                    }
+                }
                 else
                 {
                     existingLine.Slope = calibrationLine.slope;
                     existingLine.Intercept = calibrationLine.intercept;
                     existingLine.RSquared = calibrationLine.rSquared;
                 }
-                dataTable.Rows.Add(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared);
+                if(calibrationLine.rSquared != -1)
+                    dataTable.Rows.Add(level, item.Key, calibrationLine.slope, calibrationLine.intercept, calibrationLine.rSquared);
             }
         }
         private (double slope, double intercept, double rSquared) calibrationForElement(int level, string element, List<(string standard, double average)> elementdata)
@@ -129,8 +143,12 @@ namespace MassHunterTRAnalyser.Controls
                 List<char> array = element.ToCharArray().ToList();
                 array.RemoveAll(item => Char.IsNumber(item));
                 string key = new string(array.ToArray());
-                xStandard.Add(standard.ElementConcentrations[key].Concentration);
-                dataSeries.Points.AddXY(xStandard.Last(), yMeasured.Last());
+
+                if (standard.ElementConcentrations.ContainsKey(key))
+                {
+                    xStandard.Add(standard.ElementConcentrations[key].Concentration);
+                    dataSeries.Points.AddXY(xStandard.Last(), yMeasured.Last());
+                }
             }
 
             (double slope, double intercept, double rSquared) output;
@@ -139,23 +157,26 @@ namespace MassHunterTRAnalyser.Controls
                 Tuple<double, double> linearfit = Fit.Line(xStandard.ToArray(), yMeasured.ToArray());
                 double rSquared = GoodnessOfFit.RSquared(xStandard.Select(x => linearfit.Item2 + x * linearfit.Item1), yMeasured);
                 output = (linearfit.Item2, linearfit.Item1, rSquared);
+
+                double y1 = output.intercept;
+                double y2 = (xStandard.Max() * output.slope) + output.intercept;
+
+                regressionSeries.Points.AddXY(0, y1);
+                regressionSeries.Points.AddXY(xStandard.Max(), y2);
+
+                chart1.Series.Add(regressionSeries);
+                chart1.Series.Add(dataSeries);
+
+                chart1.Series[chart1.Series.Count - 1].Enabled = false;
+                chart1.Series[chart1.Series.Count - 2].Enabled = false;
+
             }
             else
             {
-                output = (0, xStandard[0], 0);
+                output = (0, 0, -1);
             }
 
-            double y1 = output.intercept;
-            double y2 = (xStandard.Max() * output.slope) + output.intercept;
-
-            regressionSeries.Points.AddXY(0, y1);
-            regressionSeries.Points.AddXY(xStandard.Max(), y2);
-
-            chart1.Series.Add(regressionSeries);
-            chart1.Series.Add(dataSeries);
-
-            chart1.Series[chart1.Series.Count - 1].Enabled = false;
-            chart1.Series[chart1.Series.Count - 2].Enabled = false;
+           
             return output;
         }
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -166,35 +187,40 @@ namespace MassHunterTRAnalyser.Controls
                 string element = dataGridView1["Element", dataGridView1.SelectedCells[0].RowIndex].Value.ToString();
                 string selectedChart = string.Format("{0}-{1}", level, element);
                 selectedCalibration = calibLines.Find(item => item.Level == level && item.Element == element);
-                Debug.WriteLine(selectedCalibration.Element + " " + selectedCalibration.Level);
-                foreach (Series series in chart1.Series)
+                if (selectedCalibration != null)
                 {
-                    if (series.Name.Contains(selectedChart) == false)
-                        series.Enabled = false;
-                    else
-                        series.Enabled = true;
-                }
-                if (selectedCalibration.ChartSettings == null)
-                {
-                    chart1.ChartAreas[0].AxisX.Minimum = 0;
-                    chart1.ChartAreas[0].AxisY.Minimum = 0;
-                    chart1.ChartAreas[0].AxisX.Maximum = double.NaN;
-                    chart1.ChartAreas[0].AxisY.Maximum = double.NaN;
-                    chart1.ChartAreas[0].RecalculateAxesScale();
-                    (double min, double max) xbounds = (chart1.ChartAreas[0].AxisX.Minimum, chart1.ChartAreas[0].AxisX.Maximum);
-                    (double min, double max) ybounds = (chart1.ChartAreas[0].AxisY.Minimum, chart1.ChartAreas[0].AxisY.Maximum);
-                    double xintervall = chart1.ChartAreas[0].AxisX.Interval;
-                    double yintervall = chart1.ChartAreas[0].AxisY.Interval;
-                    string xtitle = chart1.ChartAreas[0].AxisX.Title;
-                    string ytitle = chart1.ChartAreas[0].AxisY.Title;
-                    bool xtitlebold = chart1.ChartAreas[0].AxisX.TitleFont.Bold;
-                    bool ytitlebold = chart1.ChartAreas[0].AxisY.TitleFont.Bold;
-                    selectedCalibration.ChartSettings = new ChartSettings(xbounds, ybounds, xintervall, yintervall, xtitle, xtitlebold, ytitle, ytitlebold);
-                }
+                    chart1.ChartAreas[0].AxisX.Title = string.Format("Koncentráció ({0})", selectedCalibration.Unit);
+                    Debug.WriteLine(selectedCalibration.Element + " " + selectedCalibration.Level);
 
-                updateChartOptions(selectedCalibration);
-                
-                fillChartOptions(selectedCalibration);
+                    foreach (Series series in chart1.Series)
+                    {
+                        if (series.Name.Contains(selectedChart) == false)
+                            series.Enabled = false;
+                        else
+                            series.Enabled = true;
+                    }
+                    if (selectedCalibration.ChartSettings == null)
+                    {
+                        chart1.ChartAreas[0].AxisX.Minimum = 0;
+                        chart1.ChartAreas[0].AxisY.Minimum = 0;
+                        chart1.ChartAreas[0].AxisX.Maximum = double.NaN;
+                        chart1.ChartAreas[0].AxisY.Maximum = double.NaN;
+                        chart1.ChartAreas[0].RecalculateAxesScale();
+                        (double min, double max) xbounds = (chart1.ChartAreas[0].AxisX.Minimum, chart1.ChartAreas[0].AxisX.Maximum);
+                        (double min, double max) ybounds = (chart1.ChartAreas[0].AxisY.Minimum, chart1.ChartAreas[0].AxisY.Maximum);
+                        double xintervall = chart1.ChartAreas[0].AxisX.Interval;
+                        double yintervall = chart1.ChartAreas[0].AxisY.Interval;
+                        string xtitle = chart1.ChartAreas[0].AxisX.Title;
+                        string ytitle = chart1.ChartAreas[0].AxisY.Title;
+                        bool xtitlebold = chart1.ChartAreas[0].AxisX.TitleFont.Bold;
+                        bool ytitlebold = chart1.ChartAreas[0].AxisY.TitleFont.Bold;
+                        selectedCalibration.ChartSettings = new ChartSettings(xbounds, ybounds, xintervall, yintervall, xtitle, xtitlebold, ytitle, ytitlebold);
+                    }
+
+                    updateChartOptions(selectedCalibration);
+
+                    fillChartOptions(selectedCalibration);
+                }
             }
 
 

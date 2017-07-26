@@ -26,7 +26,6 @@ namespace MassHunterTRAnalyser
         private void loadFromFile(string folderpath, List<StandardData> storedstandards)
         {
             List<string> dataFiles = Directory.EnumerateDirectories(folderpath, "*.d").ToList();
-
             //Load acq data
             string analysisFile = Path.Combine(folderpath, "analysis.json");
             if (File.Exists(analysisFile))
@@ -53,9 +52,13 @@ namespace MassHunterTRAnalyser
                 AlreadySaved = false;
                 foreach (string dataFileFolder in dataFiles)
                 {
-                    MeasuredData.Add(new SampleData(dataFileFolder, storedstandards));
-                    if (MeasuredData.Last().DataFileName == "")
-                        MeasuredData.RemoveAt(MeasuredData.Count - 1);
+                    string fileName = Path.GetFileNameWithoutExtension(dataFileFolder);
+                    if (File.Exists(Path.Combine(dataFileFolder, fileName + ".csv")))
+                    {
+                        MeasuredData.Add(new SampleData(dataFileFolder, storedstandards));
+                        if (MeasuredData.Last().DataFileName == "")
+                            MeasuredData.RemoveAt(MeasuredData.Count - 1);
+                    }
                 }
             }
         }

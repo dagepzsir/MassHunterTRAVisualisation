@@ -36,8 +36,9 @@ namespace MassHunterTRAnalyser.Data_Classes
         public double Intercept { get;  set; }
         public double RSquared { get;  set; }
         public string Element { get; private set; }
+        public string Unit { get; set; }
         public ChartSettings ChartSettings { get; set; }
-        public CalibrationLine(int level, string element, double slope, double intercept, double rsquared)
+        public CalibrationLine(int level, string element, double slope, double intercept, double rsquared, string unit)
         {
             Level = level;
             Element = element;
@@ -45,6 +46,10 @@ namespace MassHunterTRAnalyser.Data_Classes
             Intercept = intercept;
             RSquared = rsquared;
             ChartSettings = null;
+            if (unit != null)
+                Unit = unit;
+            else
+                Unit = "";
         }
 
         public double CalculateConcentration(double cps)

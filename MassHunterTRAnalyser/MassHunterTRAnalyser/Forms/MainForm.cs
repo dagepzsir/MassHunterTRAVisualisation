@@ -108,7 +108,7 @@ namespace MassHunterTRAnalyser
             }
             if (tabControl1.SelectedTab == tabControl1.TabPages["calibrationTab"])
             {
-                
+                calibrationControl1.UpdateCalibration();
             }
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
