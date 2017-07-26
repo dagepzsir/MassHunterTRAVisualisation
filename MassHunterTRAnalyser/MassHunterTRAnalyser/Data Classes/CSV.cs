@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace MassHunterTRAnalyser.Data_Classes
 {
-    class CSV
+    class CSV: IData
     {
         public CSV(string path, int startline = 0)
         {
             loadCSV(path, startline);
         }
-        public DataTable CSVData { get; private set; }
+        public DataTable Data { get; set; }
 
         private void loadCSV(string path, int startline = 0)
         {
@@ -45,7 +45,7 @@ namespace MassHunterTRAnalyser.Data_Classes
                     }
                     table.Rows.Add(row);
                 }
-                CSVData = table;
+                Data = table;
             }
         }
     }

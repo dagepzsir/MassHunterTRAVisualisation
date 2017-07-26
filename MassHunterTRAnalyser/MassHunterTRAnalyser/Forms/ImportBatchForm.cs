@@ -73,12 +73,12 @@ namespace MassHunterTRAnalyser.Forms
                 if (openXLSDialog.FileName.Contains("xls"))
                 {
                     ExcelFile file = new ExcelFile(openXLSDialog.FileName);
-                    data = file.XLSData;
+                    data = file.Data;
                 }
                 else
                 {
                     CSV csv = new CSV(openXLSDialog.FileName);
-                    data = csv.CSVData;
+                    data = csv.Data;
                 }
                 List<string> comments = new List<string>();
                 List<string> samplenames = new List<string>();

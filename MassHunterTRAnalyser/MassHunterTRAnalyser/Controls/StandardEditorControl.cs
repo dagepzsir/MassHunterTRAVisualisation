@@ -175,19 +175,15 @@ namespace MassHunterTRAnalyser.Controls
 
         private void loadCSV_Click(object sender, EventArgs e)
         {
-            if(openCSVDialog.ShowDialog() == DialogResult.OK)
+            if(openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 DataTable data;
-                if (openCSVDialog.FileName.Contains("xls"))
-                {
-                    ExcelFile file = new ExcelFile(openCSVDialog.FileName);
-                    data = file.XLSData;
-                }
+                IData fileData;
+                if (openFileDialog.FileName.Contains("xls"))
+                    fileData = new ExcelFile(openFileDialog.FileName);
                 else
-                {
-                    CSV csv = new CSV(openCSVDialog.FileName);
-                    data = csv.CSVData;
-                }
+                    fileData = new CSV(openFileDialog.FileName);
+                data = fileData.Data;
                 StoredStandards.AddRange(getStandardsFromCSV(data));
                 populateListView();
             }

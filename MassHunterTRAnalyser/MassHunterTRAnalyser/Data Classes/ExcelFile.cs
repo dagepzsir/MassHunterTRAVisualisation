@@ -11,9 +11,9 @@ using DataTable = System.Data.DataTable;
 
 namespace MassHunterTRAnalyser.Data_Classes
 {
-    class ExcelFile
+    class ExcelFile: IData
     {
-        public DataTable XLSData;
+        public DataTable Data { get; set; }
 
         public ExcelFile(string path)
         {
@@ -41,7 +41,7 @@ namespace MassHunterTRAnalyser.Data_Classes
                     }
                     table.Rows.Add(tempRow);
                 }
-                XLSData = table;
+                Data = table;
             }
         }
 

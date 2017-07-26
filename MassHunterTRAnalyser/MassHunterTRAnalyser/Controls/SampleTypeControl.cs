@@ -213,7 +213,9 @@ namespace MassHunterTRAnalyser
             changedSample.Rejected = !value;
 
             if (dataGridView1["sampleGroup", index].Value != null)
+            {
                 changedSample.SampleGroup = dataGridView1["sampleGroup", index].Value.ToString();
+            }
             else
                 changedSample.SampleGroup = "";
 
@@ -224,7 +226,10 @@ namespace MassHunterTRAnalyser
             else
                 changedSample.StandardLevel = -1;
             if (dataGridView1["standardType", index].Value != null)
+            {
                 changedSample.StandardType = dataGridView1["standardType", index].Value.ToString();
+                //SampleGroups.Find(item => item.GroupName == changedSample.SampleGroup).Samples.ForEach(item => item.StandardType = changedSample.StandardType);
+            }
             else
                 changedSample.StandardType = "";
         }
@@ -365,6 +370,12 @@ namespace MassHunterTRAnalyser
                         enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardLevel"], true);
                         enableCell(dataGridView1.Rows[e.RowIndex].Cells["standardType"], true);
                     }
+                    SampleGroup group = SampleGroups.Find(item => item.GroupName == dataGridView1["sampleGroup", e.RowIndex].Value.ToString());
+                    foreach (var sample in group.Samples)
+                    {
+                        dataGridView1["sampleType", loadedBatch.MeasuredData.IndexOf(sample)].Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                    }
+
                 }
 
             }
@@ -375,7 +386,6 @@ namespace MassHunterTRAnalyser
                 foreach (var sample in group.Samples)
                 {
                     dataGridView1["standardLevel", loadedBatch.MeasuredData.IndexOf(sample)].Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
-                    sample.StandardLevel = Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value);
                 }
                 if (levels.Contains(Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value)) == false)
                     levels.Add(Utils.ConvertToInt32(dataGridView1[e.ColumnIndex, e.RowIndex].Value));
