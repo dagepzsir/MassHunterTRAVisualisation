@@ -100,6 +100,12 @@
     <Compile Include="Controls\StandardEditorControl.Designer.cs">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SampleTypeContontrolV2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SampleTypeContontrolV2.Designer.cs">
+      <DependentUpon>SampleTypeContontrolV2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data Classes\CalibrationLine.cs" />
     <Compile Include="Data Classes\CSV.cs" />
     <Compile Include="Data Classes\Batch.cs" />
@@ -162,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\StandardEditorControl.resx">
       <DependentUpon>StandardEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SampleTypeContontrolV2.resx">
+      <DependentUpon>SampleTypeContontrolV2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportBatchForm.resx">
       <DependentUpon>ImportBatchForm.cs</DependentUpon>

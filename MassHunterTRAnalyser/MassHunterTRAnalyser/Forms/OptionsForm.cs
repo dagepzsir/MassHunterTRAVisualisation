@@ -27,7 +27,7 @@ namespace MassHunterTRAnalyser.Forms
             Properties.Settings.Default.StandardData = JsonConvert.SerializeObject(standardEditorControl1.StoredStandards);
             Properties.Settings.Default.Save();
             Properties.Settings.Default.Reload();
-            (this.Owner as MainForm).sampleTypeControl1.LoadStandardNames();
+            //(this.Owner as MainForm).sampleTypeControl1.LoadStandardNames();
         }
 
         private void OptionsForm_FormClosing(object sender, FormClosingEventArgs e)

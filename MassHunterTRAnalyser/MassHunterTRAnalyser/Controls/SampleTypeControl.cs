@@ -28,7 +28,7 @@ namespace MassHunterTRAnalyser
         List<SampleGroup> SampleGroups = new List<SampleGroup>();
         string oldSampleGroup;
         List<int> levels = new List<int>();
-        #region Events
+
         public void SampleTypeControl_DataLoaded(object sender, DataLoadedEventArgs e)
         {
             loadedBatch = e.LoadedBatch;
@@ -179,7 +179,6 @@ namespace MassHunterTRAnalyser
             SampleGroups.Clear();
             sampleTree.Nodes.Clear();
         }
-        #endregion
         private void updateSampleData(int index)
         {
             SampleData changedSample = loadedBatch.MeasuredData[index];
@@ -350,7 +349,6 @@ namespace MassHunterTRAnalyser
                 }
             }
         }
-
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)

@@ -201,6 +201,7 @@ namespace MassHunterTRAnalyser
                     StandardLevel = -1;
 
                 }
+
                 List<(double time, Dictionary<string, double> data)> csvData = new List<(double time, Dictionary<string, double> data)>();
                 //Load sample data CSV
                 using (StreamReader reader = new StreamReader(finalPath))

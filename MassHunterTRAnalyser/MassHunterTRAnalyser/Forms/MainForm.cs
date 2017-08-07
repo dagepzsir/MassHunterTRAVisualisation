@@ -24,13 +24,13 @@ namespace MassHunterTRAnalyser
         {
             InitializeComponent();
 
-            this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
+            //this.DataLoaded += sampleTypeControl1.SampleTypeControl_DataLoaded;
             this.DataLoaded += selectionControl.UserControl1_DataLoaded;
             this.DataLoaded += averagesControl.AveragesControlDataLoaded;
             this.DataLoaded += calibrationControl1.CalibrationControlDataLoaded;
-
-            sampleTypeControl1.SampleDataChanged += averagesControl.SampleTypeControl1_SampleGroupsChanged;
-            sampleTypeControl1.SampleDataChanged += calibrationControl1.SampleTypeControl1_SampleGroupsChanged;
+            this.DataLoaded += sampleTypeContontrolV21.SampleTypeControl_DataLoaded;
+            //sampleTypeControl1.SampleDataChanged += averagesControl.SampleTypeControl1_SampleGroupsChanged;
+            //sampleTypeControl1.SampleDataChanged += calibrationControl1.SampleTypeControl1_SampleGroupsChanged;
 
         }
 
@@ -48,7 +48,7 @@ namespace MassHunterTRAnalyser
         {
             if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                sampleTypeControl1.Reset();
+                //sampleTypeControl1.Reset();
 
                 if (folderBrowserDialog1.SelectedPath.Contains(".b"))
                 {
@@ -58,14 +58,6 @@ namespace MassHunterTRAnalyser
                     //Trigger DataLoaded event
                     OnDataLoaded(new DataLoadedEventArgs(ref selectedBatch, ref StoredStandards));
                     saveToolStripMenuItem.Enabled = true;
-
-                    if (!selectedBatch.AlreadySaved)
-                    {
-                        if (MessageBox.Show("Do you want to load sample names and comments from MassHunter DA table export? (If you modified the names/comments after the batch was added to the queue this is required!)", "Information", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-                        {
-                            loadNewNamesAndComments();
-                        }
-                    }
                 }
                 else
                 {
@@ -131,7 +123,7 @@ namespace MassHunterTRAnalyser
 
         private void loadSampleNamesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            loadNewNamesAndComments();
+            //loadNewNamesAndComments();
         }
 
         private void batchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -193,64 +185,6 @@ namespace MassHunterTRAnalyser
                     string serialized = JsonConvert.SerializeObject(selectedBatch.MeasuredData);
                     sw.WriteLine(serialized);
                 }
-            }
-        }
-        private void loadNewNamesAndComments()
-        {
-            if (openXLSDialog.ShowDialog() == DialogResult.OK)
-            {
-                DataTable data;
-                IData fileData;
-                if(openXLSDialog.FileName.Contains("xls"))
-                    fileData = new ExcelFile(openXLSDialog.FileName);
-                else
-                    fileData = new CSV(openXLSDialog.FileName);
-                data = fileData.Data;
-
-                List<string> comments = new List<string>();
-                List<string> sampleNames = new List<string>();
-                List<bool> rejects = new List<bool>();
-                List<string> sampleTypes = new List<string>();
-
-                int commentColumn = 0;
-                int nameColumn = 0;
-                int rjctColumn = 0;
-                int sampleTypeColumn = 0;
-
-                for (int i = 0; i < data.Columns.Count; i++)
-                {
-                    switch (data.Rows[1][i].ToString())
-                    {
-                        case "Comment":
-                            commentColumn = i;
-                            break;
-                        case "Sample Name":
-                            nameColumn = i;
-                            break;
-                        case "Rjct":
-                            rjctColumn = i;
-                            break;
-                        case "Type":
-                            sampleTypeColumn = i;
-                            break;
-                    }
-
-                }
-
-                for (int i = 2; i < data.Rows.Count; i++)
-                {
-                    comments.Add(data.Rows[i][commentColumn].ToString());
-                    sampleNames.Add(data.Rows[i][nameColumn].ToString());
-                    if (data.Rows[i][rjctColumn].ToString() == "true")
-                    {
-                        rejects.Add(true);
-                    }
-                    else
-                        rejects.Add(false);
-                }
-                
-
-                sampleTypeControl1.SetSampleNameCommentsRjct(sampleNames, comments, rejects);
             }
         }
 

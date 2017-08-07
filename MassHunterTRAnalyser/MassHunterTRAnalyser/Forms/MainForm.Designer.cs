@@ -40,20 +40,21 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.sampleTypesTab = new System.Windows.Forms.TabPage();
-            this.sampleTypeControl1 = new MassHunterTRAnalyser.SampleTypeControl();
             this.rangesTab = new System.Windows.Forms.TabPage();
             this.selectionControl = new MassHunterTRAnalyser.SelectionControl();
             this.calibrationTab = new System.Windows.Forms.TabPage();
             this.calibrationControl1 = new MassHunterTRAnalyser.Controls.CalibrationControl();
             this.averagesTab = new System.Windows.Forms.TabPage();
             this.averagesControl = new MassHunterTRAnalyser.Controls.AveragesControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.sampleTypeContontrolV21 = new MassHunterTRAnalyser.Controls.SampleTypeContontrolV2();
             this.openXLSDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.sampleTypesTab.SuspendLayout();
             this.rangesTab.SuspendLayout();
             this.calibrationTab.SuspendLayout();
             this.averagesTab.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -105,14 +106,14 @@
             // batchToolStripMenuItem
             // 
             this.batchToolStripMenuItem.Name = "batchToolStripMenuItem";
-            this.batchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.batchToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.batchToolStripMenuItem.Text = "Batch";
             this.batchToolStripMenuItem.Click += new System.EventHandler(this.batchToolStripMenuItem_Click);
             // 
             // acqDataToolStripMenuItem
             // 
             this.acqDataToolStripMenuItem.Name = "acqDataToolStripMenuItem";
-            this.acqDataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.acqDataToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.acqDataToolStripMenuItem.Text = "Acq Data";
             // 
             // loadSampleNamesToolStripMenuItem
@@ -135,6 +136,7 @@
             this.tabControl1.Controls.Add(this.rangesTab);
             this.tabControl1.Controls.Add(this.calibrationTab);
             this.tabControl1.Controls.Add(this.averagesTab);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
@@ -146,7 +148,6 @@
             // 
             // sampleTypesTab
             // 
-            this.sampleTypesTab.Controls.Add(this.sampleTypeControl1);
             this.sampleTypesTab.Location = new System.Drawing.Point(4, 22);
             this.sampleTypesTab.Name = "sampleTypesTab";
             this.sampleTypesTab.Padding = new System.Windows.Forms.Padding(3);
@@ -154,14 +155,6 @@
             this.sampleTypesTab.TabIndex = 0;
             this.sampleTypesTab.Text = "Sample Types";
             this.sampleTypesTab.UseVisualStyleBackColor = true;
-            // 
-            // sampleTypeControl1
-            // 
-            this.sampleTypeControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sampleTypeControl1.Location = new System.Drawing.Point(3, 3);
-            this.sampleTypeControl1.Name = "sampleTypeControl1";
-            this.sampleTypeControl1.Size = new System.Drawing.Size(1001, 530);
-            this.sampleTypeControl1.TabIndex = 0;
             // 
             // rangesTab
             // 
@@ -220,6 +213,25 @@
             this.averagesControl.Size = new System.Drawing.Size(1001, 530);
             this.averagesControl.TabIndex = 0;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.sampleTypeContontrolV21);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1007, 536);
+            this.tabPage1.TabIndex = 4;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // sampleTypeContontrolV21
+            // 
+            this.sampleTypeContontrolV21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sampleTypeContontrolV21.Location = new System.Drawing.Point(3, 3);
+            this.sampleTypeContontrolV21.Name = "sampleTypeContontrolV21";
+            this.sampleTypeContontrolV21.Size = new System.Drawing.Size(1001, 530);
+            this.sampleTypeContontrolV21.TabIndex = 0;
+            // 
             // openXLSDialog
             // 
             this.openXLSDialog.FileName = "openFileDialog1";
@@ -241,10 +253,10 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            this.sampleTypesTab.ResumeLayout(false);
             this.rangesTab.ResumeLayout(false);
             this.calibrationTab.ResumeLayout(false);
             this.averagesTab.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -261,7 +273,6 @@
         private System.Windows.Forms.TabPage sampleTypesTab;
         private System.Windows.Forms.TabPage rangesTab;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        public SampleTypeControl sampleTypeControl1;
         private System.Windows.Forms.OpenFileDialog openXLSDialog;
         private System.Windows.Forms.TabPage averagesTab;
         private Controls.AveragesControl averagesControl;
@@ -271,6 +282,8 @@
         private System.Windows.Forms.ToolStripMenuItem batchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem acqDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadSampleNamesToolStripMenuItem;
+        private System.Windows.Forms.TabPage tabPage1;
+        private Controls.SampleTypeContontrolV2 sampleTypeContontrolV21;
     }
 }
 
